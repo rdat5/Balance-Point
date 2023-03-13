@@ -19,7 +19,7 @@ import mathutils
 ## Properties
 
 def update_floor(self, context):
-    bpy.ops.object.update_com()
+    set_com_obj()
 
 class ComProperties(bpy.types.PropertyGroup):
     com_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
@@ -52,10 +52,6 @@ class CenterOfMassPanel(bpy.types.Panel):
         # Collection
         row = layout.row(heading="Mass Object Collection", align=True)
         row.prop(com_props, "com_collection", text="")
-
-        # Update
-        row = layout.row(heading="testing")
-        row.operator("object.update_com", icon='FILE_REFRESH')
 
 class MassPropertiesPanel(bpy.types.Panel):
     """Mass properties panel"""
@@ -130,29 +126,6 @@ class MassPropertiesPanel(bpy.types.Panel):
                 col2.label(text="Mass: "  + str(obj_mass))
 
 ## Operators
-
-class UpdateCOM(bpy.types.Operator):
-    """Updates position of Center of Mass"""
-    bl_idname = "object.update_com"
-    bl_label = "Update Center of Mass"
-
-    def execute(self, context):
-        com_obj = context.scene.com_properties.get("com_object")
-        com_floor_obj = context.scene.com_properties.get("com_floor_object")
-        com_floor_lvl = context.scene.com_properties.get("com_floor_level")
-        com_col = context.scene.com_properties.get("com_collection")
-
-        # Have to initialize properties
-        if com_floor_lvl is None:
-            com_floor_lvl = 0.0
-
-        if (com_obj is not None and com_col is not None):
-            com_obj.matrix_world.translation = get_com(com_col)
-            if (com_floor_obj is not None):
-                com_loc = com_obj.matrix_world.translation
-                com_floor_obj.matrix_world.translation = mathutils.Vector((com_loc.x, com_loc.y, com_floor_lvl))
-
-        return {'FINISHED'}
 
 class AddMassProps(bpy.types.Operator):
     """Add mass properties to selected objects"""
@@ -283,13 +256,30 @@ def get_com(coll):
 
     return center_of_mass
 
+def set_com_obj():
+    context = bpy.context
+
+    com_obj = context.scene.com_properties.get("com_object")
+    com_floor_obj = context.scene.com_properties.get("com_floor_object")
+    com_floor_lvl = context.scene.com_properties.get("com_floor_level")
+    com_col = context.scene.com_properties.get("com_collection")
+
+    # Have to initialize properties
+    if com_floor_lvl is None:
+        com_floor_lvl = 0.0
+
+    if (com_obj is not None and com_col is not None):
+        com_obj.matrix_world.translation = get_com(com_col)
+        if (com_floor_obj is not None):
+            com_loc = com_obj.matrix_world.translation
+            com_floor_obj.matrix_world.translation = mathutils.Vector((com_loc.x, com_loc.y, com_floor_lvl))
+
 # Class Registration
 
 classes = (
     ComProperties,
     CenterOfMassPanel,
     MassPropertiesPanel,
-    UpdateCOM,
     AddMassProps,
     RemoveMassProps,
     ToggleActiveProperty,
