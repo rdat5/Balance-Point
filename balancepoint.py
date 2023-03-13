@@ -18,11 +18,14 @@ import mathutils
 
 ## Properties
 
+def update_floor(self, context):
+    bpy.ops.object.update_com()
+
 class ComProperties(bpy.types.PropertyGroup):
     com_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
     com_object : bpy.props.PointerProperty(name="Center of Mass Object", type=bpy.types.Object)
     com_floor_object : bpy.props.PointerProperty(name="Center of Mass Object (floor)", type=bpy.types.Object)
-    com_floor_level : bpy.props.FloatProperty(name="Floor Level", description="The point where gravity pushes the center of mass towards")
+    com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0, description="The point where gravity pushes the center of mass towards", update=update_floor)
 
 ## Panels
 
