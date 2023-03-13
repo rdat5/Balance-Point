@@ -124,6 +124,9 @@ class MassPropertiesPanel(bpy.types.Panel):
                 col2.prop(obj, '["density"]')
                 col2.prop(obj, '["volume"]')
                 col2.label(text="Mass: "  + str(obj_mass))
+        if len(selObj) > 0:
+            row = layout.row()
+            row.label(text="Total Mass of Selected: " + str(round(get_total_mass(selObj), 3)))
 
 ## Operators
 
@@ -273,6 +276,17 @@ def set_com_obj():
         if (com_floor_obj is not None):
             com_loc = com_obj.matrix_world.translation
             com_floor_obj.matrix_world.translation = mathutils.Vector((com_loc.x, com_loc.y, com_floor_lvl))
+
+def get_total_mass(objects):
+    total_mass = 0
+
+    for obj in objects:
+        if obj.get("active"):
+            obj_mass = obj.get("density") * obj.get("volume")
+
+            total_mass += obj_mass
+    
+    return total_mass
 
 # Class Registration
 
