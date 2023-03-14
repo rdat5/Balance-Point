@@ -46,6 +46,10 @@ class CenterOfMassPanel(bpy.types.Panel):
         layout = self.layout
         com_props = context.scene.com_properties
 
+        # Basic Setup
+        row = layout.row()
+        row.operator("object.bp_basic_add", icon='PRESET_NEW')
+
         # Center of Mass
         row = layout.row(heading="Center of Mass Object", align=True)
         row.prop(com_props, "com_object", text="")
@@ -152,6 +156,66 @@ class MassPropertiesPanel(bpy.types.Panel):
             row.label(text="Total Mass of Selected: " + str(round(get_total_mass(selObj), 3)))
 
 ## Operators
+
+class AddBasicCOMSetup(bpy.types.Operator):
+    """Add basic setup for using Balance Point"""
+    bl_idname = "object.bp_basic_add"
+    bl_label = "Add Basic Balance Point Setup"
+
+    def execute(self, context):
+        com_props = context.scene.com_properties
+
+        # Create Collections
+
+        balance_point_col = bpy.data.collections.new(name="Balance Point")
+        context.collection.children.link(balance_point_col)
+
+        mass_obj_col = bpy.data.collections.new(name="BP Mass Objects")
+        center_of_mass_obj_col = bpy.data.collections.new(name="BP COM Markers")
+        balance_point_col.children.link(mass_obj_col)
+        balance_point_col.children.link(center_of_mass_obj_col)
+
+        # Create Objects
+        main_com_marker = bpy.data.objects.new("CoM Main", None)
+        floor_com_marker = bpy.data.objects.new("CoM Floor", None)
+
+        main_com_marker.empty_display_size = 1.0
+        floor_com_marker.empty_display_size = .5
+
+        main_com_marker.empty_display_type = 'PLAIN_AXES'
+        floor_com_marker.empty_display_type = 'PLAIN_AXES'
+
+        main_com_marker.show_in_front = True
+        floor_com_marker.show_in_front = True
+
+        main_com_marker.hide_select = True
+        floor_com_marker.hide_select = True
+
+        example_mesh = bpy.data.meshes.new('Basic_Cube')
+        bm = bmesh.new()
+        bmesh.ops.create_cube(bm, size=1.0)
+        bm.to_mesh(example_mesh)
+        bm.free()
+        example_mass_obj = bpy.data.objects.new("Example Mass", example_mesh)
+
+        example_mass_obj["active"] = True
+        example_mass_obj["density"] = 1.0
+        example_mass_obj["volume"] = 1.0
+
+        # Link to Scene in Appropriate Collections
+        center_of_mass_obj_col.objects.link(main_com_marker)
+        center_of_mass_obj_col.objects.link(floor_com_marker)
+        mass_obj_col.objects.link(example_mass_obj)
+
+        # Add To BP if available
+        if com_props.com_object is None:
+            com_props.com_object = main_com_marker
+        if com_props.com_floor_object is None:
+            com_props.com_floor_object = floor_com_marker
+        if com_props.com_collection is None:
+            com_props.com_collection = mass_obj_col
+
+        return {'FINISHED'}
 
 class AddMassProps(bpy.types.Operator):
     """Add mass properties to selected objects"""
@@ -336,6 +400,7 @@ classes = (
     ComProperties,
     CenterOfMassPanel,
     MassPropertiesPanel,
+    AddBasicCOMSetup,
     AddMassProps,
     RemoveMassProps,
     ToggleActiveProperty,
