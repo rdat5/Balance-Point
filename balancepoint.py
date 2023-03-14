@@ -98,6 +98,15 @@ class MassPropertiesPanel(bpy.types.Panel):
         row = col.row()
         row.operator("object.calculate_volume", icon='CUBE')
         
+        # Object Origin to Center of Mass
+        col = layout.column(align=True)
+
+        row = col.row()
+        row.label(text="Set Selected CoM to Origins")
+
+        row = col.row()
+        row.operator("object.origin_set", text='Origin to Center of Mass (Volume)', icon='DOT').type='ORIGIN_CENTER_OF_VOLUME'
+
         # Set active to selected
         col = layout.column(align=True)
         
