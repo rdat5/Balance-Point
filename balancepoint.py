@@ -10,16 +10,21 @@ bl_info = {
     "category": "Object",
 }
 
+handler_key = "BP_UPDATE_FN"
+
 import bpy
 import bmesh
 import mathutils
+from bpy.app.handlers import depsgraph_update_post
+from bpy.app.handlers import frame_change_post
+from bpy.app import driver_namespace
 
 # Classes
 
 ## Properties
 
 def update_floor(self, context):
-    set_com_obj()
+    set_com_obj(context.scene)
 
 class ComProperties(bpy.types.PropertyGroup):
     com_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
@@ -52,6 +57,15 @@ class CenterOfMassPanel(bpy.types.Panel):
         # Collection
         row = layout.row(heading="Mass Object Collection", align=True)
         row.prop(com_props, "com_collection", text="")
+
+        # Update
+        handler_fn_is_on = (handler_key in driver_namespace and driver_namespace[handler_key] in depsgraph_update_post)
+        update_icon = 'PAUSE' if handler_fn_is_on else 'PLAY'
+        update_text = 'Update Off' if handler_fn_is_on else 'Update On'
+
+        row = layout.row(heading="Update Center of Mass Location")
+        row.scale_y = 2.0
+        row.operator("object.toggle_com_update", text=update_text, icon=update_icon)
 
 class MassPropertiesPanel(bpy.types.Panel):
     """Mass properties panel"""
@@ -218,6 +232,25 @@ class CalculateVolume(bpy.types.Operator):
                 obj['volume'] = get_volume(obj)
         return {'FINISHED'} 
 
+class ToggleCOMUpdate(bpy.types.Operator):
+    """Adds/Removes center of mass update function from depsgraph update handler"""
+    bl_idname = "object.toggle_com_update"
+    bl_label = "Toggle COM Update"
+
+    def execute(self, context):
+        if handler_key in driver_namespace:
+            if driver_namespace[handler_key] in depsgraph_update_post:
+                depsgraph_update_post.remove(driver_namespace[handler_key])
+                frame_change_post.remove(driver_namespace[handler_key])
+
+                del driver_namespace[handler_key]
+        else:
+            depsgraph_update_post.append(set_com_obj)
+            frame_change_post.append(set_com_obj)
+            driver_namespace[handler_key] = set_com_obj
+
+        return {'FINISHED'}
+
 # Function Definitions
 
 def set_active(obj, act):
@@ -259,7 +292,7 @@ def get_com(coll):
 
     return center_of_mass
 
-def set_com_obj():
+def set_com_obj(scene):
     context = bpy.context
 
     com_obj = context.scene.com_properties.get("com_object")
@@ -299,7 +332,8 @@ classes = (
     ToggleActiveProperty,
     SetActiveTrue,
     SetActiveFalse,
-    CalculateVolume
+    CalculateVolume,
+    ToggleCOMUpdate
     )
 
 def register():
@@ -313,6 +347,13 @@ def unregister():
         bpy.utils.unregister_class(cls)
     
     del bpy.types.Scene.com_properties
+
+    if handler_key in driver_namespace:
+        if driver_namespace[handler_key] in depsgraph_update_post:
+            depsgraph_update_post.remove(driver_namespace[handler_key])
+            frame_change_post.remove(driver_namespace[handler_key])
+
+            del driver_namespace[handler_key]
 
 if __name__ == "__main__":
     register()
