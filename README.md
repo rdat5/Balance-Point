@@ -83,6 +83,6 @@ place in scripts > addons folder
     inactive objects as wireframes.
 
 * **Selected Mass Objects** - Shows info about the selected mass objects. You 
-    can also edit the volume and density of the object manually here.
+    can also manually edit the volume and density of the object here.
 
 * **Total Mass of Selected** - Shows the total mass of the selected mass objects
