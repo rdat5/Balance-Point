@@ -79,7 +79,7 @@ place in scripts > addons folder
     'Set Origin > Origin to Center of Mass (Volume)' on the selected objects.
 
 * **Set Active to Selected** - Set the selected object as active/inactive, or 
-    toggle between the two. Objects objects are set to display as solid, and 
+    toggle between the two. Active objects are set to display as solid, and 
     inactive objects as wireframes.
 
 * **Selected Mass Objects** - Shows info about the selected mass objects. You 
