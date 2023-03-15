@@ -25,6 +25,8 @@ place in scripts > addons folder
 
 ## Add-on
 
+![Balance Point menu](/images/balance_point_menu.jpg)
+
 ### Center of Mass Settings
 
 * **Add Basic Balance Point Setup** - Creates a collection that contains a 
