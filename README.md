@@ -156,7 +156,7 @@ place in scripts > addons folder
     Center of Mass Object' is within this shape, and the character would be 
     considered to be *balanced* for however long they can hold this pose. If 
     this 'Floor Center of Mass' is outside this shape of the point of contact, 
-    they be imbalanced, tip over and fall down.
+    they would be imbalanced, tip over and fall down.
 
 ![Tip 1](/images/tip1.jpg)
 
