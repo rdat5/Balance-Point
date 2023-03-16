@@ -138,7 +138,7 @@ place in scripts > addons folder
 ![Step 8](/images/step8.jpg)
 
 9. Turn 'Update' on. The 'Center of Mass Object' will now track the center of
-    mass of entirety of the character, and the 'Floor Center of Mass Object'
+    mass of the entirety of the character, and the 'Floor Center of Mass Object'
     will follow, but set to the floor level. To stop tracking, set 'Update' to
     off.
 
