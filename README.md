@@ -152,11 +152,11 @@ place in scripts > addons folder
 ### Using The Center of Mass
 
 * Consider where the character's feet meets the floor. Both feet form a shape
-    that is the character **points of contacts** to the floor. The 'Floor
-    Center of Mass Object' lies within this shape, and the character would be 
-    considered to be balanced for however long they can hold this pose. If this 
-    'Floor Center of Mass' is outside this shape of the point of contact, they
-    would tip over and fall down.
+    that is the character **points of contacts** to the floor. If the 'Floor
+    Center of Mass Object' is within this shape, and the character would be 
+    considered to be *balanced* for however long they can hold this pose. If 
+    this 'Floor Center of Mass' is outside this shape of the point of contact, 
+    they be imbalanced, tip over and fall down.
 
 ![Tip 1](/images/tip1.jpg)
 
@@ -182,3 +182,7 @@ place in scripts > addons folder
 
 * Possible physics simulation, by applying forces to the character so they
     can rotate around their center of mass for realistic airborne spinning.
+
+* There needs to be a way to have multiple centers of mass. A current workaround
+    is to have both characters centers of mass in one collection and use
+    'Toggle Active' to swap between them.
