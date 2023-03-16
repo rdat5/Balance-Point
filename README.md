@@ -184,5 +184,5 @@ place in scripts > addons folder
     can rotate around their center of mass for realistic airborne spinning.
 
 * There needs to be a way to have multiple centers of mass. A current workaround
-    is to have both characters centers of mass in one collection and use
-    'Toggle Active' to swap between them.
+    is to have both characters' mass objects in one collection and use 'Toggle
+    Active' to swap between them.
