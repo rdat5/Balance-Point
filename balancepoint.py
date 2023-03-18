@@ -68,8 +68,10 @@ SHAPE_FLOOR_MARKER = [
 
 ## Properties
 
+class MassObjectGroup(bpy.types.PropertyGroup):
+    mass_object_collection : bpy.props.PointerProperty(name="Mass Object Collection 2", type=bpy.types.Collection)
+
 class ComProperties(bpy.types.PropertyGroup):
-    com_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
     com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
     com_scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
     com_color : bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
@@ -88,10 +90,11 @@ class CenterOfMassPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         com_props = context.scene.com_properties
+        bp_mass_groups = context.scene.bp_mass_object_groups
 
         # Collection
         row = layout.row(heading="Mass Object Collection", align=True)
-        row.prop(com_props, "com_collection", text="")
+        row.prop(bp_mass_groups[0], "mass_object_collection")
 
         # Floor Level
         row = layout.row(heading="Floor Level", align=True)
@@ -366,11 +369,12 @@ def multiply_vectors_by_scalar(vectors, scalar):
 
 def render_com(self, context):
     com_props = bpy.context.scene.com_properties
+    bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
     com_pos = (Vector((0, 0, 0)))
 
-    if com_props.com_collection is not None:
-        com_pos = (get_com(com_props.com_collection))
+    if bp_mass_groups[0].mass_object_collection is not None:
+        com_pos = (get_com(bp_mass_groups[0].mass_object_collection))
 
     marker_color = (com_props.com_color.r, com_props.com_color.g, com_props.com_color.b, 0.0)
 
@@ -403,6 +407,7 @@ def get_total_mass(objects):
 # Class Registration
 
 classes = (
+    MassObjectGroup,
     ComProperties,
     CenterOfMassPanel,
     MassPropertiesPanel,
@@ -420,12 +425,15 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.com_properties = bpy.props.PointerProperty(type=ComProperties)
+    bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
+    bpy.context.scene.bp_mass_object_groups.add()
 
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
     
     del bpy.types.Scene.com_properties
+    del bpy.types.Scene.bp_mass_object_groups
 
     bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
 
