@@ -23,27 +23,56 @@ bl_info = {
     "category": "Object",
 }
 
-handler_key = "BP_UPDATE_FN"
-
 import bpy
+import bgl
+import gpu
 import bmesh
-import mathutils
-from bpy.app.handlers import depsgraph_update_post
-from bpy.app.handlers import frame_change_post
+from mathutils import Vector
+from gpu_extras.batch import batch_for_shader
 from bpy.app import driver_namespace
+
+# Const
+
+SHAPE_COM_MARKER = [
+    Vector((-1.0, 0.0, 0.0)),
+    Vector((1.0, 0.0, 0.0)),
+    Vector((0.0, -1.0, 0.0)),
+    Vector((0.0, 1.0, 0.0)),
+    Vector((0.0, 0.0, -1.0)),
+    Vector((0.0, 0.0, 1.0))
+]
+
+SHAPE_FLOOR_MARKER = [
+    Vector((-1.0, 0.0, 0.0)),
+    Vector((1.0, 0.0, 0.0)),
+    Vector((0.0, -1.0, 0.0)),
+    Vector((0.0, 1.0, 0.0)),
+    Vector((0.0, 0.5, 0.0)),
+    Vector((0.353553, 0.353553, 0.0)),
+    Vector((0.353553, 0.353553, 0.0)),
+    Vector((0.5, 0.0, 0.0)),
+    Vector((0.5, 0.0, 0.0)),
+    Vector((0.353553, -0.353553, 0.0)),
+    Vector((0.353553, -0.353553, 0.0)),
+    Vector((0.0, -0.5, 0.0)),
+    Vector((0.0, -0.5, 0.0)),
+    Vector((-0.353553, -0.353553, 0.0)),
+    Vector((-0.353553, -0.353553, 0.0)),
+    Vector((-0.5, 0.0, 0.0)),
+    Vector((-0.5, 0.0, 0.0)),
+    Vector((-0.353553, 0.353553, 0.0)),
+    Vector((-0.353553, 0.353553, 0.0)),
+    Vector((0.0, 0.5, 0.0)),
+]
+
 
 # Classes
 
 ## Properties
 
-def update_floor(self, context):
-    set_com_obj(context.scene)
-
 class ComProperties(bpy.types.PropertyGroup):
     com_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
-    com_object : bpy.props.PointerProperty(name="Center of Mass Object", type=bpy.types.Object)
-    com_floor_object : bpy.props.PointerProperty(name="Center of Mass Object (floor)", type=bpy.types.Object)
-    com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0, description="The point where gravity pushes the center of mass towards", update=update_floor)
+    com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
 
 ## Panels
 
@@ -59,24 +88,16 @@ class CenterOfMassPanel(bpy.types.Panel):
         layout = self.layout
         com_props = context.scene.com_properties
 
-        # Basic Setup
-        row = layout.row()
-        row.operator("object.bp_basic_add", icon='PRESET_NEW')
-
-        # Center of Mass
-        row = layout.row(heading="Center of Mass Object", align=True)
-        row.prop(com_props, "com_object", text="")
-        row = layout.row(heading="Floor Center of Mass Object", align=True)
-        row.prop(com_props, "com_floor_object", text="")
-        row = layout.row(heading="Floor Level", align=True)
-        row.prop(com_props, "com_floor_level", text="")
-
         # Collection
         row = layout.row(heading="Mass Object Collection", align=True)
         row.prop(com_props, "com_collection", text="")
 
+        # Floor Level
+        row = layout.row(heading="Floor Level", align=True)
+        row.prop(com_props, "com_floor_level", text="")
+
         # Update
-        handler_fn_is_on = (handler_key in driver_namespace and driver_namespace[handler_key] in depsgraph_update_post)
+        handler_fn_is_on = (ToggleCOMUpdate._handle is not None)
         update_icon = 'PAUSE' if handler_fn_is_on else 'PLAY'
         update_text = 'Update Off' if handler_fn_is_on else 'Update On'
 
@@ -170,66 +191,6 @@ class MassPropertiesPanel(bpy.types.Panel):
 
 ## Operators
 
-class AddBasicCOMSetup(bpy.types.Operator):
-    """Add basic setup for using Balance Point"""
-    bl_idname = "object.bp_basic_add"
-    bl_label = "Add Basic Balance Point Setup"
-
-    def execute(self, context):
-        com_props = context.scene.com_properties
-
-        # Create Collections
-
-        balance_point_col = bpy.data.collections.new(name="Balance Point")
-        context.collection.children.link(balance_point_col)
-
-        mass_obj_col = bpy.data.collections.new(name="BP Mass Objects")
-        center_of_mass_obj_col = bpy.data.collections.new(name="BP COM Markers")
-        balance_point_col.children.link(mass_obj_col)
-        balance_point_col.children.link(center_of_mass_obj_col)
-
-        # Create Objects
-        main_com_marker = bpy.data.objects.new("CoM Main", None)
-        floor_com_marker = bpy.data.objects.new("CoM Floor", None)
-
-        main_com_marker.empty_display_size = 1.0
-        floor_com_marker.empty_display_size = .5
-
-        main_com_marker.empty_display_type = 'PLAIN_AXES'
-        floor_com_marker.empty_display_type = 'PLAIN_AXES'
-
-        main_com_marker.show_in_front = True
-        floor_com_marker.show_in_front = True
-
-        main_com_marker.hide_select = True
-        floor_com_marker.hide_select = True
-
-        example_mesh = bpy.data.meshes.new('Basic_Cube')
-        bm = bmesh.new()
-        bmesh.ops.create_cube(bm, size=1.0)
-        bm.to_mesh(example_mesh)
-        bm.free()
-        example_mass_obj = bpy.data.objects.new("Example Mass", example_mesh)
-
-        example_mass_obj["active"] = True
-        example_mass_obj["density"] = 1.0
-        example_mass_obj["volume"] = 1.0
-
-        # Link to Scene in Appropriate Collections
-        center_of_mass_obj_col.objects.link(main_com_marker)
-        center_of_mass_obj_col.objects.link(floor_com_marker)
-        mass_obj_col.objects.link(example_mass_obj)
-
-        # Add To BP if available
-        if com_props.com_object is None:
-            com_props.com_object = main_com_marker
-        if com_props.com_floor_object is None:
-            com_props.com_floor_object = floor_com_marker
-        if com_props.com_collection is None:
-            com_props.com_collection = mass_obj_col
-
-        return {'FINISHED'}
-
 class AddMassProps(bpy.types.Operator):
     """Add mass properties to selected objects"""
     bl_idname = "object.comprop_add"
@@ -319,22 +280,23 @@ class CalculateVolume(bpy.types.Operator):
         return {'FINISHED'} 
 
 class ToggleCOMUpdate(bpy.types.Operator):
-    """Adds/Removes center of mass update function from depsgraph update handler"""
+    """Adds/Removes center of mass render function from draw handler"""
     bl_idname = "object.toggle_com_update"
     bl_label = "Toggle COM Update"
 
+    _handle = None
+
     def execute(self, context):
-        if handler_key in driver_namespace:
-            if driver_namespace[handler_key] in depsgraph_update_post:
-                depsgraph_update_post.remove(driver_namespace[handler_key])
-                frame_change_post.remove(driver_namespace[handler_key])
-
-                del driver_namespace[handler_key]
+        if ToggleCOMUpdate._handle is None:
+            # add the draw handler
+            ToggleCOMUpdate._handle = bpy.types.SpaceView3D.draw_handler_add(render_com, (None, None), 'WINDOW', 'POST_VIEW')
         else:
-            depsgraph_update_post.append(set_com_obj)
-            frame_change_post.append(set_com_obj)
-            driver_namespace[handler_key] = set_com_obj
+            # remove draw handler
+            bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
+            ToggleCOMUpdate._handle = None
 
+        # Force re render of viewport
+        bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
         return {'FINISHED'}
 
 # Function Definitions
@@ -361,10 +323,10 @@ def get_volume(obj):
     return volume
 
 def get_com(coll):
-    center_of_mass = mathutils.Vector((0, 0, 0))
+    center_of_mass = Vector((0, 0, 0))
 
     total_mass = 0
-    weighted_sum = mathutils.Vector((0, 0, 0))
+    weighted_sum = Vector((0, 0, 0))
 
     for obj in coll.all_objects:
         if obj.get("active"):
@@ -378,23 +340,33 @@ def get_com(coll):
 
     return center_of_mass
 
-def set_com_obj(scene):
-    context = bpy.context
+def add_vector_to_array(vectors, add_vector):
+    new_vectors = []
+    for vector in vectors:
+        new_vector = vector + add_vector
+        new_vectors.append(new_vector)
+    return new_vectors
 
-    com_obj = context.scene.com_properties.get("com_object")
-    com_floor_obj = context.scene.com_properties.get("com_floor_object")
-    com_floor_lvl = context.scene.com_properties.get("com_floor_level")
-    com_col = context.scene.com_properties.get("com_collection")
+def render_com(self, context):
+    com_props = bpy.context.scene.com_properties
 
-    # Have to initialize properties
-    if com_floor_lvl is None:
-        com_floor_lvl = 0.0
+    com_pos = (Vector((0, 0, 0)))
 
-    if (com_obj is not None and com_col is not None):
-        com_obj.matrix_world.translation = get_com(com_col)
-        if (com_floor_obj is not None):
-            com_loc = com_obj.matrix_world.translation
-            com_floor_obj.matrix_world.translation = mathutils.Vector((com_loc.x, com_loc.y, com_floor_lvl))
+    if com_props.com_collection is not None:
+        com_pos = (get_com(com_props.com_collection))
+
+    # Get shapes
+    new_com_shape = add_vector_to_array(SHAPE_COM_MARKER, com_pos)
+    new_floor_com_shape = add_vector_to_array(SHAPE_FLOOR_MARKER, Vector((com_pos.x, com_pos.y, com_props.com_floor_level)))
+
+    # Render
+    shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
+    batch = batch_for_shader(shader, 'LINES', {"pos": new_com_shape + new_floor_com_shape})
+
+    shader.uniform_float("color", (1, 0, 1, 1))
+    bgl.glLineWidth(2)
+    gpu.state.active_shader = shader
+    batch.draw(shader)
 
 def get_total_mass(objects):
     total_mass = 0
@@ -413,7 +385,6 @@ classes = (
     ComProperties,
     CenterOfMassPanel,
     MassPropertiesPanel,
-    AddBasicCOMSetup,
     AddMassProps,
     RemoveMassProps,
     ToggleActiveProperty,
@@ -435,12 +406,7 @@ def unregister():
     
     del bpy.types.Scene.com_properties
 
-    if handler_key in driver_namespace:
-        if driver_namespace[handler_key] in depsgraph_update_post:
-            depsgraph_update_post.remove(driver_namespace[handler_key])
-            frame_change_post.remove(driver_namespace[handler_key])
-
-            del driver_namespace[handler_key]
+    bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
 
 if __name__ == "__main__":
     register()
