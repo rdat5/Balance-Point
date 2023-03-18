@@ -71,6 +71,7 @@ SHAPE_FLOOR_MARKER = [
 class ComProperties(bpy.types.PropertyGroup):
     com_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
     com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
+    com_scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
 
 ## Panels
 
@@ -93,6 +94,10 @@ class CenterOfMassPanel(bpy.types.Panel):
         # Floor Level
         row = layout.row(heading="Floor Level", align=True)
         row.prop(com_props, "com_floor_level", text="")
+
+        # CoM Scale
+        row = layout.row(align=True)
+        row.prop(com_props, "com_scale")
 
         # Update
         handler_fn_is_on = (ToggleCOMUpdate._handle is not None)
@@ -345,6 +350,12 @@ def add_vector_to_array(vectors, add_vector):
         new_vectors.append(new_vector)
     return new_vectors
 
+def multiply_vectors_by_scalar(vectors, scalar):
+    result = []
+    for vector in vectors:
+        result.append(vector * scalar)
+    return result
+
 def render_com(self, context):
     com_props = bpy.context.scene.com_properties
 
@@ -354,12 +365,14 @@ def render_com(self, context):
         com_pos = (get_com(com_props.com_collection))
 
     # Get shapes
-    new_com_shape = add_vector_to_array(SHAPE_COM_MARKER, com_pos)
-    new_floor_com_shape = add_vector_to_array(SHAPE_FLOOR_MARKER, Vector((com_pos.x, com_pos.y, com_props.com_floor_level)))
+    new_com_shape = multiply_vectors_by_scalar(SHAPE_COM_MARKER, com_props.com_scale)
+    new_floor_com_shape = multiply_vectors_by_scalar(SHAPE_FLOOR_MARKER, com_props.com_scale)
+    translated_com_shape = add_vector_to_array(new_com_shape, com_pos)
+    translated_floor_com_shape = add_vector_to_array(new_floor_com_shape, Vector((com_pos.x, com_pos.y, com_props.com_floor_level)))
 
     # Render
     shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
-    batch = batch_for_shader(shader, 'LINES', {"pos": new_com_shape + new_floor_com_shape})
+    batch = batch_for_shader(shader, 'LINES', {"pos": translated_com_shape + translated_floor_com_shape})
 
     shader.uniform_float("color", (1, 0, 1, 1))
     bgl.glLineWidth(2)
