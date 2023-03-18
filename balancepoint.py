@@ -29,7 +29,6 @@ import gpu
 import bmesh
 from mathutils import Vector
 from gpu_extras.batch import batch_for_shader
-from bpy.app import driver_namespace
 
 # Const
 
@@ -64,7 +63,6 @@ SHAPE_FLOOR_MARKER = [
     Vector((-0.353553, 0.353553, 0.0)),
     Vector((0.0, 0.5, 0.0)),
 ]
-
 
 # Classes
 
@@ -103,7 +101,7 @@ class CenterOfMassPanel(bpy.types.Panel):
 
         row = layout.row(heading="Update Center of Mass Location")
         row.scale_y = 2.0
-        row.operator("object.toggle_com_update", text=update_text, icon=update_icon)
+        row.operator("balance_point.toggle_com_update", text=update_text, icon=update_icon)
 
 class MassPropertiesPanel(bpy.types.Panel):
     """Mass properties panel"""
@@ -124,8 +122,8 @@ class MassPropertiesPanel(bpy.types.Panel):
         row.label(text="Mass properties to selected")
 
         row = col.row(align=True)
-        row.operator("object.comprop_add", text="Add", icon='ADD')
-        row.operator("object.comprop_del", text="Remove", icon='REMOVE')
+        row.operator("balance_point.massprop_add", text="Add", icon='ADD')
+        row.operator("balance_point.massprop_del", text="Remove", icon='REMOVE')
         
         # Volume
         col = layout.column(align=True)
@@ -134,7 +132,7 @@ class MassPropertiesPanel(bpy.types.Panel):
         row.label(text="Volume")
         
         row = col.row()
-        row.operator("object.calculate_volume", icon='CUBE')
+        row.operator("balance_point.calculate_volume", icon='CUBE')
         
         # Object Origin to Center of Mass
         col = layout.column(align=True)
@@ -152,9 +150,9 @@ class MassPropertiesPanel(bpy.types.Panel):
         row.label(text="Set active to selected")
         
         row = col.row(align=True)
-        row.operator("object.active_true", icon='RADIOBUT_ON')
-        row.operator("object.active_false", icon='RADIOBUT_OFF')
-        col.operator("object.toggle_active", icon='ARROW_LEFTRIGHT')
+        row.operator("balance_point.set_active_true", icon='RADIOBUT_ON')
+        row.operator("balance_point.set_active_false", icon='RADIOBUT_OFF')
+        col.operator("balance_point.toggle_active", icon='ARROW_LEFTRIGHT')
         
         # Selected mass objects
         col = layout.column(align=True)
@@ -193,7 +191,7 @@ class MassPropertiesPanel(bpy.types.Panel):
 
 class AddMassProps(bpy.types.Operator):
     """Add mass properties to selected objects"""
-    bl_idname = "object.comprop_add"
+    bl_idname = "balance_point.massprop_add"
     bl_label = "Add mass properties to selected"
     
     def execute(self, context):
@@ -211,7 +209,7 @@ class AddMassProps(bpy.types.Operator):
 
 class RemoveMassProps(bpy.types.Operator):
     """Remove mass properties from selected objects"""
-    bl_idname = "object.comprop_del"
+    bl_idname = "balance_point.massprop_del"
     bl_label = "Remove mass properties from selected"
     
     def execute(self, context):
@@ -229,7 +227,7 @@ class RemoveMassProps(bpy.types.Operator):
 
 class ToggleActiveProperty(bpy.types.Operator):
     """Toggles the active property"""
-    bl_idname = "object.toggle_active"
+    bl_idname = "balance_point.toggle_active"
     bl_label = "Toggle Active"
     
     def execute(self, context):
@@ -242,7 +240,7 @@ class ToggleActiveProperty(bpy.types.Operator):
 
 class SetActiveTrue(bpy.types.Operator):
     """Toggles the active property"""
-    bl_idname = "object.active_true"
+    bl_idname = "balance_point.set_active_true"
     bl_label = "Active"
     
     def execute(self, context):
@@ -255,7 +253,7 @@ class SetActiveTrue(bpy.types.Operator):
 
 class SetActiveFalse(bpy.types.Operator):
     """Toggles the active property"""
-    bl_idname = "object.active_false"
+    bl_idname = "balance_point.set_active_false"
     bl_label = "Inactive"
     
     def execute(self, context):
@@ -268,7 +266,7 @@ class SetActiveFalse(bpy.types.Operator):
 
 class CalculateVolume(bpy.types.Operator):
     """Calculate volume of selected"""
-    bl_idname = "object.calculate_volume"
+    bl_idname = "balance_point.calculate_volume"
     bl_label = "Calculate volume of selected"
     
     def execute(self, context):
@@ -281,7 +279,7 @@ class CalculateVolume(bpy.types.Operator):
 
 class ToggleCOMUpdate(bpy.types.Operator):
     """Adds/Removes center of mass render function from draw handler"""
-    bl_idname = "object.toggle_com_update"
+    bl_idname = "balance_point.toggle_com_update"
     bl_label = "Toggle COM Update"
 
     _handle = None
