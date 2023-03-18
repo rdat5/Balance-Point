@@ -72,6 +72,7 @@ class ComProperties(bpy.types.PropertyGroup):
     com_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
     com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
     com_scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
+    com_color : bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
 
 ## Panels
 
@@ -98,6 +99,10 @@ class CenterOfMassPanel(bpy.types.Panel):
         # CoM Scale
         row = layout.row(align=True)
         row.prop(com_props, "com_scale")
+
+        # CoM Color
+        row = layout.row(align=True)
+        row.prop(com_props, "com_color")
 
         # Update
         handler_fn_is_on = (ToggleCOMUpdate._handle is not None)
@@ -364,6 +369,8 @@ def render_com(self, context):
     if com_props.com_collection is not None:
         com_pos = (get_com(com_props.com_collection))
 
+    marker_color = (com_props.com_color.r, com_props.com_color.g, com_props.com_color.b, 0.0)
+
     # Get shapes
     new_com_shape = multiply_vectors_by_scalar(SHAPE_COM_MARKER, com_props.com_scale)
     new_floor_com_shape = multiply_vectors_by_scalar(SHAPE_FLOOR_MARKER, com_props.com_scale)
@@ -374,7 +381,7 @@ def render_com(self, context):
     shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
     batch = batch_for_shader(shader, 'LINES', {"pos": translated_com_shape + translated_floor_com_shape})
 
-    shader.uniform_float("color", (1, 0, 1, 1))
+    shader.uniform_float("color", marker_color)
     bgl.glLineWidth(2)
     gpu.state.active_shader = shader
     batch.draw(shader)
