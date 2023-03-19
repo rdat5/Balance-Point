@@ -71,6 +71,7 @@ SHAPE_FLOOR_MARKER = [
 class MassObjectGroup(bpy.types.PropertyGroup):
     mass_object_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
     com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
+    line_to_floor : bpy.props.BoolProperty(name="Draw Line to Floor", default=False)
 
 class ComProperties(bpy.types.PropertyGroup):
     com_scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
@@ -103,6 +104,7 @@ class CenterOfMassPanel(bpy.types.Panel):
             row = innerBox.row(align=True)
             row.prop(mass_group, "mass_object_collection", text="")
             row = innerBox.row(align=True)
+            row.prop(mass_group, "line_to_floor")
             row.prop(mass_group, "com_floor_level")
         row = box.row()
         row.operator("balance_point.massgroup_add", text="Add", icon="ADD")
@@ -418,6 +420,9 @@ def render_com(self, context):
     for group in bp_mass_groups:
         if group.mass_object_collection is not None:
             allShapes += get_transformed_com_shapes(com_props.com_scale, get_com(group.mass_object_collection), group.com_floor_level)
+            if group.line_to_floor:
+                group_com = get_com(group.mass_object_collection)
+                allShapes += [group_com, Vector((group_com.x, group_com.y, group.com_floor_level))]
 
     # Render
     shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
