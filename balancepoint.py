@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Balance Point",
     "author": "Ray Allen Datuin",
-    "version": (0, 9, 0),
+    "version": (1, 0, 0),
     "blender": (3, 4, 0),
     "location": "View3D > Tools > Balance Point",
     "description": "Visualizes the center of mass of collections of objects",
