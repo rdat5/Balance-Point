@@ -69,7 +69,7 @@ SHAPE_FLOOR_MARKER = [
 ## Properties
 
 class MassObjectGroup(bpy.types.PropertyGroup):
-    mass_object_collection : bpy.props.PointerProperty(name="Mass Object Collection 2", type=bpy.types.Collection)
+    mass_object_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
 
 class ComProperties(bpy.types.PropertyGroup):
     com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
@@ -92,9 +92,20 @@ class CenterOfMassPanel(bpy.types.Panel):
         com_props = context.scene.com_properties
         bp_mass_groups = context.scene.bp_mass_object_groups
 
-        # Collection
-        row = layout.row(heading="Mass Object Collection", align=True)
-        row.prop(bp_mass_groups[0], "mass_object_collection")
+        # Mass Object Groups
+        row = layout.row(align=True)
+        row.label(text="Mass Object Groups:")
+        box = layout.box()
+        for mass_group in bp_mass_groups:
+            innerBox = box.box()
+            row = innerBox.row(align=True)
+            row.label(text="Mass Object Collection")
+            row = innerBox.row(align=True)
+            row.prop(mass_group, "mass_object_collection", text="")
+        row = box.row()
+        row.operator("balance_point.massgroup_add", text="Add", icon="ADD")
+        if len(bp_mass_groups) > 1:
+            row.operator("balance_point.massgroup_remove", text="Remove", icon="REMOVE")
 
         # Floor Level
         row = layout.row(heading="Floor Level", align=True)
@@ -204,6 +215,25 @@ class MassPropertiesPanel(bpy.types.Panel):
             row.label(text="Total Mass of Selected: " + str(round(get_total_mass(selObj), 3)))
 
 ## Operators
+
+class AddMassObjectGroup(bpy.types.Operator):
+    """Adds a new Mass Object Group"""
+    bl_idname = "balance_point.massgroup_add"
+    bl_label = "Add new Mass Object Group"
+
+    def execute(self, context):
+        bpy.context.scene.bp_mass_object_groups.add()
+        return {'FINISHED'}
+
+class RemoveMassObjectGroup(bpy.types.Operator):
+    """Adds a new Mass Object Group"""
+    bl_idname = "balance_point.massgroup_remove"
+    bl_label = "Remove last Mass Object Group"
+
+    def execute(self, context):
+        if len(bpy.context.scene.bp_mass_object_groups) > 1:
+            bpy.context.scene.bp_mass_object_groups.remove(len(bpy.context.scene.bp_mass_object_groups) - 1)
+        return {'FINISHED'}
 
 class AddMassProps(bpy.types.Operator):
     """Add mass properties to selected objects"""
@@ -411,6 +441,8 @@ classes = (
     ComProperties,
     CenterOfMassPanel,
     MassPropertiesPanel,
+    AddMassObjectGroup,
+    RemoveMassObjectGroup,
     AddMassProps,
     RemoveMassProps,
     ToggleActiveProperty,
@@ -426,6 +458,7 @@ def register():
 
     bpy.types.Scene.com_properties = bpy.props.PointerProperty(type=ComProperties)
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
+    bpy.context.scene.bp_mass_object_groups.clear()
     bpy.context.scene.bp_mass_object_groups.add()
 
 def unregister():
