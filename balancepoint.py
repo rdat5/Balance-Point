@@ -476,6 +476,9 @@ def register():
     bpy.app.timers.register(initialize_bp_mass_groups, first_interval=0.1)
 
 def unregister():
+    if ToggleCOMUpdate._handle is not None:
+        bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
+
     for cls in classes:
         bpy.utils.unregister_class(cls)
     
