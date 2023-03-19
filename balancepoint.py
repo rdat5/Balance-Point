@@ -70,9 +70,9 @@ SHAPE_FLOOR_MARKER = [
 
 class MassObjectGroup(bpy.types.PropertyGroup):
     mass_object_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
+    com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
 
 class ComProperties(bpy.types.PropertyGroup):
-    com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
     com_scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
     com_color : bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     com_thickness : bpy.props.IntProperty(name="Com Marker Pixel Width", default=2, description="Thickness of CoM Marker", min=1, max=10)
@@ -102,14 +102,12 @@ class CenterOfMassPanel(bpy.types.Panel):
             row.label(text="Mass Object Collection")
             row = innerBox.row(align=True)
             row.prop(mass_group, "mass_object_collection", text="")
+            row = innerBox.row(align=True)
+            row.prop(mass_group, "com_floor_level")
         row = box.row()
         row.operator("balance_point.massgroup_add", text="Add", icon="ADD")
         if len(bp_mass_groups) > 1:
             row.operator("balance_point.massgroup_remove", text="Remove", icon="REMOVE")
-
-        # Floor Level
-        row = layout.row(heading="Floor Level", align=True)
-        row.prop(com_props, "com_floor_level", text="")
 
         # CoM Scale
         row = layout.row(align=True)
@@ -412,7 +410,7 @@ def render_com(self, context):
     new_com_shape = multiply_vectors_by_scalar(SHAPE_COM_MARKER, com_props.com_scale)
     new_floor_com_shape = multiply_vectors_by_scalar(SHAPE_FLOOR_MARKER, com_props.com_scale)
     translated_com_shape = add_vector_to_array(new_com_shape, com_pos)
-    translated_floor_com_shape = add_vector_to_array(new_floor_com_shape, Vector((com_pos.x, com_pos.y, com_props.com_floor_level)))
+    translated_floor_com_shape = add_vector_to_array(new_floor_com_shape, Vector((com_pos.x, com_pos.y, 0.0)))
 
     # Render
     shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
