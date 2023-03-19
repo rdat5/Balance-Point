@@ -17,10 +17,10 @@ bl_info = {
     "version": (0, 9, 0),
     "blender": (3, 4, 0),
     "location": "View3D > Tools > Balance Point",
-    "description": "Visualizes the center of mass of a collection of objects",
+    "description": "Visualizes the center of mass of collections of objects",
     "warning": "",
     "wiki_url": "",
-    "category": "Object",
+    "category": "3D View",
 }
 
 import bpy
