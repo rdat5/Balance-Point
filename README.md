@@ -2,8 +2,10 @@
 
 ## Description
 
+![Balancing Figure](/images/balance_point_intro.gif)
+
 Balance Point is an add-on for Blender made to make realistic character
-animations easier by visualizing the [center of
+animation easier by visualizing the [center of
 mass](https://en.wikipedia.org/wiki/Center_of_mass) of one or multiple object
 groups.
 
