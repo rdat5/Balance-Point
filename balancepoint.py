@@ -107,7 +107,8 @@ class CenterOfMassPanel(bpy.types.Panel):
             row.prop(mass_group, "line_to_floor")
             row.prop(mass_group, "com_floor_level")
         row = box.row()
-        row.operator("balance_point.massgroup_add", text="Add", icon="ADD")
+        add_bp_group_text = 'Add' if len(bp_mass_groups) > 1 else 'Add Mass Object Group'
+        row.operator("balance_point.massgroup_add", text=add_bp_group_text, icon="ADD")
         if len(bp_mass_groups) > 1:
             row.operator("balance_point.massgroup_remove", text="Remove", icon="REMOVE")
 
