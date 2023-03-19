@@ -445,6 +445,10 @@ def get_total_mass(objects):
     
     return total_mass
 
+def initialize_bp_mass_groups():
+    bpy.context.scene.bp_mass_object_groups.clear()
+    bpy.context.scene.bp_mass_object_groups.add()
+
 # Class Registration
 
 classes = (
@@ -469,8 +473,7 @@ def register():
 
     bpy.types.Scene.com_properties = bpy.props.PointerProperty(type=ComProperties)
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
-    bpy.context.scene.bp_mass_object_groups.clear()
-    bpy.context.scene.bp_mass_object_groups.add()
+    bpy.app.timers.register(initialize_bp_mass_groups, first_interval=0.1)
 
 def unregister():
     for cls in classes:
