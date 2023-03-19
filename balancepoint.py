@@ -382,39 +382,46 @@ def get_com(coll):
 
     return center_of_mass
 
-def add_vector_to_array(vectors, add_vector):
+def translate_indices(vectors, add_vector):
     new_vectors = []
     for vector in vectors:
         new_vector = vector + add_vector
         new_vectors.append(new_vector)
     return new_vectors
 
-def multiply_vectors_by_scalar(vectors, scalar):
+def scale_indices(vectors, scalar):
     result = []
     for vector in vectors:
         result.append(vector * scalar)
     return result
 
+def get_transformed_com_shapes(scalar, translate_vec, floor_level):
+    # Scale marker shapes
+    scaled_com_shape = scale_indices(SHAPE_COM_MARKER, scalar)
+    scaled_floor_com_shape = scale_indices(SHAPE_FLOOR_MARKER, scalar)
+
+    # Translate marker shapes
+    translated_com_shape = translate_indices(scaled_com_shape, translate_vec)
+    translated_floor_com_shape = translate_indices(scaled_floor_com_shape, Vector((translate_vec.x, translate_vec.y, floor_level)))
+
+    return translated_com_shape + translated_floor_com_shape
+
 def render_com(self, context):
+    # Properties
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
-    com_pos = (Vector((0, 0, 0)))
-
-    if bp_mass_groups[0].mass_object_collection is not None:
-        com_pos = (get_com(bp_mass_groups[0].mass_object_collection))
-
     marker_color = (com_props.com_color.r, com_props.com_color.g, com_props.com_color.b, 0.0)
 
-    # Get shapes
-    new_com_shape = multiply_vectors_by_scalar(SHAPE_COM_MARKER, com_props.com_scale)
-    new_floor_com_shape = multiply_vectors_by_scalar(SHAPE_FLOOR_MARKER, com_props.com_scale)
-    translated_com_shape = add_vector_to_array(new_com_shape, com_pos)
-    translated_floor_com_shape = add_vector_to_array(new_floor_com_shape, Vector((com_pos.x, com_pos.y, 0.0)))
+    # Get list of all shapes from all mass groups
+    allShapes = []
+    for group in bp_mass_groups:
+        if group.mass_object_collection is not None:
+            allShapes += get_transformed_com_shapes(com_props.com_scale, get_com(group.mass_object_collection), group.com_floor_level)
 
     # Render
     shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
-    batch = batch_for_shader(shader, 'LINES', {"pos": translated_com_shape + translated_floor_com_shape})
+    batch = batch_for_shader(shader, 'LINES', {"pos": allShapes})
 
     shader.uniform_float("color", marker_color)
     bgl.glLineWidth(com_props.com_thickness)
