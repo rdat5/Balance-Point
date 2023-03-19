@@ -482,7 +482,5 @@ def unregister():
     del bpy.types.Scene.com_properties
     del bpy.types.Scene.bp_mass_object_groups
 
-    bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
-
 if __name__ == "__main__":
     register()
