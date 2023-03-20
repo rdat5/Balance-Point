@@ -22,7 +22,7 @@ place in scripts > addons folder
 
 * Enable Balance Point in Blender
 
-* Add-on will be in View3D > Tools > Balance Point
+* Add-on will be in View3D > Sidebar > Balance Point
 
 ## Usage
 
