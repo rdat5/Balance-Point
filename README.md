@@ -28,3 +28,11 @@ place in scripts > addons folder
 
 For help on getting started and using Balance Point, check out the [Balance
 Point wiki](https://github.com/rdat5/Balance-Point/wiki)
+
+## Authors and acknowledgment
+
+Inspired by A. Shapiro, S.H. Lee, Practical Character Physics For Animators,
+IEEE Computer Graphics and Applications, July/August 2011
+([pdf](https://www.arishapiro.com/Practical_Character_Physics_Shapiro_Lee.pdf),
+[video](https://www.arishapiro.com/practical_character_physics.mov),
+[bibtex](https://www.arishapiro.com/bibtex/practicalcharacterphysics.bib)) 
