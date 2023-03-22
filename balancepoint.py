@@ -29,8 +29,13 @@ import gpu
 import bmesh
 from mathutils import Vector
 from gpu_extras.batch import batch_for_shader
+from bpy.app.handlers import depsgraph_update_post
+from bpy.app.handlers import frame_change_post
+from bpy.app import driver_namespace
 
 # Const
+
+HANDLER_KEY = "BP_UPDATE_FN"
 
 SHAPE_COM_MARKER = [
     Vector((-1.0, 0.0, 0.0)),
@@ -76,8 +81,10 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     mass_object_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
     com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
     line_to_floor : bpy.props.BoolProperty(name="Draw Line to Floor", default=False)
+    com_location : bpy.props.FloatVectorProperty(name="Location of Center of Mass")
 
 class ComProperties(bpy.types.PropertyGroup):
+    com_tracking_on : bpy.props.BoolProperty(name="CoM Tracking Enabled", default=True)
     com_scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
     com_color : bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     com_thickness : bpy.props.IntProperty(name="Com Marker Pixel Width", default=2, description="Thickness of CoM Marker", min=1, max=10)
@@ -97,6 +104,9 @@ class CenterOfMassPanel(bpy.types.Panel):
         com_props = context.scene.com_properties
         bp_mass_groups = context.scene.bp_mass_object_groups
 
+        # Com Tracking On/Off
+        row = layout.row(align=True)
+        row.prop(com_props, "com_tracking_on")
         # Mass Object Groups
         row = layout.row(align=True)
         row.label(text="Mass Object Groups:")
@@ -110,6 +120,11 @@ class CenterOfMassPanel(bpy.types.Panel):
             row = innerBox.row(align=True)
             row.prop(mass_group, "line_to_floor")
             row.prop(mass_group, "com_floor_level")
+            if mass_group.mass_object_collection is not None and com_props.com_tracking_on:
+                cl = mass_group.com_location
+                row = innerBox.row(align=True)
+                row.label(text="CoM Loc: (%.2f, %.2f, %.2f)" % (cl[0], cl[1], cl[2]))
+
         row = box.row()
         add_bp_group_text = 'Add' if len(bp_mass_groups) > 1 else 'Add Mass Object Group'
         row.operator("balance_point.massgroup_add", text=add_bp_group_text, icon="ADD")
@@ -451,6 +466,16 @@ def initialize_bp_mass_groups():
     bpy.context.scene.bp_mass_object_groups.clear()
     bpy.context.scene.bp_mass_object_groups.add()
 
+def update_mass_group_com(scene):
+    com_props = bpy.context.scene.com_properties
+    bp_mass_groups = bpy.context.scene.bp_mass_object_groups
+
+    if com_props.com_tracking_on:
+        for mass_group in bp_mass_groups:
+            if mass_group.mass_object_collection is not None:
+                mgc = get_com(mass_group.mass_object_collection)
+                mass_group.com_location = [mgc.x, mgc.y, mgc.z]
+
 # Class Registration
 
 classes = (
@@ -477,6 +502,12 @@ def register():
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
     bpy.app.timers.register(initialize_bp_mass_groups, first_interval=0.1)
 
+    # Add depsgraph, frame_change handler callbacks
+    if HANDLER_KEY not in driver_namespace:
+        depsgraph_update_post.append(update_mass_group_com)
+        frame_change_post.append(update_mass_group_com)
+        driver_namespace[HANDLER_KEY] = update_mass_group_com
+
 def unregister():
     if ToggleCOMUpdate._handle is not None:
         bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
@@ -486,6 +517,12 @@ def unregister():
     
     del bpy.types.Scene.com_properties
     del bpy.types.Scene.bp_mass_object_groups
+
+    # Remove depsgraph, frame_change handler callbacks
+    if HANDLER_KEY in driver_namespace:
+        if driver_namespace[HANDLER_KEY] in depsgraph_update_post:
+            depsgraph_update_post.remove(driver_namespace[HANDLER_KEY])
+            frame_change_post.remove(driver_namespace[HANDLER_KEY])
 
 if __name__ == "__main__":
     register()
