@@ -64,6 +64,10 @@ SHAPE_FLOOR_MARKER = [
     Vector((0.0, 0.5, 0.0)),
 ]
 
+# Shader setup
+
+shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
+
 # Classes
 
 ## Properties
@@ -426,12 +430,10 @@ def render_com(self, context):
                 allShapes += [group_com, Vector((group_com.x, group_com.y, group.com_floor_level))]
 
     # Render
-    shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
     batch = batch_for_shader(shader, 'LINES', {"pos": allShapes})
 
     shader.uniform_float("color", marker_color)
     bgl.glLineWidth(com_props.com_thickness)
-    gpu.state.active_shader = shader
     batch.draw(shader)
 
 def get_total_mass(objects):
