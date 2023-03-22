@@ -11,14 +11,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from bpy.app import driver_namespace
-from bpy.app.handlers import frame_change_post
-from bpy.app.handlers import depsgraph_update_post
-from gpu_extras.batch import batch_for_shader
-from mathutils import Vector
-import bmesh
-import gpu
-import bpy
 bl_info = {
     "name": "Balance Point",
     "author": "Ray Allen Datuin",
@@ -32,41 +24,26 @@ bl_info = {
 }
 
 
+from bpy.app import driver_namespace
+from bpy.app.handlers import frame_change_post
+from bpy.app.handlers import depsgraph_update_post
+from gpu_extras.batch import batch_for_shader
+from mathutils import Vector
+import bmesh
+import gpu
+import bpy
+
+from .shapes import SHAPE_COM_MARKER, SHAPE_FLOOR_MARKER
+
 # Const
 
 HANDLER_KEY = "BP_UPDATE_FN"
-
-SHAPE_COM_MARKER = [
-    (-1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, -1.0, 0.0),
-    (0.0, 1.0, 0.0), (0.0, 0.0, -1.0), (0.0, 0.0, 1.0)
-]
-
-SHAPE_FLOOR_MARKER = [
-    (-1.0, 0.0, 0.0), (1.0, 0.0, 0.0),
-    (0.0, -1.0, 0.0), (0.0, 1.0, 0.0),
-    (0.5, 0.0, 0), (0.4619, 0.1913, 0),
-    (0.4619, 0.1913, 0), (0.3536, 0.3536, 0),
-    (0.3536, 0.3536, 0), (0.1913, 0.4619, 0),
-    (0.1913, 0.4619, 0), (0.0, 0.5, 0),
-    (0.0, 0.5, 0), (-0.1913, 0.4619, 0),
-    (-0.1913, 0.4619, 0), (-0.3536, 0.3536, 0),
-    (-0.3536, 0.3536, 0), (-0.4619, 0.1913, 0),
-    (-0.4619, 0.1913, 0), (-0.5, 0.0, 0),
-    (-0.5, 0.0, 0), (-0.4619, -0.1913, 0),
-    (-0.4619, -0.1913, 0), (-0.3536, -0.3536, 0),
-    (-0.3536, -0.3536, 0), (-0.1913, -0.4619, 0),
-    (-0.1913, -0.4619, 0), (-0.0, -0.5, 0),
-    (-0.0, -0.5, 0), (0.1913, -0.4619, 0),
-    (0.1913, -0.4619, 0), (0.3536, -0.3536, 0),
-    (0.3536, -0.3536, 0), (0.4619, -0.1913, 0),
-    (0.4619, -0.1913, 0), (0.5, 0.0, 0)]
 
 # Shader setup
 
 shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
 
 # Classes
-
 
 class MassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
