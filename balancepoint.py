@@ -24,7 +24,6 @@ bl_info = {
 }
 
 import bpy
-import bgl
 import gpu
 import bmesh
 from mathutils import Vector
@@ -38,36 +37,29 @@ from bpy.app import driver_namespace
 HANDLER_KEY = "BP_UPDATE_FN"
 
 SHAPE_COM_MARKER = [
-    Vector((-1.0, 0.0, 0.0)),
-    Vector((1.0, 0.0, 0.0)),
-    Vector((0.0, -1.0, 0.0)),
-    Vector((0.0, 1.0, 0.0)),
-    Vector((0.0, 0.0, -1.0)),
-    Vector((0.0, 0.0, 1.0))
+    (-1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (0.0, -1.0, 0.0),
+    (0.0, 1.0, 0.0), (0.0, 0.0, -1.0), (0.0, 0.0, 1.0)
 ]
 
 SHAPE_FLOOR_MARKER = [
-    Vector((-1.0, 0.0, 0.0)),
-    Vector((1.0, 0.0, 0.0)),
-    Vector((0.0, -1.0, 0.0)),
-    Vector((0.0, 1.0, 0.0)),
-    Vector((0.0, 0.5, 0.0)),
-    Vector((0.353553, 0.353553, 0.0)),
-    Vector((0.353553, 0.353553, 0.0)),
-    Vector((0.5, 0.0, 0.0)),
-    Vector((0.5, 0.0, 0.0)),
-    Vector((0.353553, -0.353553, 0.0)),
-    Vector((0.353553, -0.353553, 0.0)),
-    Vector((0.0, -0.5, 0.0)),
-    Vector((0.0, -0.5, 0.0)),
-    Vector((-0.353553, -0.353553, 0.0)),
-    Vector((-0.353553, -0.353553, 0.0)),
-    Vector((-0.5, 0.0, 0.0)),
-    Vector((-0.5, 0.0, 0.0)),
-    Vector((-0.353553, 0.353553, 0.0)),
-    Vector((-0.353553, 0.353553, 0.0)),
-    Vector((0.0, 0.5, 0.0)),
-]
+    (-1.0, 0.0, 0.0), (1.0, 0.0, 0.0),
+    (0.0, -1.0, 0.0), (0.0, 1.0, 0.0),
+    (0.5, 0.0, 0), (0.4619, 0.1913, 0),
+    (0.4619, 0.1913, 0), (0.3536, 0.3536, 0), 
+    (0.3536, 0.3536, 0), (0.1913, 0.4619, 0), 
+    (0.1913, 0.4619, 0), (0.0, 0.5, 0), 
+    (0.0, 0.5, 0), (-0.1913, 0.4619, 0), 
+    (-0.1913, 0.4619, 0), (-0.3536, 0.3536, 0), 
+    (-0.3536, 0.3536, 0), (-0.4619, 0.1913, 0), 
+    (-0.4619, 0.1913, 0), (-0.5, 0.0, 0), 
+    (-0.5, 0.0, 0), (-0.4619, -0.1913, 0), 
+    (-0.4619, -0.1913, 0), (-0.3536, -0.3536, 0), 
+    (-0.3536, -0.3536, 0), (-0.1913, -0.4619, 0), 
+    (-0.1913, -0.4619, 0), (-0.0, -0.5, 0), 
+    (-0.0, -0.5, 0), (0.1913, -0.4619, 0), 
+    (0.1913, -0.4619, 0), (0.3536, -0.3536, 0), 
+    (0.3536, -0.3536, 0), (0.4619, -0.1913, 0),
+    (0.4619, -0.1913, 0), (0.5, 0.0, 0)]
 
 # Shader setup
 
@@ -78,16 +70,16 @@ shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
 ## Properties
 
 class MassObjectGroup(bpy.types.PropertyGroup):
+    visible : bpy.props.BoolProperty(name="Visible", default=True)
     mass_object_collection : bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
     com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
     line_to_floor : bpy.props.BoolProperty(name="Draw Line to Floor", default=False)
     com_location : bpy.props.FloatVectorProperty(name="Location of Center of Mass")
+    color : bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
+    scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
 
 class ComProperties(bpy.types.PropertyGroup):
     com_tracking_on : bpy.props.BoolProperty(name="CoM Tracking Enabled", default=True)
-    com_scale : bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05, description="Size of the CoM Markers (in meters)", min=0)
-    com_color : bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
-    com_thickness : bpy.props.IntProperty(name="Com Marker Pixel Width", default=2, description="Thickness of CoM Marker", min=1, max=10)
 
 ## Panels
 
@@ -115,14 +107,19 @@ class CenterOfMassPanel(bpy.types.Panel):
             innerBox = box.box()
             row = innerBox.row(align=True)
             row.label(text="Mass Object Collection")
+            row.prop(mass_group, "visible")
             row = innerBox.row(align=True)
             row.prop(mass_group, "mass_object_collection", text="")
+            row.prop(mass_group, "color", text="")
+            row = innerBox.row(align=True)
+            row.prop(mass_group, "scale")
             row = innerBox.row(align=True)
             row.prop(mass_group, "line_to_floor")
             row.prop(mass_group, "com_floor_level")
             if mass_group.mass_object_collection is not None and com_props.com_tracking_on:
                 cl = mass_group.com_location
                 row = innerBox.row(align=True)
+                cl = mass_group.com_location
                 row.label(text="CoM Loc: (%.2f, %.2f, %.2f)" % (cl[0], cl[1], cl[2]))
 
         row = box.row()
@@ -130,16 +127,6 @@ class CenterOfMassPanel(bpy.types.Panel):
         row.operator("balance_point.massgroup_add", text=add_bp_group_text, icon="ADD")
         if len(bp_mass_groups) > 1:
             row.operator("balance_point.massgroup_remove", text="Remove", icon="REMOVE")
-
-        # CoM Scale
-        row = layout.row(align=True)
-        row.prop(com_props, "com_scale")
-        row = layout.row(align=True)
-        row.prop(com_props, "com_thickness")
-
-        # CoM Color
-        row = layout.row(align=True)
-        row.prop(com_props, "com_color")
 
         # Update
         handler_fn_is_on = (ToggleCOMUpdate._handle is not None)
@@ -353,7 +340,7 @@ class ToggleCOMUpdate(bpy.types.Operator):
     def execute(self, context):
         if ToggleCOMUpdate._handle is None:
             # add the draw handler
-            ToggleCOMUpdate._handle = bpy.types.SpaceView3D.draw_handler_add(render_com, (None, None), 'WINDOW', 'POST_VIEW')
+            ToggleCOMUpdate._handle = bpy.types.SpaceView3D.draw_handler_add(draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
         else:
             # remove draw handler
             bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
@@ -404,52 +391,38 @@ def get_com(coll):
 
     return center_of_mass
 
-def translate_indices(vectors, add_vector):
-    new_vectors = []
-    for vector in vectors:
-        new_vector = vector + add_vector
-        new_vectors.append(new_vector)
-    return new_vectors
+def transform_indices(vertices, scale, translate_vector):
+    new_vertices = []
+    for v in vertices:
+        new_vertices.append((
+            (v[0] * scale) + translate_vector.x,
+            (v[1] * scale) + translate_vector.y,
+            (v[2] * scale) + translate_vector.z
+            ))
+    return new_vertices
 
-def scale_indices(vectors, scalar):
-    result = []
-    for vector in vectors:
-        result.append(vector * scalar)
-    return result
+def get_final_com_shape(group):
+    group_com_loc = Vector((group.com_location[0], group.com_location[1], group.com_location[2]))
+    group_com_floor_loc = Vector((group_com_loc.x, group_com_loc.y, group.com_floor_level))
+    com_shape = transform_indices(SHAPE_COM_MARKER, group.scale, group_com_loc)
+    com_floor_shape = transform_indices(SHAPE_FLOOR_MARKER, group.scale, group_com_floor_loc)
+    final_shape = com_shape + com_floor_shape
+    if group.line_to_floor:
+        final_shape += (group_com_loc.to_tuple(), group_com_floor_loc.to_tuple())
+    return final_shape
 
-def get_transformed_com_shapes(scalar, translate_vec, floor_level):
-    # Scale marker shapes
-    scaled_com_shape = scale_indices(SHAPE_COM_MARKER, scalar)
-    scaled_floor_com_shape = scale_indices(SHAPE_FLOOR_MARKER, scalar)
-
-    # Translate marker shapes
-    translated_com_shape = translate_indices(scaled_com_shape, translate_vec)
-    translated_floor_com_shape = translate_indices(scaled_floor_com_shape, Vector((translate_vec.x, translate_vec.y, floor_level)))
-
-    return translated_com_shape + translated_floor_com_shape
-
-def render_com(self, context):
-    # Properties
+def draw_bp(self, context):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
-    marker_color = (com_props.com_color.r, com_props.com_color.g, com_props.com_color.b, 0.0)
-
-    # Get list of all shapes from all mass groups
-    allShapes = []
+    # Go through each collection, create a batch, render it
     for group in bp_mass_groups:
-        if group.mass_object_collection is not None:
-            allShapes += get_transformed_com_shapes(com_props.com_scale, get_com(group.mass_object_collection), group.com_floor_level)
-            if group.line_to_floor:
-                group_com = get_com(group.mass_object_collection)
-                allShapes += [group_com, Vector((group_com.x, group_com.y, group.com_floor_level))]
-
-    # Render
-    batch = batch_for_shader(shader, 'LINES', {"pos": allShapes})
-
-    shader.uniform_float("color", marker_color)
-    bgl.glLineWidth(com_props.com_thickness)
-    batch.draw(shader)
+        if group.visible:
+            # Get color
+            shader.uniform_float("color", (group.color.r, group.color.g, group.color.b, 1.0))
+            # Get shape vertices
+            batch = batch_for_shader(shader, 'LINES', {"pos": get_final_com_shape(group)})
+            batch.draw(shader)
 
 def get_total_mass(objects):
     total_mass = 0
