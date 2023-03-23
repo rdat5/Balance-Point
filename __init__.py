@@ -24,6 +24,7 @@ bl_info = {
 }
 
 
+from bpy.app.handlers import persistent
 from bpy.app import driver_namespace
 from bpy.app.handlers import frame_change_post
 from bpy.app.handlers import depsgraph_update_post
@@ -424,7 +425,7 @@ def initialize_bp_mass_groups():
     bpy.context.scene.bp_mass_object_groups.clear()
     bpy.context.scene.bp_mass_object_groups.add()
 
-
+@persistent
 def update_mass_group_com(scene):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
