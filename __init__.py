@@ -62,10 +62,10 @@ class ComProperties(bpy.types.PropertyGroup):
     com_drawing_on: bpy.props.BoolProperty(name="CoM Drawing Enabled", default=False)
 
 
-class CenterOfMassPanel(bpy.types.Panel):
-    """Center of mass settings"""
-    bl_label = "Center of Mass Settings"
-    bl_idname = "OBJECT_PT_center_of_mass_panel"
+class BalancePointPanel(bpy.types.Panel):
+    """Balance Point settings"""
+    bl_label = "Balance Point Settings"
+    bl_idname = "OBJECT_PT_balance_point_settings_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Balance Point"
@@ -441,7 +441,7 @@ def update_mass_group_com(scene):
 classes = (
     MassObjectGroup,
     ComProperties,
-    CenterOfMassPanel,
+    BalancePointPanel,
     MassPropertiesPanel,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
