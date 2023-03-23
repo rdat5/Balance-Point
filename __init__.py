@@ -30,13 +30,14 @@ from bpy.app.handlers import frame_change_post
 from bpy.app.handlers import depsgraph_update_post
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-import bmesh
 import gpu
 import bpy
 
 from .shapes import *
 from .props import *
 from .ui import BalancePointPanel, MassPropertiesPanel
+from .mass_ops import AddMassObjectGroup, RemoveMassObjectGroup, AddMassProps, RemoveMassProps, ToggleActiveProperty, ToggleActiveProperty, SetActiveTrue, SetActiveFalse, CalculateVolume
+from .bp_ops import ToggleDrawing
 
 # Const
 
@@ -47,157 +48,6 @@ HANDLER_KEY = "BP_UPDATE_FN"
 shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
 
 # Classes
-
-
-class AddMassObjectGroup(bpy.types.Operator):
-    """Adds a new Mass Object Group"""
-    bl_idname = "balance_point.massgroup_add"
-    bl_label = "Add new Mass Object Group"
-
-    def execute(self, context):
-        bpy.context.scene.bp_mass_object_groups.add()
-        return {'FINISHED'}
-
-
-class RemoveMassObjectGroup(bpy.types.Operator):
-    """Adds a new Mass Object Group"""
-    bl_idname = "balance_point.massgroup_remove"
-    bl_label = "Remove last Mass Object Group"
-
-    def execute(self, context):
-        if len(bpy.context.scene.bp_mass_object_groups) > 1:
-            bpy.context.scene.bp_mass_object_groups.remove(len(bpy.context.scene.bp_mass_object_groups) - 1)
-        return {'FINISHED'}
-
-
-class AddMassProps(bpy.types.Operator):
-    """Add mass properties to selected objects"""
-    bl_idname = "balance_point.massprop_add"
-    bl_label = "Add mass properties to selected"
-
-    def execute(self, context):
-        sel_obj = context.selected_objects
-
-        for obj in sel_obj:
-            if obj.type == 'MESH':
-                if obj.get('active') is None:
-                    obj["active"] = True
-                if obj.get('density') is None:
-                    obj["density"] = 1.0
-                if obj.get('volume') is None:
-                    obj["volume"] = 1.0
-        return {'FINISHED'}
-
-
-class RemoveMassProps(bpy.types.Operator):
-    """Remove mass properties from selected objects"""
-    bl_idname = "balance_point.massprop_del"
-    bl_label = "Remove mass properties from selected"
-
-    def execute(self, context):
-        sel_obj = context.selected_objects
-
-        for obj in sel_obj:
-            if obj.type == 'MESH':
-                if obj.get('active') is not None:
-                    del obj["active"]
-                if obj.get('density') is not None:
-                    del obj["density"]
-                if obj.get('volume') is not None:
-                    del obj["volume"]
-        return {'FINISHED'}
-
-
-class ToggleActiveProperty(bpy.types.Operator):
-    """Toggles the active property"""
-    bl_idname = "balance_point.toggle_active"
-    bl_label = "Toggle Active"
-
-    def execute(self, context):
-        sel_obj = context.selected_objects
-
-        for obj in sel_obj:
-            if obj.get('active') is not None:
-                set_active(obj, (not obj['active']))
-        return {'FINISHED'}
-
-
-class SetActiveTrue(bpy.types.Operator):
-    """Toggles the active property"""
-    bl_idname = "balance_point.set_active_true"
-    bl_label = "Active"
-
-    def execute(self, context):
-        sel_obj = context.selected_objects
-
-        for obj in sel_obj:
-            if obj.get('active') is not None:
-                set_active(obj, True)
-        return {'FINISHED'}
-
-
-class SetActiveFalse(bpy.types.Operator):
-    """Toggles the active property"""
-    bl_idname = "balance_point.set_active_false"
-    bl_label = "Inactive"
-
-    def execute(self, context):
-        sel_obj = context.selected_objects
-
-        for obj in sel_obj:
-            if obj.get('active') is not None:
-                set_active(obj, False)
-        return {'FINISHED'}
-
-
-class CalculateVolume(bpy.types.Operator):
-    """Calculate volume of selected"""
-    bl_idname = "balance_point.calculate_volume"
-    bl_label = "Calculate volume of selected"
-
-    def execute(self, context):
-        sel_obj = context.selected_objects
-
-        for obj in sel_obj:
-            if obj.get('volume') is not None and obj.type == 'MESH':
-                obj['volume'] = get_volume(obj)
-        return {'FINISHED'}
-
-
-class ToggleDrawing(bpy.types.Operator):
-    """Adds/Removes center of mass render function from draw handler"""
-    bl_idname = "balance_point.toggle_drawing"
-    bl_label = "Toggle Drawing"
-
-    def execute(self, context):
-        com_props = context.scene.com_properties
-
-        com_props.com_drawing_on = not com_props.com_drawing_on
-        bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
-        return {'FINISHED'}
-
-
-def set_active(obj, act):
-    obj['active'] = act
-    if act == True:
-        obj.display_type = 'SOLID'
-    elif act == False:
-        obj.display_type = 'WIRE'
-
-
-def get_volume(obj):
-    volume = 0.0
-
-    depsgraph = bpy.context.evaluated_depsgraph_get()
-    obj_eval = obj.evaluated_get(depsgraph)
-    me = obj_eval.to_mesh()
-    bm = bmesh.new()
-    bm.from_mesh(me)
-    obj_eval.to_mesh_clear()
-    volume = bm.calc_volume()
-    bm.free()
-
-    return volume
 
 
 def get_com(coll):
