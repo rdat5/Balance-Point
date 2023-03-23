@@ -11,6 +11,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from .draw import draw_bp
+from .bp_ops import ToggleDrawing
+from .mass_ops import (AddMassObjectGroup, RemoveMassObjectGroup, AddMassProps, RemoveMassProps,
+                       ToggleActiveProperty, ToggleActiveProperty, SetActiveTrue, SetActiveFalse, CalculateVolume)
+from .ui import BalancePointPanel, MassPropertiesPanel
+from .props import *
+import bpy
+from mathutils import Vector
+from bpy.app.handlers import depsgraph_update_post
+from bpy.app.handlers import frame_change_post
+from bpy.app import driver_namespace
+from bpy.app.handlers import persistent
 bl_info = {
     "name": "Balance Point",
     "author": "Ray Allen Datuin",
@@ -24,26 +36,7 @@ bl_info = {
 }
 
 
-from bpy.app.handlers import persistent
-from bpy.app import driver_namespace
-from bpy.app.handlers import frame_change_post
-from bpy.app.handlers import depsgraph_update_post
-from mathutils import Vector
-import bpy
-
-from .props import *
-from .ui import BalancePointPanel, MassPropertiesPanel
-from .mass_ops import AddMassObjectGroup, RemoveMassObjectGroup, AddMassProps, RemoveMassProps, ToggleActiveProperty, ToggleActiveProperty, SetActiveTrue, SetActiveFalse, CalculateVolume
-from .bp_ops import ToggleDrawing
-from .draw import draw_bp
-
-# Const
-
 HANDLER_KEY = "BP_UPDATE_FN"
-
-# Shader setup
-
-# Classes
 
 
 def get_com(coll):
@@ -65,10 +58,6 @@ def get_com(coll):
     return center_of_mass
 
 
-def initialize_bp_mass_groups():
-    bpy.context.scene.bp_mass_object_groups.clear()
-    bpy.context.scene.bp_mass_object_groups.add()
-
 @persistent
 def update_mass_group_com(scene):
     com_props = bpy.context.scene.com_properties
@@ -79,6 +68,11 @@ def update_mass_group_com(scene):
             if mass_group.mass_object_collection is not None:
                 mgc = get_com(mass_group.mass_object_collection)
                 mass_group.com_location = [mgc.x, mgc.y, mgc.z]
+
+
+def initialize_bp_mass_groups():
+    bpy.context.scene.bp_mass_object_groups.clear()
+    bpy.context.scene.bp_mass_object_groups.add()
 
 # Class Registration
 
@@ -115,7 +109,8 @@ def register():
         driver_namespace[HANDLER_KEY] = update_mass_group_com
 
     bpy.types.SpaceView3D.draw_handler_add(
-                draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
+        draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
+
 
 def unregister():
     for cls in classes:
