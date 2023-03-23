@@ -19,7 +19,7 @@ bl_info = {
     "location": "View3D > Sidebar > Balance Point",
     "description": "Visualizes the center of mass of collections of objects",
     "warning": "",
-    "wiki_url": "",
+    "doc_url": "https://github.com/rdat5/balance-point/wiki",
     "category": "3D View",
 }
 
