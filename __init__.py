@@ -59,6 +59,7 @@ class MassObjectGroup(bpy.types.PropertyGroup):
 
 class ComProperties(bpy.types.PropertyGroup):
     com_tracking_on: bpy.props.BoolProperty(name="CoM Tracking Enabled", default=True)
+    com_drawing_on: bpy.props.BoolProperty(name="CoM Drawing Enabled", default=False)
 
 
 class CenterOfMassPanel(bpy.types.Panel):
@@ -107,13 +108,12 @@ class CenterOfMassPanel(bpy.types.Panel):
             row.operator("balance_point.massgroup_remove", text="Remove", icon="REMOVE")
 
         # Update
-        handler_fn_is_on = (ToggleCOMUpdate._handle is not None)
-        update_icon = 'PAUSE' if handler_fn_is_on else 'PLAY'
-        update_text = 'Update Off' if handler_fn_is_on else 'Update On'
+        update_icon = 'PAUSE' if com_props.com_drawing_on else 'PLAY'
+        update_text = 'Hide Markers' if com_props.com_drawing_on else 'Show Markers'
 
-        row = layout.row(heading="Update Center of Mass Location")
+        row = layout.row(align=True)
         row.scale_y = 2.0
-        row.operator("balance_point.toggle_com_update", text=update_text, icon=update_icon)
+        row.operator("balance_point.toggle_drawing", text=update_text, icon=update_icon)
 
 
 class MassPropertiesPanel(bpy.types.Panel):
@@ -317,24 +317,15 @@ class CalculateVolume(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class ToggleCOMUpdate(bpy.types.Operator):
+class ToggleDrawing(bpy.types.Operator):
     """Adds/Removes center of mass render function from draw handler"""
-    bl_idname = "balance_point.toggle_com_update"
-    bl_label = "Toggle COM Update"
-
-    _handle = None
+    bl_idname = "balance_point.toggle_drawing"
+    bl_label = "Toggle Drawing"
 
     def execute(self, context):
-        if ToggleCOMUpdate._handle is None:
-            # add the draw handler
-            ToggleCOMUpdate._handle = bpy.types.SpaceView3D.draw_handler_add(
-                draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
-        else:
-            # remove draw handler
-            bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
-            ToggleCOMUpdate._handle = None
+        com_props = context.scene.com_properties
 
-        # Force re render of viewport
+        com_props.com_drawing_on = not com_props.com_drawing_on
         bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
         return {'FINISHED'}
 
@@ -404,16 +395,17 @@ def get_final_com_shape(group):
 
 
 def draw_bp(self, context):
+    com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
-
     # Go through each collection, create a batch, render it
-    for group in bp_mass_groups:
-        if group.visible:
-            # Get color
-            shader.uniform_float("color", (group.color.r, group.color.g, group.color.b, 1.0))
-            # Get shape vertices
-            batch = batch_for_shader(shader, 'LINES', {"pos": get_final_com_shape(group)})
-            batch.draw(shader)
+    if com_props.com_drawing_on:
+        for group in bp_mass_groups:
+            if group.visible:
+                # Get color
+                shader.uniform_float("color", (group.color.r, group.color.g, group.color.b, 1.0))
+                # Get shape vertices
+                batch = batch_for_shader(shader, 'LINES', {"pos": get_final_com_shape(group)})
+                batch.draw(shader)
 
 
 def get_total_mass(objects):
@@ -459,7 +451,7 @@ classes = (
     SetActiveTrue,
     SetActiveFalse,
     CalculateVolume,
-    ToggleCOMUpdate
+    ToggleDrawing
 )
 
 
@@ -477,11 +469,10 @@ def register():
         frame_change_post.append(update_mass_group_com)
         driver_namespace[HANDLER_KEY] = update_mass_group_com
 
+    bpy.types.SpaceView3D.draw_handler_add(
+                draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
 
 def unregister():
-    if ToggleCOMUpdate._handle is not None:
-        bpy.types.SpaceView3D.draw_handler_remove(ToggleCOMUpdate._handle, 'WINDOW')
-
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
