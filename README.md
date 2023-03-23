@@ -17,8 +17,7 @@ groups.
 
 ### Installing
 
-* Install balancepoint.py through Blender Preferences > Add-ons > Install, or
-place in scripts > addons folder
+* Install through Blender Preferences > Add-ons > Install
 
 * Enable Balance Point in Blender
 
