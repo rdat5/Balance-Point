@@ -134,10 +134,10 @@ class MassPropertiesPanel(bpy.types.Panel):
                 col2 = split.column(align=True)
                 col2.prop(obj, '["density"]')
                 col2.prop(obj, '["volume"]')
-                col2.label(text="Mass: " + str(obj_mass))
+                col2.label(text="Mass: " + str(obj_mass) + " kg")
         if len(sel_obj) > 0:
             row = layout.row()
-            row.label(text="Total Mass of Selected: " + str(round(get_total_mass(sel_obj), 3)))
+            row.label(text="Total Mass of Selected: " + str(round(get_total_mass(sel_obj), 3)) + " kg")
 
 
 def get_total_mass(objects):

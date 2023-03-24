@@ -112,7 +112,7 @@ class CalculateVolume(bpy.types.Operator):
 
         for obj in sel_obj:
             if obj.get('volume') is not None and obj.type == 'MESH':
-                obj['volume'] = get_volume(obj)
+                obj['volume'] = get_volume(obj) * 1000
         return {'FINISHED'}
 
 
