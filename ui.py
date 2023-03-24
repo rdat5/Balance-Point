@@ -1,57 +1,74 @@
 import bpy
 
 class BalancePointPanel(bpy.types.Panel):
-    """Balance Point settings"""
-    bl_label = "Balance Point Settings"
-    bl_idname = "OBJECT_PT_balance_point_settings_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Balance Point"
 
+class BalancePointMain(BalancePointPanel, bpy.types.Panel):
+    bl_idname = "BP_PT_Main"
+    bl_label = "Balance Point"
+
     def draw(self, context):
         layout = self.layout
         com_props = context.scene.com_properties
+        row = layout.row()
+        row.scale_y = 2.0
+
+        track_icon = 'TRACKER' if com_props.com_tracking_on else 'DOT'
+        track_text = 'Enabled' if com_props.com_tracking_on else 'Disabled'        
+        row.prop(com_props, "com_tracking_on", toggle=1, icon=track_icon, text="CoM Tracking " + track_text)
+
+        draw_icon = 'HIDE_OFF' if com_props.com_drawing_on else 'HIDE_ON'
+        draw_text = 'Enabled' if com_props.com_drawing_on else 'Disabled'
+        row.prop(com_props, "com_drawing_on", toggle=1, icon=draw_icon, text="CoM Drawing " + draw_text)
+
+
+class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_Main"
+    bl_label = "Mass Object Groups"
+
+    def draw(self, context):
+        layout = self.layout
         bp_mass_groups = context.scene.bp_mass_object_groups
 
-        # Com Tracking On/Off
-        row = layout.row(align=True)
-        row.prop(com_props, "com_tracking_on")
-        # Mass Object Groups
-        row = layout.row(align=True)
-        row.label(text="Mass Object Groups:")
-        box = layout.box()
-        for mass_group in bp_mass_groups:
-            innerBox = box.box()
-            row = innerBox.row(align=True)
-            row.label(text="Mass Object Collection")
-            row.prop(mass_group, "visible")
-            row = innerBox.row(align=True)
-            row.prop(mass_group, "mass_object_collection", text="")
-            row.prop(mass_group, "color", text="")
-            row = innerBox.row(align=True)
-            row.prop(mass_group, "scale")
-            row = innerBox.row(align=True)
-            row.prop(mass_group, "line_to_floor")
-            row.prop(mass_group, "com_floor_level")
-            if mass_group.mass_object_collection is not None and com_props.com_tracking_on:
-                cl = mass_group.com_location
-                row = innerBox.row(align=True)
-                cl = mass_group.com_location
-                row.label(text="CoM Loc: (%.2f, %.2f, %.2f)" % (cl[0], cl[1], cl[2]))
+        for group in bp_mass_groups:
+            box = layout.box()
+            split = box.split(factor=0.1)
+            # left
+            col = split.column()
+            col.scale_y = 4.0
+            viz_icon = 'HIDE_OFF' if group.visible else 'HIDE_ON'
+            col.prop(group, "visible", toggle=1, icon=viz_icon, text="")
 
-        row = box.row()
-        add_bp_group_text = 'Add' if len(bp_mass_groups) > 1 else 'Add Mass Object Group'
-        row.operator("balance_point.massgroup_add", text=add_bp_group_text, icon="ADD")
+            # right
+            col = split.column()
+            row = col.row()
+            row.use_property_decorate = False
+            row.prop(group, "mass_object_collection", text="Mass Objects")
+            row = col.row(align=True)
+            row.prop(group, "scale")
+            row.scale_x = 0.3
+            row.prop(group, "color", text="")
+            row = col.row()
+            row.prop(group, "com_floor_level")
+            sub = row.row()
+            sub.alignment = 'RIGHT'
+            sub.prop(group, "line_to_floor")
+            row = col.row()
+            row.label(text="Center of Mass:")
+            sub = row.row()
+            sub.alignment = 'RIGHT'
+            gcm = group.com_location
+            sub.label(text="({}, {}, {})".format(round(gcm[0], 4), round(gcm[1], 4), round(gcm[2], 4)))
+            row = col.row()
+        
         if len(bp_mass_groups) > 1:
-            row.operator("balance_point.massgroup_remove", text="Remove", icon="REMOVE")
-
-        # Update
-        update_icon = 'PAUSE' if com_props.com_drawing_on else 'PLAY'
-        update_text = 'Hide Markers' if com_props.com_drawing_on else 'Show Markers'
-
-        row = layout.row(align=True)
-        row.scale_y = 2.0
-        row.operator("balance_point.toggle_drawing", text=update_text, icon=update_icon)
+            row = layout.row()
+            row.operator('balance_point.massgroup_remove', icon='REMOVE')
+        row = layout.row()
+        row.scale_y = 1.5
+        row.operator('balance_point.massgroup_add', icon='ADD')
 
 
 class MassPropertiesPanel(bpy.types.Panel):

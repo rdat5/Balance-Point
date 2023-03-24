@@ -15,7 +15,7 @@ from .draw import draw_bp
 from .bp_ops import ToggleDrawing
 from .mass_ops import (AddMassObjectGroup, RemoveMassObjectGroup, AddMassProps, RemoveMassProps,
                        ToggleActiveProperty, ToggleActiveProperty, SetActiveTrue, SetActiveFalse, CalculateVolume)
-from .ui import BalancePointPanel, MassPropertiesPanel
+from .ui import *
 from .props import *
 from .center_of_mass import update_mass_group_com
 import bpy
@@ -49,7 +49,8 @@ def initialize_bp_mass_groups():
 classes = (
     MassObjectGroup,
     ComProperties,
-    BalancePointPanel,
+    BalancePointMain,
+    BP_PT_mass_object_groups,
     MassPropertiesPanel,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
