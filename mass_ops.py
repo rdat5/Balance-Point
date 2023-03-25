@@ -27,6 +27,12 @@ class AddMassProps(bpy.types.Operator):
     bl_idname = "balance_point.massprop_add"
     bl_label = "Add mass properties to selected"
 
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+
+        return obj.type == 'MESH' and obj.get('active') is None
+
     def execute(self, context):
         sel_obj = context.selected_objects
 
@@ -45,6 +51,12 @@ class RemoveMassProps(bpy.types.Operator):
     """Remove mass properties from selected objects"""
     bl_idname = "balance_point.massprop_del"
     bl_label = "Remove mass properties from selected"
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+
+        return obj.type == 'MESH' and obj.get('active') is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
@@ -65,6 +77,12 @@ class ToggleActiveProperty(bpy.types.Operator):
     bl_idname = "balance_point.toggle_active"
     bl_label = "Toggle Active"
 
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+
+        return obj.type == 'MESH' and obj.get('active') is not None
+
     def execute(self, context):
         sel_obj = context.selected_objects
 
@@ -78,6 +96,12 @@ class SetActiveTrue(bpy.types.Operator):
     """Toggles the active property"""
     bl_idname = "balance_point.set_active_true"
     bl_label = "Active"
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+
+        return obj.type == 'MESH' and obj.get('active') is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
@@ -93,6 +117,12 @@ class SetActiveFalse(bpy.types.Operator):
     bl_idname = "balance_point.set_active_false"
     bl_label = "Inactive"
 
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+
+        return obj.type == 'MESH' and obj.get('active') is not None
+
     def execute(self, context):
         sel_obj = context.selected_objects
 
@@ -107,6 +137,12 @@ class CalculateVolume(bpy.types.Operator):
     bl_idname = "balance_point.calculate_volume"
     bl_label = "Calculate volume of selected"
 
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+
+        return obj.type == 'MESH' and obj.get('volume') is not None
+
     def execute(self, context):
         sel_obj = context.selected_objects
 
@@ -120,6 +156,12 @@ class SetDensity(bpy.types.Operator):
     """Set the density of selected objects"""
     bl_idname = "balance_point.set_density"
     bl_label = "Set density of selected"
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.object
+
+        return obj.type == 'MESH' and obj.get('density') is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
