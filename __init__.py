@@ -52,6 +52,7 @@ classes = (
     BalancePointMain,
     BP_PT_mass_object_groups,
     MassPropertiesPanel,
+    BP_PT_mass_selected,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
     AddMassProps,

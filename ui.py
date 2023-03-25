@@ -70,91 +70,70 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
         row.scale_y = 1.5
         row.operator('balance_point.massgroup_add', icon='ADD')
 
-
-class MassPropertiesPanel(bpy.types.Panel):
+class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
     """Mass properties panel"""
-    bl_label = "Mass Properties"
-    bl_idname = "OBJECT_PT_mass_properties_panel"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_category = "Balance Point"
+    bl_label = "Mass Property Editing"
+    bl_idname = "BP_PT_mass_editing_panel"
 
     def draw(self, context):
         layout = self.layout
         sel_obj = context.selected_objects
 
-        # Mass properties
-        col = layout.column(align=True)
-
-        row = col.row()
-        row.label(text="Mass properties to selected")
-
-        row = col.row(align=True)
+        row = layout.row()
+        row.alignment = 'CENTER'
+        row.label(text="Mass Properties")
+        row = layout.row()
         row.operator("balance_point.massprop_add", text="Add", icon='ADD')
         row.operator("balance_point.massprop_del", text="Remove", icon='REMOVE')
-
-        # Volume
-        col = layout.column(align=True)
-
-        row = col.row()
+        row = layout.row()
+        row.alignment = 'CENTER'
         row.label(text="Volume")
-
-        row = col.row()
+        row = layout.row()
         row.operator("balance_point.calculate_volume", icon='CUBE')
-
-        # Object Origin to Center of Mass
-        col = layout.column(align=True)
-
-        row = col.row()
-        row.label(text="Set Selected Origin(s) to Object CoM")
-
-        row = col.row()
+        row = layout.row()
+        row.alignment = 'CENTER'
+        row.label(text="Origin Setting")
+        row = layout.row()
         row.operator("object.origin_set", text='Origin to Center of Mass (Volume)',
                      icon='DOT').type = 'ORIGIN_CENTER_OF_VOLUME'
-
-        # Set active to selected
-        col = layout.column(align=True)
-
-        row = col.row()
-        row.label(text="Set active to selected")
-
-        row = col.row(align=True)
+        row = layout.row()
+        row.alignment = 'CENTER'
+        row.label(text="Set Active")
+        row = layout.row()
         row.operator("balance_point.set_active_true", icon='RADIOBUT_ON')
         row.operator("balance_point.set_active_false", icon='RADIOBUT_OFF')
-        col.operator("balance_point.toggle_active", icon='ARROW_LEFTRIGHT')
+        row = layout.row()
+        row.operator("balance_point.toggle_active", icon='ARROW_LEFTRIGHT')
 
-        # Selected mass objects
-        col = layout.column(align=True)
 
-        row = col.row(align=True)
-        row.label(text="Selected Mass Objects: ")
+class BP_PT_mass_selected(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_mass_editing_panel"
+    bl_label = "Mass Object Groups"
+
+    def draw(self, context):
+        layout = self.layout
+        sel_obj = context.selected_objects
+
+        row = layout.row()
+        row.alignment = 'RIGHT'
+        row.label(text="Total Mass: {} kg".format(round(get_total_mass(sel_obj), 4)))
+
         for obj in sel_obj:
             if obj.get('volume') is not None:
-                box = col.box()
+                box = layout.box()
 
-                # split box
-                split = box.split(factor=0.4)
-
-                # left column
-                col1 = split.column(align=True)
-                col1.label(text="" + obj.name)
-
-                # get if active
-                if obj.get("active") == True:
-                    col1.label(text="Active", icon='RADIOBUT_ON')
-                elif obj.get("active") == False:
-                    col1.label(text="Inactive", icon='RADIOBUT_OFF')
-
-                # right column
-                obj_mass = round(obj.get("density") * obj.get("volume") * obj.get("active"), 3)
-
-                col2 = split.column(align=True)
-                col2.prop(obj, '["density"]')
-                col2.prop(obj, '["volume"]')
-                col2.label(text="Mass: " + str(obj_mass) + " kg")
-        if len(sel_obj) > 0:
-            row = layout.row()
-            row.label(text="Total Mass of Selected: " + str(round(get_total_mass(sel_obj), 3)) + " kg")
+                row = box.row()
+                obj_active = 'RADIOBUT_ON' if obj.get('active') else 'RADIOBUT_OFF'
+                row.label(text="", icon=obj_active)
+                row.label(text=obj.name)
+                sub = row.row()
+                sub.alignment = 'RIGHT'
+                obj_mass = round(obj.get("density") * obj.get("volume") * obj.get("active"), 4)
+                sub.label(text="Mass: {} kg".format(obj_mass))
+                
+                row = box.row()
+                row.prop(obj, '["density"]')
+                row.prop(obj, '["volume"]')
 
 
 def get_total_mass(objects):
