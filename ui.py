@@ -115,7 +115,7 @@ class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
 
 class BP_PT_mass_selected(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_mass_editing_panel"
-    bl_label = "Mass Object Groups"
+    bl_label = "Selected Mass Objects"
 
     def draw(self, context):
         layout = self.layout
