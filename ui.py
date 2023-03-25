@@ -70,11 +70,11 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             gcm = group.com_location
             sub.label(text="({}, {}, {})".format(round(gcm[0], 4), round(gcm[1], 4), round(gcm[2], 4)))
         
-        if len(bp_mass_groups) > 1:
-            row = layout.row()
-            row.operator('balance_point.massgroup_remove', icon='REMOVE')
         row = layout.row()
-        row.scale_y = 1.5
+        row.operator('balance_point.massgroup_remove', icon='REMOVE')
+        row = layout.row()
+        add_group_scale = 4.0 if len(bp_mass_groups) < 1 else 1.5
+        row.scale_y = add_group_scale
         row.operator('balance_point.massgroup_add', icon='ADD')
 
 class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):

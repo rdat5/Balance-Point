@@ -26,7 +26,7 @@ def update_mass_group_com(scene):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
-    if com_props.com_tracking_on:
+    if com_props.com_tracking_on and len(bp_mass_groups) > 0:
         for mass_group in bp_mass_groups:
             if mass_group.mass_object_collection is not None:
                 mgc = get_com(mass_group.mass_object_collection)

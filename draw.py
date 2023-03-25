@@ -11,7 +11,7 @@ def draw_bp(self, context):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
     # Go through each collection, create a batch, render it
-    if com_props.com_drawing_on:
+    if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:
             if group.visible:
                 # Get color

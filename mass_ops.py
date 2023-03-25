@@ -16,8 +16,14 @@ class RemoveMassObjectGroup(bpy.types.Operator):
     bl_idname = "balance_point.massgroup_remove"
     bl_label = "Remove last Mass Object Group"
 
+    @classmethod
+    def poll(cls, context):
+        bp_mass_groups = context.scene.bp_mass_object_groups
+
+        return len(bp_mass_groups) > 0
+
     def execute(self, context):
-        if len(bpy.context.scene.bp_mass_object_groups) > 1:
+        if len(bpy.context.scene.bp_mass_object_groups) > 0:
             bpy.context.scene.bp_mass_object_groups.remove(len(bpy.context.scene.bp_mass_object_groups) - 1)
         return {'FINISHED'}
 

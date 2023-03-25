@@ -40,10 +40,6 @@ bl_info = {
 HANDLER_KEY = "BP_UPDATE_FN"
 
 
-def initialize_bp_mass_groups():
-    bpy.context.scene.bp_mass_object_groups.clear()
-    bpy.context.scene.bp_mass_object_groups.add()
-
 # Class Registration
 
 
@@ -73,7 +69,6 @@ def register():
 
     bpy.types.Scene.com_properties = bpy.props.PointerProperty(type=ComProperties)
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
-    bpy.app.timers.register(initialize_bp_mass_groups, first_interval=0.1)
 
     # Add depsgraph, frame_change handler callbacks
     if HANDLER_KEY not in driver_namespace:
