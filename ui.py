@@ -37,7 +37,7 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             split = box.split(factor=0.1)
             # left
             col = split.column()
-            col.scale_y = 4.0
+            col.scale_y = 5.0
             viz_icon = 'HIDE_OFF' if group.visible else 'HIDE_ON'
             col.prop(group, "visible", toggle=1, icon=viz_icon, text="")
 
@@ -56,12 +56,19 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             sub.alignment = 'RIGHT'
             sub.prop(group, "line_to_floor")
             row = col.row()
+            row.label(text="Total Mass")
+            sub = row.row()
+            sub.alignment = 'RIGHT'
+            total_mass_text = '0'
+            if group.mass_object_collection is not None:
+                total_mass_text = round(get_total_mass(group.mass_object_collection.all_objects), 4)
+            sub.label(text="{} kg".format(total_mass_text))
+            row = col.row()
             row.label(text="Center of Mass:")
             sub = row.row()
             sub.alignment = 'RIGHT'
             gcm = group.com_location
             sub.label(text="({}, {}, {})".format(round(gcm[0], 4), round(gcm[1], 4), round(gcm[2], 4)))
-            row = col.row()
         
         if len(bp_mass_groups) > 1:
             row = layout.row()
