@@ -85,6 +85,7 @@ class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         sel_obj = context.selected_objects
+        com_props = context.scene.com_properties
 
         row = layout.row()
         row.alignment = 'CENTER'
@@ -92,6 +93,14 @@ class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
         row = layout.row()
         row.operator("balance_point.massprop_add", text="Add", icon='ADD')
         row.operator("balance_point.massprop_del", text="Remove", icon='REMOVE')
+        row = layout.row()
+        row.alignment = 'CENTER'
+        row.label(text="Density")
+        row = layout.row(align=True)
+        row.prop(com_props, "mass_density_set", text="Density")
+        sub = row.row()
+        sub.scale_x = 1.5
+        sub.operator("balance_point.set_density", icon='OUTLINER_OB_POINTCLOUD')
         row = layout.row()
         row.alignment = 'CENTER'
         row.label(text="Volume")

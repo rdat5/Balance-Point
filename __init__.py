@@ -14,7 +14,8 @@
 from .draw import draw_bp
 from .bp_ops import ToggleDrawing
 from .mass_ops import (AddMassObjectGroup, RemoveMassObjectGroup, AddMassProps, RemoveMassProps,
-                       ToggleActiveProperty, ToggleActiveProperty, SetActiveTrue, SetActiveFalse, CalculateVolume)
+                       ToggleActiveProperty, ToggleActiveProperty, SetActiveTrue, SetActiveFalse, 
+                       CalculateVolume, SetDensity)
 from .ui import *
 from .props import *
 from .center_of_mass import update_mass_group_com
@@ -61,6 +62,7 @@ classes = (
     SetActiveTrue,
     SetActiveFalse,
     CalculateVolume,
+    SetDensity,
     ToggleDrawing
 )
 
