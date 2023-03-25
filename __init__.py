@@ -12,9 +12,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from .draw import draw_bp
-from .bp_ops import ToggleDrawing
-from .mass_ops import (AddMassObjectGroup, RemoveMassObjectGroup, AddMassProps, RemoveMassProps,
-                       ToggleActiveProperty, ToggleActiveProperty, SetActiveTrue, SetActiveFalse, 
+from .bp_ops import ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup
+from .mass_ops import (AddMassProps, RemoveMassProps, ToggleActiveProperty, 
+                       ToggleActiveProperty, SetActiveTrue, SetActiveFalse, 
                        CalculateVolume, SetDensity)
 from .ui import *
 from .props import *
