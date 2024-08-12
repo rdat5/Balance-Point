@@ -13,7 +13,7 @@ groups.
 
 ### Dependencies
 
-* Developed and tested on Blender 3.4, may work on older versions
+* Developed and tested on Blender 4.2
 
 ### Installing
 
