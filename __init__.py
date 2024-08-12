@@ -27,8 +27,8 @@ from bpy.app import driver_namespace
 bl_info = {
     "name": "Balance Point",
     "author": "Ray Allen Datuin",
-    "version": (1, 2, 0),
-    "blender": (3, 4, 0),
+    "version": (2, 0, 0),
+    "blender": (4, 2, 0),
     "location": "View3D > Sidebar > Balance Point",
     "description": "Visualizes the center of mass of collections of objects",
     "warning": "",
