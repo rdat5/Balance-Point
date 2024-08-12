@@ -5,7 +5,7 @@ from mathutils import Vector
 
 from .shapes import *
 
-shader = gpu.shader.from_builtin('3D_UNIFORM_COLOR')
+shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
 def draw_bp(self, context):
     com_props = bpy.context.scene.com_properties
