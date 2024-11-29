@@ -31,3 +31,7 @@ def update_mass_group_com(scene):
             if mass_group.mass_object_collection is not None:
                 mgc = get_com(mass_group.mass_object_collection)
                 mass_group.com_location = [mgc.x, mgc.y, mgc.z]
+                
+                if mass_group.use_com_object and mass_group.com_object is not None:
+                    mass_group.com_object.matrix_world.translation = mgc
+                
