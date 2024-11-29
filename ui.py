@@ -56,6 +56,10 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             sub.alignment = 'RIGHT'
             sub.prop(group, "line_to_floor")
             row = col.row()
+            row.prop(group, "use_com_object", text = "" if group.use_com_object else "Use COM Object")
+            if group.use_com_object:
+                row.prop(group, "com_object")
+            row = col.row()
             row.label(text="Total Mass")
             sub = row.row()
             sub.alignment = 'RIGHT'

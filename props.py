@@ -8,6 +8,8 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     com_location: bpy.props.FloatVectorProperty(name="Location of Center of Mass")
     color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
+    use_com_object : bpy.props.BoolProperty(name="Use COM Object", default=False)
+    com_object : bpy.props.PointerProperty(name="COM Object", type=bpy.types.Object)
     scale: bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05,
                                    description="Size of the CoM Markers (in meters)", min=0)
 
