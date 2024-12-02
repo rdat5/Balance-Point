@@ -60,9 +60,9 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             if group.use_com_object:
                 row.prop(group, "com_object")
                 row = col.row()
-                row.prop(group, "is_com_object_locked", text="" if group.is_com_object_locked else "Lock COM to Object")
-                if group.is_com_object_locked:
-                    row.prop(group, "com_lock_object")
+                row.prop(group, "is_rig_pinned", text="" if group.is_rig_pinned else "Pin Rig's COM to COM Object")
+                if group.is_rig_pinned:
+                    row.prop(group, "pinned_rig")
             row = col.row()
             row.label(text="Total Mass")
             sub = row.row()

@@ -10,8 +10,8 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     use_com_object : bpy.props.BoolProperty(name="Use COM Object", default=False)
     com_object : bpy.props.PointerProperty(name="COM Object", type=bpy.types.Object)
-    is_com_object_locked : bpy.props.BoolProperty(name="Lock COM to Object", default=False)
-    com_lock_object : bpy.props.PointerProperty(name="COM Lock Object", type=bpy.types.Object)
+    is_rig_pinned : bpy.props.BoolProperty(name="Pin Rig's COM to COM Object", default=False)
+    pinned_rig : bpy.props.PointerProperty(name="Pinned Rig", type=bpy.types.Object)
     scale: bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05,
                                    description="Size of the CoM Markers (in meters)", min=0)
 
