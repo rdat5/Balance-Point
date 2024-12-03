@@ -15,6 +15,7 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     com_object : bpy.props.PointerProperty(name="COM Object", type=bpy.types.Object)
     is_rig_pinned : bpy.props.BoolProperty(name="Pin Rig's COM to COM Object", default=False)
     pinned_rig : bpy.props.PointerProperty(name="Pinned Rig", type=bpy.types.Object, poll=p_filter)
+    pinned_rig_root_name : bpy.props.StringProperty(name="Root Bone Name")
     scale: bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05,
                                    description="Size of the CoM Markers (in meters)", min=0)
 

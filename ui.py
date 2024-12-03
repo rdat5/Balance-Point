@@ -63,6 +63,9 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
                 row.prop(group, "is_rig_pinned", text="" if group.is_rig_pinned else "Pin Rig's COM to COM Object")
                 if group.is_rig_pinned:
                     row.prop(group, "pinned_rig")
+                    if group.pinned_rig is not None and group.pinned_rig.type == 'ARMATURE':
+                        row = col.row()
+                        row.prop_search(group, "pinned_rig_root_name", group.pinned_rig.data, "bones", text="Root Bone")
             row = col.row()
             row.label(text="Total Mass")
             sub = row.row()
