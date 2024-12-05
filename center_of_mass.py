@@ -33,8 +33,7 @@ def update_mass_group_com(scene):
                     difference = get_com(mass_group.mass_object_collection) - mass_group.com_object.matrix_world.translation
                     mass_group.com_location = [mass_group.com_object.matrix_world.translation.x, mass_group.com_object.matrix_world.translation.y, mass_group.com_object.matrix_world.translation.z]
                     if difference.length > 0.0001:
-                        if mass_group.pinned_rig.pose.bones[mass_group.pinned_rig_root_name] is not None:
-                            mass_group.pinned_rig.pose.bones[mass_group.pinned_rig_root_name].location -= difference
+                        mass_group.pinned_rig.matrix_world.translation -= difference
                 else:    
                     mgc = get_com(mass_group.mass_object_collection)
                     mass_group.com_location = [mgc.x, mgc.y, mgc.z]

@@ -1,8 +1,5 @@
 import bpy
 
-def p_filter(self, object):
-    return object.type == 'ARMATURE'
-
 class MassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
     mass_object_collection: bpy.props.PointerProperty(name="Mass Object Collection", type=bpy.types.Collection)
@@ -14,8 +11,7 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     use_com_object : bpy.props.BoolProperty(name="Use COM Object", default=False)
     com_object : bpy.props.PointerProperty(name="COM Object", type=bpy.types.Object)
     is_rig_pinned : bpy.props.BoolProperty(name="Pin Rig's COM to COM Object", default=False)
-    pinned_rig : bpy.props.PointerProperty(name="Pinned Rig", type=bpy.types.Object, poll=p_filter)
-    pinned_rig_root_name : bpy.props.StringProperty(name="Root Bone Name")
+    pinned_rig : bpy.props.PointerProperty(name="Pinned Rig", type=bpy.types.Object)
     scale: bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05,
                                    description="Size of the CoM Markers (in meters)", min=0)
 
