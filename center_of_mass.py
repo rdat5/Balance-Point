@@ -29,7 +29,7 @@ def update_mass_group_com(scene):
     if com_props.com_tracking_on and len(bp_mass_groups) > 0:
         for mass_group in bp_mass_groups:
             if mass_group.mass_object_collection is not None:
-                if mass_group.is_rig_pinned and mass_group.pinned_rig is not None and mass_group.com_object is not None:
+                if mass_group.is_rig_pinned and mass_group.use_com_object and mass_group.pinned_rig is not None and mass_group.com_object is not None:
                     difference = get_com(mass_group.mass_object_collection) - mass_group.com_object.matrix_world.translation
                     mass_group.com_location = [mass_group.com_object.matrix_world.translation.x, mass_group.com_object.matrix_world.translation.y, mass_group.com_object.matrix_world.translation.z]
                     if difference.length > 0.0001:
