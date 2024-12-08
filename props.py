@@ -20,3 +20,11 @@ class ComProperties(bpy.types.PropertyGroup):
     com_tracking_on: bpy.props.BoolProperty(name="CoM Tracking Enabled", default=True)
     com_drawing_on: bpy.props.BoolProperty(name="CoM Drawing Enabled", default=False)
     mass_density_set: bpy.props.FloatProperty(name="Set Density", default=1.0, soft_min=0)
+    use_multi_com : bpy.props.BoolProperty(name="Use Multi COM", default=False)
+    multi_com_floor_level : bpy.props.FloatProperty(name="Floor Level", default=0.0)
+    multi_line_to_floor: bpy.props.BoolProperty(name="Draw Line to Floor", default=False)
+    multi_com_location: bpy.props.FloatVectorProperty(name="Location of Center of Mass")
+    multi_com_color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
+        0, 1, 1), subtype='COLOR', min=0.0, max=1.0)
+    multi_com_scale: bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05,
+                                   description="Size of the CoM Markers (in meters)", min=0)
