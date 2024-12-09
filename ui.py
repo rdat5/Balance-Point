@@ -23,19 +23,6 @@ class BalancePointMain(BalancePointPanel, bpy.types.Panel):
         draw_text = 'Enabled' if com_props.com_drawing_on else 'Disabled'
         row.prop(com_props, "com_drawing_on", toggle=1, icon=draw_icon, text="CoM Drawing " + draw_text)
 
-        row = layout.row()
-        row.prop(com_props, "use_multi_com", text="Combine Visible Mass Object Groups")
-        if com_props.use_multi_com:
-            row = layout.row()
-            row.prop(com_props, "multi_com_scale")
-            row.scale_x = 0.3
-            row.prop(com_props, "multi_com_color", text="")
-            row = layout.row()
-            row.prop(com_props, "multi_com_floor_level")
-            sub = row.row()
-            sub.alignment = 'RIGHT'
-            sub.prop(com_props, "multi_line_to_floor")
-
 
 class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_Main"
