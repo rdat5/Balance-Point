@@ -46,6 +46,10 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             row = col.row()
             row.use_property_decorate = False
             row.prop(group, "mass_object_collection", text="Mass Objects")
+            row = col.row()
+            row.prop(group, "include_secondary_collection", text = "" if group.include_secondary_collection else "Include Secondary Mass Object Collection")
+            if group.include_secondary_collection:
+                row.prop(group, "secondary_mass_object_collection")
             row = col.row(align=True)
             row.prop(group, "scale")
             row.scale_x = 0.3
