@@ -68,6 +68,23 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
                 if group.is_rig_pinned:
                     row.prop(group, "pinned_rig")
             row = col.row()
+            row.label(text="Moment of Inertia")
+            row.alignment = 'CENTER'
+            if group.use_com_object and group.is_rig_pinned and group.com_object is not None and group.pinned_rig is not None:
+                if group.com_object.rotation_mode != 'AXIS_ANGLE':
+                    row = col.row()
+                    row.label(text="Set the COM Object's rotation mode to 'Axis Angle'")
+                else:
+                    row = col.row()
+                    row.prop(group, "show_com_object_axis")
+                    row = col.row()
+                    row.prop(group, "axis_scale")
+                    row = col.row()
+                    row.prop(group.com_object, "rotation_axis_angle")
+            else:
+                row = col.row()
+                row.label(text="Add a COM Object and a Pinned Rig to Use Moment of Inertia Features")
+            row = col.row()
             row.label(text="Total Mass")
             sub = row.row()
             sub.alignment = 'RIGHT'

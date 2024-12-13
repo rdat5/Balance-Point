@@ -1,5 +1,6 @@
 import bpy
 import gpu
+import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
 
@@ -17,7 +18,18 @@ def draw_bp(self, context):
                 # Get color
                 shader.uniform_float("color", (group.color.r, group.color.g, group.color.b, 1.0))
                 # Get shape vertices
-                batch = batch_for_shader(shader, 'LINES', {"pos": get_final_com_shape(group)})
+                vertex_batch = get_final_com_shape(group)
+                # Draw COM Object rotation axis
+                if group.show_com_object_axis and group.use_com_object and group.com_object is not None:
+                    cx = group.com_object.rotation_axis_angle[1]
+                    cy = group.com_object.rotation_axis_angle[2]
+                    cz = group.com_object.rotation_axis_angle[3]
+                    axis_vector = numpy.array([cx, cy, cz])
+                    axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
+                    group_com_loc = Vector((group.com_location[0], group.com_location[1], group.com_location[2]))
+                    vertex_batch += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (axis_unit[0], axis_unit[1], axis_unit[2])], group.axis_scale, group_com_loc)
+                # Draw Batch
+                batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
                 batch.draw(shader)
 
 

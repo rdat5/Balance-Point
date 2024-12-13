@@ -16,6 +16,9 @@ class MassObjectGroup(bpy.types.PropertyGroup):
                                    description="Size of the CoM Markers (in meters)", min=0)
     include_secondary_collection : bpy.props.BoolProperty(name="Include Secondary Mass Object Collection", default=False)
     secondary_mass_object_collection: bpy.props.PointerProperty(name="Secondary Mass Object Collection", type=bpy.types.Collection)
+    show_com_object_axis : bpy.props.BoolProperty(name="Show Rotation Axis of COM Object", default=False)
+    axis_scale : bpy.props.FloatProperty(name="Axis Line Scale", default=2.0,
+                                   description="Size of the Axis Scale Line (in meters)", min=0)
 
 
 class ComProperties(bpy.types.PropertyGroup):
