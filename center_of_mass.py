@@ -1,4 +1,5 @@
 import bpy
+import numpy
 from bpy.app.handlers import persistent
 from mathutils import Vector
 
@@ -30,6 +31,29 @@ def combine_coll_objects(collections):
     
     return combined_objects
 
+
+def get_moment_of_inertia(objects, center_of_mass, axis_vector):
+    # Normalize
+    axis_vector = numpy.array(axis_vector)
+    axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
+
+    moment_of_inertia = 0.0
+
+    for obj in objects:
+        if obj.get("active"):
+            position = obj.matrix_world.translation - Vector((center_of_mass[0], center_of_mass[1], center_of_mass[2]))
+            mass = obj.get("density") * obj.get("volume")
+
+            # Calculate perpendicular distance to the axis
+            projection = numpy.dot(position, axis_unit) * axis_unit
+            perpendicular_vector = position - Vector((projection[0], projection[1], projection[2]))
+            perpendicular_distance_squared = numpy.dot(perpendicular_vector, perpendicular_vector)
+
+            # Contribution to moment of inertia
+            moment_of_inertia += mass * perpendicular_distance_squared
+    
+    return moment_of_inertia
+
 @persistent
 def update_mass_group_com(scene):
     com_props = bpy.context.scene.com_properties
@@ -44,6 +68,9 @@ def update_mass_group_com(scene):
                     mass_group.com_location = [mass_group.com_object.matrix_world.translation.x, mass_group.com_object.matrix_world.translation.y, mass_group.com_object.matrix_world.translation.z]
                     if difference.length > 0.0001:
                         mass_group.pinned_rig.matrix_world.translation -= difference
+                    # Moment of Inertia
+                    com_object_axis = Vector((mass_group.com_object.rotation_axis_angle[1], mass_group.com_object.rotation_axis_angle[2], mass_group.com_object.rotation_axis_angle[3]))
+                    mass_group.moment_of_inertia = get_moment_of_inertia(mass_group.mass_object_collection.all_objects, mass_group.com_location, com_object_axis)
                 else:
                     included_objects = [mass_group.mass_object_collection]
                     if mass_group.include_secondary_collection and mass_group.secondary_mass_object_collection is not None:

@@ -19,6 +19,8 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     show_com_object_axis : bpy.props.BoolProperty(name="Show Rotation Axis of COM Object", default=False)
     axis_scale : bpy.props.FloatProperty(name="Axis Line Scale", default=2.0,
                                    description="Size of the Axis Scale Line (in meters)", min=0)
+    moment_of_inertia : bpy.props.FloatProperty(name="Moment of Inertia", default=2.0,
+                                   description="Moment of Inertia of the COM Object's rotation axis", min=0)
 
 
 class ComProperties(bpy.types.PropertyGroup):

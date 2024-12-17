@@ -81,6 +81,11 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
                     row.prop(group, "axis_scale")
                     row = col.row()
                     row.prop(group.com_object, "rotation_axis_angle")
+                    row = col.row()
+                    row.label(text="Moment of Inertia: ")
+                    sub = row.row()
+                    sub.alignment = 'RIGHT'
+                    sub.label(text="{} kg·m2".format(round(group.moment_of_inertia, 4)))
             else:
                 row = col.row()
                 row.label(text="Add a COM Object and a Pinned Rig to Use Moment of Inertia Features")
