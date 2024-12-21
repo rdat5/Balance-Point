@@ -186,6 +186,19 @@ class BP_PT_mass_selected(BalancePointPanel, bpy.types.Panel):
                 row.prop(obj, '["volume"]')
 
 
+class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
+    bl_label = "Physics Tools"
+    bl_idname = "BP_PT_physics_panel"
+
+    def draw(self, context):
+        layout = self.layout
+        physics_props = context.scene.physics_properties
+        bp_mass_groups = context.scene.bp_mass_object_groups
+
+        row = layout.row()
+        row.prop_search(physics_props, "selected_mog", context.scene, "bp_mass_object_groups")
+
+
 def get_total_mass(objects):
     total_mass = 0
 

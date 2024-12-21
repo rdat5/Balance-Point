@@ -27,3 +27,7 @@ class ComProperties(bpy.types.PropertyGroup):
     com_tracking_on: bpy.props.BoolProperty(name="CoM Tracking Enabled", default=True)
     com_drawing_on: bpy.props.BoolProperty(name="CoM Drawing Enabled", default=False)
     mass_density_set: bpy.props.FloatProperty(name="Set Density", default=1.0, soft_min=0)
+
+
+class PhysicsProperties(bpy.types.PropertyGroup):
+    selected_mog : bpy.props.PointerProperty(name="Test MOG", type=MassObjectGroup)
