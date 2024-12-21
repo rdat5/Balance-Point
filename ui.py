@@ -34,6 +34,7 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
 
         for group in bp_mass_groups:
             box = layout.box()
+            box.label(text=group.name)
             split = box.split(factor=0.1)
             # left
             col = split.column()

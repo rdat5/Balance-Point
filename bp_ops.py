@@ -18,7 +18,8 @@ class AddMassObjectGroup(bpy.types.Operator):
     bl_label = "Add new Mass Object Group"
 
     def execute(self, context):
-        bpy.context.scene.bp_mass_object_groups.add()
+        new_item = bpy.context.scene.bp_mass_object_groups.add()
+        new_item.name = f"Mass Object Group {len(bpy.context.scene.bp_mass_object_groups)}"
         return {'FINISHED'}
 
 
