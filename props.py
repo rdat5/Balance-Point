@@ -30,4 +30,4 @@ class ComProperties(bpy.types.PropertyGroup):
 
 
 class PhysicsProperties(bpy.types.PropertyGroup):
-    selected_mog : bpy.props.PointerProperty(name="Test MOG", type=MassObjectGroup)
+    selected_mog : bpy.props.StringProperty(name="Mass Object Group", description="Selected Mass Object Group to use with Physics Tools")
