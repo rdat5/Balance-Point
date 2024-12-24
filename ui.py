@@ -69,28 +69,6 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
                 if group.is_rig_pinned:
                     row.prop(group, "pinned_rig")
             row = col.row()
-            row.label(text="Moment of Inertia")
-            row.alignment = 'CENTER'
-            if group.use_com_object and group.is_rig_pinned and group.com_object is not None and group.pinned_rig is not None:
-                if group.com_object.rotation_mode != 'AXIS_ANGLE':
-                    row = col.row()
-                    row.label(text="Set the COM Object's rotation mode to 'Axis Angle'")
-                else:
-                    row = col.row()
-                    row.prop(group, "show_com_object_axis")
-                    row = col.row()
-                    row.prop(group, "axis_scale")
-                    row = col.row()
-                    row.prop(group.com_object, "rotation_axis_angle")
-                    row = col.row()
-                    row.label(text="Moment of Inertia: ")
-                    sub = row.row()
-                    sub.alignment = 'RIGHT'
-                    sub.label(text="{} kg·m2".format(round(group.moment_of_inertia, 4)))
-            else:
-                row = col.row()
-                row.label(text="Add a COM Object and a Pinned Rig to Use Moment of Inertia Features")
-            row = col.row()
             row.label(text="Total Mass")
             sub = row.row()
             sub.alignment = 'RIGHT'
@@ -198,6 +176,33 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
 
         row = layout.row()
         row.prop_search(physics_props, "selected_mog", context.scene, "bp_mass_object_groups")
+        row = layout.row()
+        if is_in_collection_group(physics_props.selected_mog, bp_mass_groups):
+            sel_mog = bp_mass_groups[physics_props.selected_mog]
+
+            if sel_mog.use_com_object and sel_mog.com_object is not None and sel_mog.is_rig_pinned and sel_mog.pinned_rig is not None:
+                row = layout.row()
+                row.alignment = 'CENTER'
+                row.label(text="Rotation")
+
+                if sel_mog.com_object.rotation_mode != 'AXIS_ANGLE':
+                    row = row.row()
+                    row.label(text="Set the COM Object's rotation mode to 'Axis Angle'")
+                else:
+                    row = layout.row()
+                    row.prop(sel_mog, "show_com_object_axis")
+                    row = layout.row()
+                    row.prop(sel_mog, "axis_scale")
+                    row = layout.row()
+                    row.prop(sel_mog.com_object, "rotation_axis_angle", text="")
+                    row = layout.row()
+                    row.label(text="Moment of Inertia: ")
+                    sub = row.row()
+                    sub.alignment = 'RIGHT'
+                    sub.label(text="{} kg·m2".format(round(sel_mog.moment_of_inertia, 4)))
+            else:
+                row = layout.row()
+                row.label(text="Add a COM Object and a Pinned Rig to use the Physics Tools.")
 
 
 def get_total_mass(objects):
@@ -210,3 +215,10 @@ def get_total_mass(objects):
             total_mass += obj_mass
 
     return total_mass
+
+
+def is_in_collection_group(key, collection):
+    for item in collection:
+        if item.name == key:
+            return True
+    return False
