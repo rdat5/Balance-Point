@@ -183,7 +183,7 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
             if sel_mog.use_com_object and sel_mog.com_object is not None and sel_mog.is_rig_pinned and sel_mog.pinned_rig is not None:
                 row = layout.row()
                 row.alignment = 'CENTER'
-                row.label(text="Rotation")
+                row.label(text="Angular Velocity")
 
                 if sel_mog.com_object.rotation_mode != 'AXIS_ANGLE':
                     row = row.row()
