@@ -171,7 +171,7 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        physics_props = context.scene.physics_properties
+        physics_props = context.scene.bp_physics_properties
         bp_mass_groups = context.scene.bp_mass_object_groups
 
         row = layout.row()

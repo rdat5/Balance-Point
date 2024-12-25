@@ -71,7 +71,7 @@ def register():
 
     bpy.types.Scene.com_properties = bpy.props.PointerProperty(type=ComProperties)
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
-    bpy.types.Scene.physics_properties = bpy.props.PointerProperty(type=PhysicsProperties)
+    bpy.types.Scene.bp_physics_properties = bpy.props.PointerProperty(type=PhysicsProperties)
 
     # Add depsgraph, frame_change handler callbacks
     if HANDLER_KEY not in driver_namespace:
@@ -89,7 +89,7 @@ def unregister():
 
     del bpy.types.Scene.com_properties
     del bpy.types.Scene.bp_mass_object_groups
-    del bpy.types.Scene.physics_properties
+    del bpy.types.Scene.bp_physics_properties
 
     # Remove depsgraph, frame_change handler callbacks
     if HANDLER_KEY in driver_namespace:
