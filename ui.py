@@ -1,4 +1,5 @@
 import bpy
+from .utils import get_total_mass, is_in_collection_group
 
 class BalancePointPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
@@ -231,22 +232,3 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
             else:
                 row = layout.row()
                 row.label(text="Add a COM Object and a Pinned Rig to use the Physics Tools.")
-
-
-def get_total_mass(objects):
-    total_mass = 0
-
-    for obj in objects:
-        if obj.get("active"):
-            obj_mass = obj.get("density") * obj.get("volume")
-
-            total_mass += obj_mass
-
-    return total_mass
-
-
-def is_in_collection_group(key, collection):
-    for item in collection:
-        if item.name == key:
-            return True
-    return False

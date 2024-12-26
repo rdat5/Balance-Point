@@ -1,5 +1,5 @@
 import bpy
-import numpy as np
+from .utils import is_valid_triangle, get_triangle_normal
 
 class ToggleDrawing(bpy.types.Operator):
     """Adds/Removes center of mass render function from draw handler"""
@@ -89,23 +89,3 @@ class AlignAxisByPoints(bpy.types.Operator):
         com_obj.rotation_axis_angle[2] = norm[1]
         com_obj.rotation_axis_angle[3] = norm[2]
         return {'FINISHED'}
-
-
-def is_valid_triangle(p1, p2, p3):
-    A = np.array([p1[0], p1[1], p1[2]])
-    B = np.array([p2[0], p2[1], p2[2]])
-    C = np.array([p3[0], p3[1], p3[2]])
-    
-    v1 = B - C
-    v2 = A - C
-    cross_product = np.cross(v1, v2)
-    if np.allclose(cross_product, 0):
-        return False
-    return True
-
-
-def get_triangle_normal(p1, p2, p3):
-    v1 = np.array(p2) - np.array(p1)
-    v2 = np.array(p3) - np.array(p1)
-    normal = np.cross(v1, v2)
-    return normal / np.linalg.norm(normal)  # Normalize the normal vector
