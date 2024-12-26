@@ -31,3 +31,5 @@ class ComProperties(bpy.types.PropertyGroup):
 
 class PhysicsProperties(bpy.types.PropertyGroup):
     selected_mog : bpy.props.StringProperty(name="Mass Object Group", description="Selected Mass Object Group to use with Physics Tools")
+    align_rotation_p1 : bpy.props.FloatVectorProperty(name="Point 1")
+    align_rotation_p2 : bpy.props.FloatVectorProperty(name="Point 2")

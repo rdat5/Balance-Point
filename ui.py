@@ -200,6 +200,34 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     sub = row.row()
                     sub.alignment = 'RIGHT'
                     sub.label(text="{} kg·m2".format(round(sel_mog.moment_of_inertia, 4)))
+
+                    # Axis Alignment
+                    row = layout.row()
+                    row.alignment = 'CENTER'
+                    row.label(text="Axis Alignment From Two Points")
+                    # Left
+                    split = layout.split()
+                    col = split.column()
+                    box = col.box()
+                    row = box.row()
+                    row.prop(physics_props, "align_rotation_p1")
+                    row = box.row()
+                    rp1 = row.operator("balance_point.referencepoint_set", text="Set Reference Point 1 From 3D Cursor")
+                    rp1.target = 1
+
+                    # Right
+                    col = split.column()
+                    box = col.box()
+                    row = box.row()
+                    row.prop(physics_props, "align_rotation_p2")
+                    row = box.row()
+                    rp2 = row.operator("balance_point.referencepoint_set", text="Set Reference Point 2 From 3D Cursor")
+                    rp2.target = 2
+
+                    # Align Axis
+                    row = layout.row()
+                    row.operator("balance_point.align_axis")
+
             else:
                 row = layout.row()
                 row.label(text="Add a COM Object and a Pinned Rig to use the Physics Tools.")

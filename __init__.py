@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from .draw import draw_bp
-from .bp_ops import ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup
+from .bp_ops import ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup, SetReferencePoint, AlignAxisByPoints
 from .mass_ops import (AddMassProps, RemoveMassProps, ToggleActiveProperty, 
                        ToggleActiveProperty, SetActiveTrue, SetActiveFalse, 
                        CalculateVolume, SetDensity)
@@ -61,7 +61,9 @@ classes = (
     SetActiveFalse,
     CalculateVolume,
     SetDensity,
-    ToggleDrawing
+    ToggleDrawing,
+    SetReferencePoint,
+    AlignAxisByPoints
 )
 
 
