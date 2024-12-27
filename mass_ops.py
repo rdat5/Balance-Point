@@ -11,6 +11,8 @@ class AddMassProps(bpy.types.Operator):
     def poll(cls, context):
         obj = context.object
 
+        if obj is None or not isinstance(obj, bpy.types.Object):
+            return False
         return obj.type == 'MESH' and obj.get('active') is None
 
     def execute(self, context):
@@ -36,6 +38,8 @@ class RemoveMassProps(bpy.types.Operator):
     def poll(cls, context):
         obj = context.object
 
+        if obj is None or not isinstance(obj, bpy.types.Object):
+            return False
         return obj.type == 'MESH' and obj.get('active') is not None
 
     def execute(self, context):
@@ -61,6 +65,8 @@ class ToggleActiveProperty(bpy.types.Operator):
     def poll(cls, context):
         obj = context.object
 
+        if obj is None or not isinstance(obj, bpy.types.Object):
+            return False
         return obj.type == 'MESH' and obj.get('active') is not None
 
     def execute(self, context):
@@ -81,6 +87,8 @@ class SetActiveTrue(bpy.types.Operator):
     def poll(cls, context):
         obj = context.object
 
+        if obj is None or not isinstance(obj, bpy.types.Object):
+            return False
         return obj.type == 'MESH' and obj.get('active') is not None
 
     def execute(self, context):
@@ -101,6 +109,8 @@ class SetActiveFalse(bpy.types.Operator):
     def poll(cls, context):
         obj = context.object
 
+        if obj is None or not isinstance(obj, bpy.types.Object):
+            return False
         return obj.type == 'MESH' and obj.get('active') is not None
 
     def execute(self, context):
@@ -121,6 +131,8 @@ class CalculateVolume(bpy.types.Operator):
     def poll(cls, context):
         obj = context.object
 
+        if obj is None or not isinstance(obj, bpy.types.Object):
+            return False
         return obj.type == 'MESH' and obj.get('volume') is not None
 
     def execute(self, context):
@@ -141,6 +153,8 @@ class SetDensity(bpy.types.Operator):
     def poll(cls, context):
         obj = context.object
 
+        if obj is None or not isinstance(obj, bpy.types.Object):
+            return False
         return obj.type == 'MESH' and obj.get('density') is not None
 
     def execute(self, context):
