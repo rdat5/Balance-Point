@@ -206,6 +206,10 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.alignment = 'CENTER'
                     row.label(text="Axis Alignment From Two Points")
+                    row = layout.row()
+                    row.prop(physics_props, "is_align_preview")
+                    row.prop(physics_props, "point_scale")
+
                     # Left
                     split = layout.split()
                     col = split.column()

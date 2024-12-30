@@ -33,3 +33,6 @@ class PhysicsProperties(bpy.types.PropertyGroup):
     selected_mog : bpy.props.StringProperty(name="Mass Object Group", description="Selected Mass Object Group to use with Physics Tools")
     align_rotation_p1 : bpy.props.FloatVectorProperty(name="Point 1")
     align_rotation_p2 : bpy.props.FloatVectorProperty(name="Point 2")
+    is_align_preview : bpy.props.BoolProperty(name="Preview Alignment", default=False)
+    point_scale: bpy.props.FloatProperty(name="Point Scale", default=0.05,
+                                   description="Size of the Points (in meters)", min=0)

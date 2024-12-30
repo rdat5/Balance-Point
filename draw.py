@@ -11,6 +11,7 @@ shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 def draw_bp(self, context):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
+    physics_props = bpy.context.scene.bp_physics_properties
     # Go through each collection, create a batch, render it
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:
@@ -31,6 +32,23 @@ def draw_bp(self, context):
                 # Draw Batch
                 batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
                 batch.draw(shader)
+
+    # Physics Preview
+    if physics_props.is_align_preview:
+        p1 = physics_props.align_rotation_p1
+        p2 = physics_props.align_rotation_p2
+        p3 = bp_mass_groups[physics_props.selected_mog].com_object.matrix_world.translation
+        shader.uniform_float("color", (1.0, 1.0, 1.0, 1.0))
+        vertex_batch = []
+        # Points
+        vertex_batch += transform_indices(POINT_MARKER, physics_props.point_scale, Vector((p1[0], p1[1], p1[2])))
+        vertex_batch += transform_indices(POINT_MARKER, physics_props.point_scale, Vector((p2[0], p2[1], p2[2])))
+        # Lines
+        vertex_batch += [(p1[0], p1[1], p1[2]), (p2[0], p2[1], p2[2]), (p2[0], p2[1], p2[2]), (p3[0], p3[1], p3[2]), (p3[0], p3[1], p3[2]), (p1[0], p1[1], p1[2])]
+        # vertex_indices = [(0, 1), (1, 2), (2, 0)]
+        batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
+        batch.draw(shader)
+        pass
 
 
 def get_final_com_shape(group):
