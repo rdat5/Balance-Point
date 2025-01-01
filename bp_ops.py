@@ -89,3 +89,16 @@ class AlignAxisByPoints(bpy.types.Operator):
         com_obj.rotation_axis_angle[2] = norm[1]
         com_obj.rotation_axis_angle[3] = norm[2]
         return {'FINISHED'}
+
+
+class SetInitialMomentOfInertia(bpy.types.Operator):
+    """Sets the initial moment of inertia to be used for physics baking."""
+    bl_idname = "balance_point.set_angular_values"
+    bl_label = "Set Initial Moment of Inertia"
+
+    def execute(self, context):
+        physics_props = context.scene.bp_physics_properties
+        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
+
+        physics_props.initial_moment_of_inertia = sel_mog.moment_of_inertia
+        return {'FINISHED'}

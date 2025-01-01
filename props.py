@@ -36,3 +36,7 @@ class PhysicsProperties(bpy.types.PropertyGroup):
     is_align_preview : bpy.props.BoolProperty(name="Preview Alignment", default=False)
     point_scale: bpy.props.FloatProperty(name="Point Scale", default=0.05,
                                    description="Size of the Points (in meters)", min=0)
+    initial_angular_velocity : bpy.props.FloatProperty(name="Initial Angular Velocity",
+                                   description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per frame.", min=0)
+    initial_moment_of_inertia : bpy.props.FloatProperty(name="Initial Moment of Inertia",
+                                   description="The initial moment of inertia used as reference for the duration of the baked frames.", min=0)
