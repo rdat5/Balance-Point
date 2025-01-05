@@ -1,58 +1,8 @@
 import bpy
-import numpy
+# import numpy
 from bpy.app.handlers import persistent
 from mathutils import Vector
-
-def get_com(objects):
-    center_of_mass = Vector((0, 0, 0))
-
-    total_mass = 0
-    weighted_sum = Vector((0, 0, 0))
-
-    for obj in objects:
-        if obj.get("active"):
-            obj_mass = obj.get("density") * obj.get("volume")
-
-            total_mass += obj_mass
-            weighted_sum += (obj_mass * obj.matrix_world.translation)
-
-    if total_mass > 0:
-        center_of_mass = weighted_sum / total_mass
-
-    return center_of_mass
-
-
-def combine_coll_objects(collections):
-    combined_objects = []
-
-    for coll in collections:
-        for obj in coll.all_objects:
-            combined_objects.append(obj)
-    
-    return combined_objects
-
-
-def get_moment_of_inertia(objects, center_of_mass, axis_vector):
-    # Normalize
-    axis_vector = numpy.array(axis_vector)
-    axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
-
-    moment_of_inertia = 0.0
-
-    for obj in objects:
-        if obj.get("active"):
-            position = obj.matrix_world.translation - Vector((center_of_mass[0], center_of_mass[1], center_of_mass[2]))
-            mass = obj.get("density") * obj.get("volume")
-
-            # Calculate perpendicular distance to the axis
-            projection = numpy.dot(position, axis_unit) * axis_unit
-            perpendicular_vector = position - Vector((projection[0], projection[1], projection[2]))
-            perpendicular_distance_squared = numpy.dot(perpendicular_vector, perpendicular_vector)
-
-            # Contribution to moment of inertia
-            moment_of_inertia += mass * perpendicular_distance_squared
-    
-    return moment_of_inertia
+from .utils import get_com, combine_coll_objects, get_moment_of_inertia
 
 @persistent
 def update_mass_group_com(scene):

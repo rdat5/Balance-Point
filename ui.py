@@ -243,6 +243,17 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row.label(text=f"Initial Moment of Inertia: {str(round(physics_props.initial_moment_of_inertia, 4))} kg·m2")
                     row = layout.row()
                     row.operator("balance_point.set_angular_values")
+
+                    # Bake
+                    row = layout.row()
+                    row.alignment = 'CENTER'
+                    row.label(text="Frame Range")
+                    row = layout.row()
+                    row.prop(physics_props, "frame_start")
+                    row = layout.row()
+                    row.prop(physics_props, "frame_end")
+                    row = layout.row()
+                    row.operator("balance_point.bake_physics")
             else:
                 row = layout.row()
                 row.label(text="Add a COM Object and a Pinned Rig to use the Physics Tools.")

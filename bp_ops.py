@@ -1,5 +1,7 @@
 import bpy
-from .utils import is_valid_triangle, get_triangle_normal
+from math import radians
+from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia, combine_coll_objects
+from mathutils import Vector
 
 class ToggleDrawing(bpy.types.Operator):
     """Adds/Removes center of mass render function from draw handler"""
@@ -101,4 +103,39 @@ class SetInitialMomentOfInertia(bpy.types.Operator):
         sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
 
         physics_props.initial_moment_of_inertia = sel_mog.moment_of_inertia
+        return {'FINISHED'}
+
+
+class BakeBPPhysics(bpy.types.Operator):
+    """Bakes the rotation and ballistics curve for the given range."""
+    bl_idname = "balance_point.bake_physics"
+    bl_label = "Bake Physics"
+
+    @classmethod
+    def poll(cls, context):
+        physics_props = context.scene.bp_physics_properties
+        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
+
+        if physics_props.frame_end <= physics_props.frame_start:
+            return False
+
+        return True
+
+
+    def execute(self, context):
+        physics_props = context.scene.bp_physics_properties
+        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
+
+        angle = 0
+
+        for f in range(physics_props.frame_start, physics_props.frame_end + 1):
+            bpy.context.scene.frame_set(f)
+            sel_mog.com_object.rotation_axis_angle[0] = radians(angle)
+            sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', index=0, keytype='GENERATED')
+            
+            included_objects = [sel_mog.mass_object_collection.all_objects]
+
+            current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+            angle += physics_props.initial_angular_velocity * (physics_props.initial_moment_of_inertia / current_moment_of_inertia)
         return {'FINISHED'}

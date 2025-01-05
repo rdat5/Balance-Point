@@ -40,3 +40,5 @@ class PhysicsProperties(bpy.types.PropertyGroup):
                                    description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per frame.", min=0)
     initial_moment_of_inertia : bpy.props.FloatProperty(name="Initial Moment of Inertia",
                                    description="The initial moment of inertia used as reference for the duration of the baked frames.", min=0)
+    frame_start : bpy.props.IntProperty(name="Start Frame", description="First frame of the physics baking range.")
+    frame_end : bpy.props.IntProperty(name="End Frame", description="First frame of the physics baking range.")
