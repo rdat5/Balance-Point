@@ -1,6 +1,6 @@
 import bpy
 from math import radians
-from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia, combine_coll_objects
+from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia, projectile_position
 from mathutils import Vector
 
 class ToggleDrawing(bpy.types.Operator):
@@ -52,6 +52,7 @@ class SetReferencePoint(bpy.types.Operator):
 
     def execute(self, context):
         physics_props = context.scene.bp_physics_properties
+        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
 
         cursor_loc = context.scene.cursor.location
         cursor_coords = [cursor_loc[0], cursor_loc[1], cursor_loc[2]]
@@ -61,6 +62,9 @@ class SetReferencePoint(bpy.types.Operator):
                 physics_props.align_rotation_p1 = cursor_coords
             case 2: 
                 physics_props.align_rotation_p2 = cursor_coords
+            case 3:
+                physics_props.ballistics_p0 = sel_mog.com_object.matrix_world.translation
+                physics_props.ballistics_p1 = cursor_coords
         return {'FINISHED'}
 
 
@@ -128,14 +132,32 @@ class BakeBPPhysics(bpy.types.Operator):
 
         angle = 0
 
+        physics_props.ballistics_p0 = sel_mog.com_object.matrix_world.translation
+        p0 = physics_props.ballistics_p0
+        p1 = physics_props.ballistics_p1
+
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
-            sel_mog.com_object.rotation_axis_angle[0] = radians(angle)
-            sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', index=0, keytype='GENERATED')
             
-            included_objects = [sel_mog.mass_object_collection.all_objects]
+            # Rotation
+            sel_mog.com_object.rotation_axis_angle[0] = radians(angle)
+
+            sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', index=0, keytype='GENERATED')
 
             current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
             current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
             angle += physics_props.initial_angular_velocity * (physics_props.initial_moment_of_inertia / current_moment_of_inertia)
+        
+            # Ballistics
+            start_pos = (p0[0], p0[1], p0[2])
+            ref_pos = (p1[0], p1[1], p1[2])
+            gravity = physics_props.gravity
+            time_of_flight = float(physics_props.time_of_flight)
+            elapsed_time = float(f - physics_props.frame_start) / physics_props.frame_rate
+
+            point_position = projectile_position(start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
+
+            sel_mog.com_object.matrix_world.translation = point_position
+            sel_mog.com_object.keyframe_insert(data_path='location', keytype='GENERATED')
+
         return {'FINISHED'}

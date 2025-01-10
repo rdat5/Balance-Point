@@ -90,3 +90,18 @@ def combine_coll_objects(collections):
             combined_objects.append(obj)
     
     return combined_objects
+
+
+def projectile_position(start_pos, second_pos, gravity, time_of_flight, elapsed_time):
+    x0, y0, z0 = start_pos
+    x1, y1, z1 = second_pos
+
+    v0x = (x1 - x0) / time_of_flight
+    v0y = (y1 - y0) / time_of_flight
+    v0z = (z1 - z0) / time_of_flight + 0.5 * gravity * time_of_flight
+
+    x = x0 + v0x * elapsed_time
+    y = y0 + v0y * elapsed_time
+    z = z0 + v0z * elapsed_time - 0.5 * gravity * elapsed_time**2
+
+    return Vector((x, y, z))

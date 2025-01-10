@@ -3,7 +3,7 @@ import gpu
 import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-
+from .utils import projectile_position
 from .shapes import *
 
 shader = gpu.shader.from_builtin('UNIFORM_COLOR')
@@ -34,6 +34,7 @@ def draw_bp(self, context):
                 batch.draw(shader)
 
     # Physics Preview
+    # Align Preview
     if physics_props.is_align_preview:
         p1 = physics_props.align_rotation_p1
         p2 = physics_props.align_rotation_p2
@@ -46,6 +47,37 @@ def draw_bp(self, context):
         # Lines
         vertex_batch += [(p1[0], p1[1], p1[2]), (p2[0], p2[1], p2[2]), (p2[0], p2[1], p2[2]), (p3[0], p3[1], p3[2]), (p3[0], p3[1], p3[2]), (p1[0], p1[1], p1[2])]
         # vertex_indices = [(0, 1), (1, 2), (2, 0)]
+        batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
+        batch.draw(shader)
+
+    # Ballistics Preview
+    if physics_props.is_ballistics_preview:
+        shader.uniform_float("color", (1.0, 1.0, 1.0, 1.0))
+        
+        vertex_batch = []
+        # Points
+        p1 = physics_props.ballistics_p1
+        p0 = physics_props.ballistics_p0
+        vertex_batch += transform_indices(POINT_MARKER, physics_props.point_scale * 2, Vector((p1[0], p1[1], p1[2])))
+
+        if physics_props.frame_end > physics_props.frame_start:
+            total_frames = physics_props.frame_end - physics_props.frame_start
+            last_point = (p0[0], p0[1], p0[2])
+            for frame in range(1, total_frames + 1):
+                start_pos = (p0[0], p0[1], p0[2])
+                ref_pos = (p1[0], p1[1], p1[2])
+                gravity = physics_props.gravity
+                time_of_flight = float(physics_props.time_of_flight)
+                elapsed_time = float(frame) / physics_props.frame_rate
+
+                point_position = projectile_position(start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
+                vertex_batch += transform_indices(POINT_MARKER, physics_props.point_scale, point_position)
+
+                # Lines
+                vertex_batch += [last_point, point_position]
+                last_point = point_position
+                pass
+
         batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
         batch.draw(shader)
         pass

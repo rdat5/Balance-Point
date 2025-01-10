@@ -244,6 +244,22 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.operator("balance_point.set_angular_values")
 
+                    # Ballistics Curve
+                    row = layout.row()
+                    row.alignment = 'CENTER'
+                    row.label(text="Ballistics Curve")
+                    row = layout.row()
+                    row.prop(physics_props, "is_ballistics_preview")
+                    row = layout.row()
+                    row.prop(physics_props, "ballistics_p1")
+                    row = layout.row()
+                    bp1 = row.operator("balance_point.referencepoint_set", text="Set Ballistics Reference Point From 3D Cursor")
+                    bp1.target = 3
+                    row = layout.row()
+                    row.prop(physics_props, "gravity")
+                    row = layout.row()
+                    row.prop(physics_props, "time_of_flight")
+
                     # Bake
                     row = layout.row()
                     row.alignment = 'CENTER'
@@ -252,6 +268,10 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row.prop(physics_props, "frame_start")
                     row = layout.row()
                     row.prop(physics_props, "frame_end")
+                    row = layout.row()
+                    row.prop(physics_props, "frame_rate")
+                    row = layout.row()
+                    row.label(text=f"Duration: {physics_props.frame_end - physics_props.frame_start}")
                     row = layout.row()
                     row.operator("balance_point.bake_physics")
             else:

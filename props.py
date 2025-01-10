@@ -40,5 +40,11 @@ class PhysicsProperties(bpy.types.PropertyGroup):
                                    description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per frame.", min=0)
     initial_moment_of_inertia : bpy.props.FloatProperty(name="Initial Moment of Inertia",
                                    description="The initial moment of inertia used as reference for the duration of the baked frames.", min=0)
+    is_ballistics_preview : bpy.props.BoolProperty(name="Preview Ballistics Curve", default=False)
+    ballistics_p0 : bpy.props.FloatVectorProperty(name="Point 0")
+    ballistics_p1 : bpy.props.FloatVectorProperty(name="Point 1")
+    gravity : bpy.props.FloatProperty(name="Gravity", default=9.807)
+    time_of_flight : bpy.props.FloatProperty(name="Time of Flight", description="Elapsed frames until it reaches the ballistics reference point.", default=1, min=0.00001)
     frame_start : bpy.props.IntProperty(name="Start Frame", description="First frame of the physics baking range.")
     frame_end : bpy.props.IntProperty(name="End Frame", description="First frame of the physics baking range.")
+    frame_rate : bpy.props.IntProperty(name="Frame Rate", default=24, min=1)
