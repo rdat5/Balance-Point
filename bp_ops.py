@@ -142,7 +142,7 @@ class BakeBPPhysics(bpy.types.Operator):
             # Rotation
             sel_mog.com_object.rotation_axis_angle[0] = radians(angle)
 
-            sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', index=0, keytype='GENERATED')
+            sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', keytype='GENERATED')
 
             current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
             current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
