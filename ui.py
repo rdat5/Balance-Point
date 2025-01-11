@@ -1,5 +1,6 @@
 import bpy
-from .utils import get_total_mass, is_in_collection_group
+from .utils import get_total_mass, is_in_collection_group, get_moment_of_inertia
+from mathutils import Vector
 
 class BalancePointPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
@@ -240,9 +241,9 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.prop(physics_props, "initial_angular_velocity")
                     row = layout.row()
-                    row.label(text=f"Initial Moment of Inertia: {str(round(physics_props.initial_moment_of_inertia, 4))} kg·m2")
-                    row = layout.row()
-                    row.operator("balance_point.set_angular_values")
+                    com_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+                    moi = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, com_axis)
+                    row.label(text=f"Moment of Inertia: {str(round(moi, 4))} kg·m2")
 
                     # Ballistics Curve
                     row = layout.row()

@@ -2,7 +2,7 @@ import bpy
 # import numpy
 from bpy.app.handlers import persistent
 from mathutils import Vector
-from .utils import get_com, combine_coll_objects, get_moment_of_inertia
+from .utils import get_com, combine_coll_objects
 
 @persistent
 def update_mass_group_com(scene):
@@ -18,9 +18,6 @@ def update_mass_group_com(scene):
                     mass_group.com_location = [mass_group.com_object.matrix_world.translation.x, mass_group.com_object.matrix_world.translation.y, mass_group.com_object.matrix_world.translation.z]
                     if difference.length > 0.0001:
                         mass_group.pinned_rig.matrix_world.translation -= difference
-                    # Moment of Inertia
-                    com_object_axis = Vector((mass_group.com_object.rotation_axis_angle[1], mass_group.com_object.rotation_axis_angle[2], mass_group.com_object.rotation_axis_angle[3]))
-                    mass_group.moment_of_inertia = get_moment_of_inertia(mass_group.mass_object_collection.all_objects, mass_group.com_location, com_object_axis)
                 else:
                     included_objects = [mass_group.mass_object_collection]
                     if mass_group.include_secondary_collection and mass_group.secondary_mass_object_collection is not None:

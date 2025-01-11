@@ -38,8 +38,6 @@ class PhysicsProperties(bpy.types.PropertyGroup):
                                    description="Size of the Points (in meters)", min=0)
     initial_angular_velocity : bpy.props.FloatProperty(name="Initial Angular Velocity",
                                    description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per frame.")
-    initial_moment_of_inertia : bpy.props.FloatProperty(name="Initial Moment of Inertia",
-                                   description="The initial moment of inertia used as reference for the duration of the baked frames.", min=0)
     is_ballistics_preview : bpy.props.BoolProperty(name="Preview Ballistics Curve", default=False)
     ballistics_p0 : bpy.props.FloatVectorProperty(name="Point 0")
     ballistics_p1 : bpy.props.FloatVectorProperty(name="Point 1")

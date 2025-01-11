@@ -97,19 +97,6 @@ class AlignAxisByPoints(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class SetInitialMomentOfInertia(bpy.types.Operator):
-    """Sets the initial moment of inertia to be used for physics baking."""
-    bl_idname = "balance_point.set_angular_values"
-    bl_label = "Set Initial Moment of Inertia"
-
-    def execute(self, context):
-        physics_props = context.scene.bp_physics_properties
-        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
-
-        physics_props.initial_moment_of_inertia = sel_mog.moment_of_inertia
-        return {'FINISHED'}
-
-
 class BakeBPPhysics(bpy.types.Operator):
     """Bakes the rotation and ballistics curve for the given range."""
     bl_idname = "balance_point.bake_physics"
@@ -136,6 +123,10 @@ class BakeBPPhysics(bpy.types.Operator):
         p0 = physics_props.ballistics_p0
         p1 = physics_props.ballistics_p1
 
+        current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+
+        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
             
@@ -144,9 +135,8 @@ class BakeBPPhysics(bpy.types.Operator):
 
             sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', keytype='GENERATED')
 
-            current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
             current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
-            angle += physics_props.initial_angular_velocity * (physics_props.initial_moment_of_inertia / current_moment_of_inertia)
+            angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
         
             # Ballistics
             start_pos = (p0[0], p0[1], p0[2])
