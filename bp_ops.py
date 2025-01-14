@@ -123,6 +123,7 @@ class BakeBPPhysics(bpy.types.Operator):
         p0 = physics_props.ballistics_p0
         p1 = physics_props.ballistics_p1
 
+        bpy.context.scene.frame_set(physics_props.frame_start)
         current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
 
         initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
