@@ -121,6 +121,9 @@ class BakeBPPhysics(bpy.types.Operator):
         p0 = physics_props.ballistics_p0
         p1 = physics_props.ballistics_p1
 
+        # For returning to original frame after operation
+        original_frame = bpy.context.scene.frame_current
+
         bpy.context.scene.frame_set(physics_props.frame_start)
         angle = sel_mog.com_object.rotation_axis_angle[0]
         current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
@@ -149,5 +152,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
             sel_mog.com_object.matrix_world.translation = point_position
             sel_mog.com_object.keyframe_insert(data_path='location', keytype='GENERATED')
+        
+        bpy.context.scene.frame_set(original_frame)
 
         return {'FINISHED'}
