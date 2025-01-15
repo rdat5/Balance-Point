@@ -63,7 +63,7 @@ def draw_bp(self, context):
         if physics_props.frame_end > physics_props.frame_start:
             total_frames = physics_props.frame_end - physics_props.frame_start
             last_point = (p0[0], p0[1], p0[2])
-            for frame in range(1, total_frames + 1):
+            for frame in range(0, total_frames + 1):
                 start_pos = (p0[0], p0[1], p0[2])
                 ref_pos = (p1[0], p1[1], p1[2])
                 gravity = physics_props.gravity
