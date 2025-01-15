@@ -12,6 +12,9 @@ def draw_bp(self, context):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
     physics_props = bpy.context.scene.bp_physics_properties
+
+    sel_mog = bp_mass_groups[physics_props.selected_mog] if physics_props.selected_mog else None
+    com_obj = sel_mog.com_object if sel_mog else None
     # Go through each collection, create a batch, render it
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:
@@ -63,6 +66,8 @@ def draw_bp(self, context):
         if physics_props.frame_end > physics_props.frame_start:
             total_frames = physics_props.frame_end - physics_props.frame_start
             last_point = (p0[0], p0[1], p0[2])
+
+            angle = physics_props.initial_angular_velocity
             for frame in range(0, total_frames + 1):
                 start_pos = (p0[0], p0[1], p0[2])
                 ref_pos = (p1[0], p1[1], p1[2])
@@ -76,11 +81,24 @@ def draw_bp(self, context):
                 # Lines
                 vertex_batch += [last_point, point_position]
                 last_point = point_position
-                pass
+                
+                # # Angle preview
+                if physics_props.is_angular_velocity_preview:
+                    com_x = com_obj.rotation_axis_angle[1]
+                    com_y = com_obj.rotation_axis_angle[2]
+                    com_z = com_obj.rotation_axis_angle[3]
+
+                    angle += physics_props.initial_angular_velocity
+
+                    moi_angle = physics_props.calculated_mois[frame - physics_props.frame_start + 1].angle
+                    original_moi_size = physics_props.calculated_mois[0].moment_of_inertia
+                    current_moi_size = physics_props.calculated_mois[frame - physics_props.frame_start].moment_of_inertia
+                    vertex_batch += transform_indices([(0,0, -1), (0, 0, 0)], physics_props.point_scale * 50 * (current_moi_size / original_moi_size), point_position, moi_angle, (com_x, com_y, com_z))
+                    pass
+        
 
         batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
         batch.draw(shader)
-        pass
 
 
 def get_final_com_shape(group):
@@ -94,9 +112,40 @@ def get_final_com_shape(group):
     return final_shape
 
 
-def transform_indices(vertices, scale, translate_vector):
+def rotate_points(points, angle_deg, axis):
+    # Convert list of tuples to numpy array
+    points_np = numpy.array(points) 
+
+    # Convert angle to radians
+    angle_rad = numpy.radians(angle_deg)
+
+    if numpy.all(axis == 0):
+        return points
+
+    # Normalize the rotation axis
+    axis = axis / numpy.linalg.norm(axis)
+
+    # Create the rotation matrix using Rodrigues' rotation formula
+    a = numpy.cos(angle_rad)
+    b = 1 - numpy.cos(angle_rad)
+    c = numpy.sin(angle_rad)
+    rot_mat = numpy.array([[a + axis[0]**2 * b, axis[0] * axis[1] * b - axis[2] * c, axis[0] * axis[2] * b + axis[1] * c],
+                        [axis[1] * axis[0] * b + axis[2] * c, a + axis[1]**2 * b, axis[1] * axis[2] * b - axis[0] * c],
+                        [axis[2] * axis[0] * b - axis[1] * c, axis[2] * axis[1] * b + axis[0] * c, a + axis[2]**2 * b]])
+
+    # Rotate points
+    rotated_points_np = numpy.dot(points_np, rot_mat.T) 
+
+    # Convert back to list of tuples
+    rotated_points = [tuple(point) for point in rotated_points_np]
+
+    return rotated_points
+
+
+def transform_indices(vertices, scale, translate_vector, angle_deg = 0, axis = (0, 1, 0)):
+    rotated_verts = rotate_points(vertices, angle_deg, axis)
     new_vertices = []
-    for v in vertices:
+    for v in rotated_verts:
         new_vertices.append((
             (v[0] * scale) + translate_vector.x,
             (v[1] * scale) + translate_vector.y,

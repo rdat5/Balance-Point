@@ -234,7 +234,7 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.operator("balance_point.align_axis")
 
-                    # Velocity
+                    # Angular Velocity
                     row = layout.row()
                     row.alignment = 'CENTER'
                     row.label(text="Initial Angular Velocity")
@@ -244,6 +244,8 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     com_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
                     moi = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, com_axis)
                     row.label(text=f"Moment of Inertia: {str(round(moi, 4))} kg·m2")
+                    row = layout.row()
+                    row.operator("balance_point.calculate_angle_preview")
 
                     # Ballistics Curve
                     row = layout.row()

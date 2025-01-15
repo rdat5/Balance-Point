@@ -13,7 +13,7 @@
 
 from .draw import draw_bp
 from .bp_ops import (ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup, 
-                        SetReferencePoint, AlignAxisByPoints, BakeBPPhysics)
+                        SetReferencePoint, AlignAxisByPoints, BakeBPPhysics, CalculateAnglePreview)
 from .mass_ops import (AddMassProps, RemoveMassProps, ToggleActiveProperty, 
                        ToggleActiveProperty, SetActiveTrue, SetActiveFalse, 
                        CalculateVolume, SetDensity)
@@ -52,6 +52,8 @@ classes = (
     MassPropertiesPanel,
     BP_PT_mass_selected,
     PhysicsPanel,
+    CalculatedMOI,
+    CalculateAnglePreview,
     PhysicsProperties,
     AddMassObjectGroup,
     RemoveMassObjectGroup,

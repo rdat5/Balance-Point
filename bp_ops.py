@@ -97,6 +97,48 @@ class AlignAxisByPoints(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class CalculateAnglePreview(bpy.types.Operator):
+    """Calculates and stores Moment of Inertia for the given range."""
+    bl_idname = "balance_point.calculate_angle_preview"
+    bl_label = "Calculate Angle Preview"
+
+    @classmethod
+    def poll(cls, context):
+        physics_props = context.scene.bp_physics_properties
+
+        if physics_props.frame_end <= physics_props.frame_start:
+            return False
+
+        return True
+
+    def execute(self, context):
+        physics_props = context.scene.bp_physics_properties
+        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
+        mois = physics_props.calculated_mois
+
+        mois.clear()
+
+        # For returning to original frame after operation
+        original_frame = bpy.context.scene.frame_current
+
+        bpy.context.scene.frame_set(physics_props.frame_start)
+        angle = sel_mog.com_object.rotation_axis_angle[0]
+        current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+
+        for f in range(physics_props.frame_start, physics_props.frame_end + 1):
+            bpy.context.scene.frame_set(f)
+
+            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+
+            new_moi = mois.add()
+            new_moi.angle = angle
+            new_moi.moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+            angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
+        
+        bpy.context.scene.frame_set(original_frame)
+        return {'FINISHED'}
+
 class BakeBPPhysics(bpy.types.Operator):
     """Bakes the rotation and ballistics curve for the given range."""
     bl_idname = "balance_point.bake_physics"

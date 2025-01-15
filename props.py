@@ -29,6 +29,11 @@ class ComProperties(bpy.types.PropertyGroup):
     mass_density_set: bpy.props.FloatProperty(name="Set Density", default=1.0, soft_min=0)
 
 
+class CalculatedMOI(bpy.types.PropertyGroup):
+    moment_of_inertia: bpy.props.FloatProperty(name="Set Density", default=1.0, soft_min=0)
+    angle : bpy.props.FloatProperty(name="Angle")
+
+
 class PhysicsProperties(bpy.types.PropertyGroup):
     selected_mog : bpy.props.StringProperty(name="Mass Object Group", description="Selected Mass Object Group to use with Physics Tools")
     align_rotation_p1 : bpy.props.FloatVectorProperty(name="Point 1")
@@ -46,3 +51,5 @@ class PhysicsProperties(bpy.types.PropertyGroup):
     frame_start : bpy.props.IntProperty(name="Start Frame", description="First frame of the physics baking range.")
     frame_end : bpy.props.IntProperty(name="End Frame", description="First frame of the physics baking range.")
     frame_rate : bpy.props.IntProperty(name="Frame Rate", default=24, min=1)
+    is_angular_velocity_preview : bpy.props.BoolProperty(name="Preview Angular Velocity", default=False)
+    calculated_mois : bpy.props.CollectionProperty(type=CalculatedMOI)
