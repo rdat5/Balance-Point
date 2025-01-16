@@ -65,6 +65,8 @@ class SetReferencePoint(bpy.types.Operator):
             case 3:
                 physics_props.ballistics_p0 = sel_mog.com_object.matrix_world.translation
                 physics_props.ballistics_p1 = cursor_coords
+        
+        bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
 
