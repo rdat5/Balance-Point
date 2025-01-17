@@ -3,7 +3,7 @@ import gpu
 import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-from .utils import projectile_position
+from .utils import projectile_position, remap
 from .shapes import *
 
 shader = gpu.shader.from_builtin('UNIFORM_COLOR')
@@ -55,50 +55,66 @@ def draw_bp(self, context):
 
     # Ballistics Preview
     if physics_props.is_ballistics_preview:
-        shader.uniform_float("color", (1.0, 1.0, 1.0, 1.0))
-        
-        vertex_batch = []
-        # Points
-        p1 = physics_props.ballistics_p1
-        p0 = physics_props.ballistics_p0
-        vertex_batch += transform_indices(POINT_MARKER, physics_props.point_scale * 2, Vector((p1[0], p1[1], p1[2])))
 
-        if physics_props.frame_end > physics_props.frame_start:
+        if physics_props.frame_end > physics_props.frame_start and physics_props.time_of_flight > 0:
+            point_positions = []
+
             total_frames = physics_props.frame_end - physics_props.frame_start
-            last_point = (p0[0], p0[1], p0[2])
 
-            angle = physics_props.initial_angular_velocity
-            for frame in range(0, total_frames + 1):
+            # Get points
+            p1 = physics_props.ballistics_p1
+            p0 = physics_props.ballistics_p0
+            
+            for frame in range(total_frames + 1):
                 start_pos = (p0[0], p0[1], p0[2])
                 ref_pos = (p1[0], p1[1], p1[2])
                 gravity = physics_props.gravity
                 time_of_flight = float(physics_props.time_of_flight)
                 elapsed_time = float(frame) / physics_props.frame_rate
 
-                point_position = projectile_position(start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
-                vertex_batch += transform_indices(POINT_MARKER, physics_props.point_scale, point_position)
+                point_positions.append(projectile_position(start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
+            
+            # Draw lines
+            for index, point_position in enumerate(point_positions):
+                line_batch = []
+                line_color = float(index) / float(len(point_positions))
+                shader.uniform_float("color", (line_color, line_color, line_color, 1.0))
+                point_coordinate = (point_position[0], point_position[1], point_position[2])
 
-                # Lines
-                vertex_batch += [last_point, point_position]
-                last_point = point_position
-                
-                # # Angle preview
-                if physics_props.is_angular_velocity_preview:
+                if index > 0:
+                    previous_coordinate = point_positions[index - 1]
+                    line_batch += [(previous_coordinate[0], previous_coordinate[1], previous_coordinate[2])]
+                    line_batch += [(point_coordinate[0], point_coordinate[1], point_coordinate[2])]
+            
+                gpu.state.line_width_set(2.0)
+                batch = batch_for_shader(shader, 'LINES', {"pos": line_batch})
+                batch.draw(shader)
+            
+            # Draw points
+            for index, point_position in enumerate(point_positions):
+                point_batch = []
+                shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
+                point_batch += transform_indices(POINT_MARKER, physics_props.point_scale, point_position)
+
+                batch = batch_for_shader(shader, 'LINES', {"pos": point_batch})
+                batch.draw(shader)
+
+            # Draw Angles
+
+            for index, point_position in enumerate(point_positions):
+                if index <= len(physics_props.calculated_mois):
+                    angle_batch = [(0.0, 0.0, 1.0), (0.0, 0.0, -1.0)]
+
                     com_x = com_obj.rotation_axis_angle[1]
                     com_y = com_obj.rotation_axis_angle[2]
                     com_z = com_obj.rotation_axis_angle[3]
 
-                    angle += physics_props.initial_angular_velocity
-
-                    moi_angle = physics_props.calculated_mois[frame - physics_props.frame_start + 1].angle
-                    original_moi_size = physics_props.calculated_mois[0].moment_of_inertia
-                    current_moi_size = physics_props.calculated_mois[frame - physics_props.frame_start].moment_of_inertia
-                    vertex_batch += transform_indices([(0,0, -1), (0, 0, 0)], physics_props.point_scale * 50 * (current_moi_size / original_moi_size), point_position, moi_angle, (com_x, com_y, com_z))
-                    pass
-        
-
-        batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
-        batch.draw(shader)
+                    moi_angle = physics_props.calculated_mois[index].angle
+                    angle_color = float(index) / float(len(point_positions))
+                    shader.uniform_float("color", (angle_color, angle_color, angle_color, 1.0))
+                    gpu.state.line_width_set(1.0)
+                    batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
+                    batch.draw(shader)
 
 
 def get_final_com_shape(group):

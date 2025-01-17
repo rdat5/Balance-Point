@@ -105,3 +105,7 @@ def projectile_position(start_pos, second_pos, gravity, time_of_flight, elapsed_
     z = z0 + v0z * elapsed_time - 0.5 * gravity * elapsed_time**2
 
     return Vector((x, y, z))
+
+
+def remap(old_val, old_min, old_max, new_min, new_max):
+    return (new_max - new_min)*(old_val - old_min) / (old_max - old_min) + new_min
