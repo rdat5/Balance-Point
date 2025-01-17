@@ -77,8 +77,8 @@ def draw_bp(self, context):
             # Draw lines
             for index, point_position in enumerate(point_positions):
                 line_batch = []
-                line_color = float(index) / float(len(point_positions))
-                shader.uniform_float("color", (line_color, line_color, line_color, 1.0))
+                line_color = (1.0, 0.0, 0.0, 1.0) if index + physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                shader.uniform_float("color", line_color)
                 point_coordinate = (point_position[0], point_position[1], point_position[2])
 
                 if index > 0:
