@@ -92,11 +92,9 @@ def draw_bp(self, context):
             
             # Draw points
             for index, point_position in enumerate(point_positions):
-                point_batch = []
                 shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
-                point_batch += transform_indices(POINT_MARKER, physics_props.point_scale, point_position)
-
-                batch = batch_for_shader(shader, 'LINES', {"pos": point_batch})
+                gpu.state.point_size_set(4.0)
+                batch = batch_for_shader(shader, 'POINTS', {"pos": point_positions})
                 batch.draw(shader)
 
             # Draw Angles
