@@ -3,7 +3,7 @@ import gpu
 import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-from .utils import projectile_position, remap
+from .utils import projectile_position, remap, get_com
 from .shapes import *
 
 shader = gpu.shader.from_builtin('UNIFORM_COLOR')
@@ -21,9 +21,29 @@ def draw_bp(self, context):
             if group.visible:
                 # Get color
                 shader.uniform_float("color", (group.color.r, group.color.g, group.color.b, 1.0))
-                # Get shape vertices
-                vertex_batch = get_final_com_shape(group)
+
+                # Draw COM Shape
+                group_com = get_com(group.mass_object_collection.all_objects)
+
+                gpu.state.point_size_set(6.0)
+                batch = batch_for_shader(shader, 'POINTS', {"pos": [group_com]})
+                batch.draw(shader)
+
+                # Draw Floor COM
+                floor_com_location = Vector((group_com[0], group_com[1], group.com_floor_level))
+                floor_com_verts = transform_indices(SHAPE_FLOOR_MARKER, group.scale, floor_com_location)
+                batch = batch_for_shader(shader, 'LINES', {"pos": floor_com_verts})
+                batch.draw(shader)
+
+                # Draw COM line to floor
+                if group.line_to_floor:
+                    line_to_floot_verts = [group_com, (group_com.x, group_com.y, group.com_floor_level)]
+                    batch = batch_for_shader(shader, 'LINES', {"pos": line_to_floot_verts})
+                    batch.draw(shader)
+
+
                 # Draw COM Object rotation axis
+                axis_verts = []
                 if group.show_com_object_axis and group.use_com_object and group.com_object is not None:
                     cx = group.com_object.rotation_axis_angle[1]
                     cy = group.com_object.rotation_axis_angle[2]
@@ -31,9 +51,9 @@ def draw_bp(self, context):
                     axis_vector = numpy.array([cx, cy, cz])
                     axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
                     group_com_loc = Vector((group.com_location[0], group.com_location[1], group.com_location[2]))
-                    vertex_batch += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (axis_unit[0], axis_unit[1], axis_unit[2])], group.axis_scale, group_com_loc)
+                    axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (axis_unit[0], axis_unit[1], axis_unit[2])], group.axis_scale, group_com_loc)
                 # Draw Batch
-                batch = batch_for_shader(shader, 'LINES', {"pos": vertex_batch})
+                batch = batch_for_shader(shader, 'LINES', {"pos": axis_verts})
                 batch.draw(shader)
 
     # Physics Preview
@@ -113,17 +133,6 @@ def draw_bp(self, context):
                     gpu.state.line_width_set(1.0)
                     batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
                     batch.draw(shader)
-
-
-def get_final_com_shape(group):
-    group_com_loc = Vector((group.com_location[0], group.com_location[1], group.com_location[2]))
-    group_com_floor_loc = Vector((group_com_loc.x, group_com_loc.y, group.com_floor_level))
-    com_shape = transform_indices(SHAPE_COM_MARKER, group.scale, group_com_loc)
-    com_floor_shape = transform_indices(SHAPE_FLOOR_MARKER, group.scale, group_com_floor_loc)
-    final_shape = com_shape + com_floor_shape
-    if group.line_to_floor:
-        final_shape += (group_com_loc.to_tuple(), group_com_floor_loc.to_tuple())
-    return final_shape
 
 
 def rotate_points(points, angle_deg, axis):
