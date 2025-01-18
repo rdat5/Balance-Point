@@ -21,10 +21,6 @@ from .ui import *
 from .props import *
 from .center_of_mass import update_mass_group_com
 import bpy
-from mathutils import Vector
-from bpy.app.handlers import depsgraph_update_post
-from bpy.app.handlers import frame_change_post
-from bpy.app import driver_namespace
 bl_info = {
     "name": "Balance Point",
     "author": "Ray Allen Datuin",
@@ -37,9 +33,7 @@ bl_info = {
     "category": "3D View",
 }
 
-
-HANDLER_KEY = "BP_UPDATE_FN"
-
+draw_handler = None
 
 # Class Registration
 
@@ -79,14 +73,11 @@ def register():
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
     bpy.types.Scene.bp_physics_properties = bpy.props.PointerProperty(type=PhysicsProperties)
 
-    # Add depsgraph, frame_change handler callbacks
-    if HANDLER_KEY not in driver_namespace:
-        depsgraph_update_post.append(update_mass_group_com)
-        frame_change_post.append(update_mass_group_com)
-        driver_namespace[HANDLER_KEY] = update_mass_group_com
+    global draw_handler
 
-    bpy.types.SpaceView3D.draw_handler_add(
-        draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
+    bpy.app.handlers.depsgraph_update_post.append(update_mass_group_com)
+    bpy.app.handlers.frame_change_post.append(update_mass_group_com)
+    draw_handler = bpy.types.SpaceView3D.draw_handler_add(draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
 
 
 def unregister():
@@ -97,11 +88,11 @@ def unregister():
     del bpy.types.Scene.bp_mass_object_groups
     del bpy.types.Scene.bp_physics_properties
 
-    # Remove depsgraph, frame_change handler callbacks
-    if HANDLER_KEY in driver_namespace:
-        if driver_namespace[HANDLER_KEY] in depsgraph_update_post:
-            depsgraph_update_post.remove(driver_namespace[HANDLER_KEY])
-            frame_change_post.remove(driver_namespace[HANDLER_KEY])
+    global draw_handler
+
+    bpy.app.handlers.depsgraph_update_post.remove(update_mass_group_com)
+    bpy.app.handlers.frame_change_post.remove(update_mass_group_com)
+    bpy.types.SpaceView3D.draw_handler_remove(draw_handler, 'WINDOW')
 
 
 if __name__ == "__main__":
