@@ -12,10 +12,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from .draw import draw_bp
-from .bp_ops import (ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup, 
-                        SetReferencePoint, AlignAxisByPoints, BakeBPPhysics, CalculateAnglePreview)
-from .mass_ops import (AddMassProps, RemoveMassProps, ToggleActiveProperty, 
-                       ToggleActiveProperty, SetActiveTrue, SetActiveFalse, 
+from .bp_ops import (ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup,
+                     SetReferencePoint, AlignAxisByPoints, BakeBPPhysics, CalculateAnglePreview)
+from .mass_ops import (AddMassProps, RemoveMassProps, ToggleActiveProperty,
+                       ToggleActiveProperty, SetActiveTrue, SetActiveFalse,
                        CalculateVolume, SetDensity)
 from .ui import *
 from .props import *
@@ -69,15 +69,19 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.com_properties = bpy.props.PointerProperty(type=ComProperties)
-    bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(type=MassObjectGroup)
-    bpy.types.Scene.bp_physics_properties = bpy.props.PointerProperty(type=PhysicsProperties)
+    bpy.types.Scene.com_properties = bpy.props.PointerProperty(
+        type=ComProperties)
+    bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(
+        type=MassObjectGroup)
+    bpy.types.Scene.bp_physics_properties = bpy.props.PointerProperty(
+        type=PhysicsProperties)
 
     global draw_handler
 
     bpy.app.handlers.depsgraph_update_post.append(update_mass_group_com)
     bpy.app.handlers.frame_change_post.append(update_mass_group_com)
-    draw_handler = bpy.types.SpaceView3D.draw_handler_add(draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
+    draw_handler = bpy.types.SpaceView3D.draw_handler_add(
+        draw_bp, (None, None), 'WINDOW', 'POST_VIEW')
 
 
 def unregister():

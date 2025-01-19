@@ -2,10 +2,12 @@ import bpy
 from .utils import get_total_mass, is_in_collection_group, get_moment_of_inertia
 from mathutils import Vector
 
+
 class BalancePointPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Balance Point"
+
 
 class BalancePointMain(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_Main"
@@ -18,12 +20,14 @@ class BalancePointMain(BalancePointPanel, bpy.types.Panel):
         row.scale_y = 2.0
 
         track_icon = 'TRACKER' if com_props.com_tracking_on else 'DOT'
-        track_text = 'Enabled' if com_props.com_tracking_on else 'Disabled'        
-        row.prop(com_props, "com_tracking_on", toggle=1, icon=track_icon, text="CoM Tracking " + track_text)
+        track_text = 'Enabled' if com_props.com_tracking_on else 'Disabled'
+        row.prop(com_props, "com_tracking_on", toggle=1,
+                 icon=track_icon, text="CoM Tracking " + track_text)
 
         draw_icon = 'HIDE_OFF' if com_props.com_drawing_on else 'HIDE_ON'
         draw_text = 'Enabled' if com_props.com_drawing_on else 'Disabled'
-        row.prop(com_props, "com_drawing_on", toggle=1, icon=draw_icon, text="CoM Drawing " + draw_text)
+        row.prop(com_props, "com_drawing_on", toggle=1,
+                 icon=draw_icon, text="CoM Drawing " + draw_text)
 
 
 class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
@@ -50,7 +54,8 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             row.use_property_decorate = False
             row.prop(group, "mass_object_collection", text="Mass Objects")
             row = col.row()
-            row.prop(group, "include_secondary_collection", text = "" if group.include_secondary_collection else "Include Secondary Mass Object Collection")
+            row.prop(group, "include_secondary_collection",
+                     text="" if group.include_secondary_collection else "Include Secondary Mass Object Collection")
             if group.include_secondary_collection:
                 row.prop(group, "secondary_mass_object_collection")
             row = col.row(align=True)
@@ -63,11 +68,13 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             sub.alignment = 'RIGHT'
             sub.prop(group, "line_to_floor")
             row = col.row()
-            row.prop(group, "use_com_object", text = "" if group.use_com_object else "Use COM Object")
+            row.prop(group, "use_com_object",
+                     text="" if group.use_com_object else "Use COM Object")
             if group.use_com_object:
                 row.prop(group, "com_object")
                 row = col.row()
-                row.prop(group, "is_rig_pinned", text="" if group.is_rig_pinned else "Pin Rig's COM to COM Object")
+                row.prop(group, "is_rig_pinned",
+                         text="" if group.is_rig_pinned else "Pin Rig's COM to COM Object")
                 if group.is_rig_pinned:
                     row.prop(group, "pinned_rig")
             row = col.row()
@@ -76,21 +83,24 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             sub.alignment = 'RIGHT'
             total_mass_text = '0'
             if group.mass_object_collection is not None:
-                total_mass_text = round(get_total_mass(group.mass_object_collection.all_objects), 4)
+                total_mass_text = round(get_total_mass(
+                    group.mass_object_collection.all_objects), 4)
             sub.label(text="{} kg".format(total_mass_text))
             row = col.row()
             row.label(text="Center of Mass:")
             sub = row.row()
             sub.alignment = 'RIGHT'
             gcm = group.com_location
-            sub.label(text="({}, {}, {})".format(round(gcm[0], 4), round(gcm[1], 4), round(gcm[2], 4)))
-        
+            sub.label(text="({}, {}, {})".format(
+                round(gcm[0], 4), round(gcm[1], 4), round(gcm[2], 4)))
+
         row = layout.row()
         row.operator('balance_point.massgroup_remove', icon='REMOVE')
         row = layout.row()
         add_group_scale = 4.0 if len(bp_mass_groups) < 1 else 1.5
         row.scale_y = add_group_scale
         row.operator('balance_point.massgroup_add', icon='ADD')
+
 
 class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
     """Mass properties panel"""
@@ -107,7 +117,8 @@ class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
         row.label(text="Mass Properties")
         row = layout.row()
         row.operator("balance_point.massprop_add", text="Add", icon='ADD')
-        row.operator("balance_point.massprop_del", text="Remove", icon='REMOVE')
+        row.operator("balance_point.massprop_del",
+                     text="Remove", icon='REMOVE')
         row = layout.row()
         row.alignment = 'CENTER'
         row.label(text="Density")
@@ -115,7 +126,8 @@ class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
         row.prop(com_props, "mass_density_set", text="Density")
         sub = row.row()
         sub.scale_x = 1.5
-        sub.operator("balance_point.set_density", icon='OUTLINER_OB_POINTCLOUD')
+        sub.operator("balance_point.set_density",
+                     icon='OUTLINER_OB_POINTCLOUD')
         row = layout.row()
         row.alignment = 'CENTER'
         row.label(text="Volume")
@@ -147,21 +159,24 @@ class BP_PT_mass_selected(BalancePointPanel, bpy.types.Panel):
 
         row = layout.row()
         row.alignment = 'RIGHT'
-        row.label(text="Total Mass: {} kg".format(round(get_total_mass(sel_obj), 4)))
+        row.label(text="Total Mass: {} kg".format(
+            round(get_total_mass(sel_obj), 4)))
 
         for obj in sel_obj:
             if obj.get('volume') is not None:
                 box = layout.box()
 
                 row = box.row()
-                obj_active = 'RADIOBUT_ON' if obj.get('active') else 'RADIOBUT_OFF'
+                obj_active = 'RADIOBUT_ON' if obj.get(
+                    'active') else 'RADIOBUT_OFF'
                 row.label(text="", icon=obj_active)
                 row.label(text=obj.name)
                 sub = row.row()
                 sub.alignment = 'RIGHT'
-                obj_mass = round(obj.get("density") * obj.get("volume") * obj.get("active"), 4)
+                obj_mass = round(obj.get("density") *
+                                 obj.get("volume") * obj.get("active"), 4)
                 sub.label(text="Mass: {} kg".format(obj_mass))
-                
+
                 row = box.row()
                 row.prop(obj, '["density"]')
                 row.prop(obj, '["volume"]')
@@ -177,7 +192,8 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
         bp_mass_groups = context.scene.bp_mass_object_groups
 
         row = layout.row()
-        row.prop_search(physics_props, "selected_mog", context.scene, "bp_mass_object_groups")
+        row.prop_search(physics_props, "selected_mog",
+                        context.scene, "bp_mass_object_groups")
         row = layout.row()
         if is_in_collection_group(physics_props.selected_mog, bp_mass_groups):
             sel_mog = bp_mass_groups[physics_props.selected_mog]
@@ -189,19 +205,22 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
 
                 if sel_mog.com_object.rotation_mode != 'AXIS_ANGLE':
                     row = row.row()
-                    row.label(text="Set the COM Object's rotation mode to 'Axis Angle'")
+                    row.label(
+                        text="Set the COM Object's rotation mode to 'Axis Angle'")
                 else:
                     row = layout.row()
                     row.prop(sel_mog, "show_com_object_axis")
                     row = layout.row()
                     row.prop(sel_mog, "axis_scale")
                     row = layout.row()
-                    row.prop(sel_mog.com_object, "rotation_axis_angle", text="")
+                    row.prop(sel_mog.com_object,
+                             "rotation_axis_angle", text="")
                     row = layout.row()
                     row.label(text="Moment of Inertia: ")
                     sub = row.row()
                     sub.alignment = 'RIGHT'
-                    sub.label(text="{} kg·m2".format(round(sel_mog.moment_of_inertia, 4)))
+                    sub.label(text="{} kg·m2".format(
+                        round(sel_mog.moment_of_inertia, 4)))
 
                     # Axis Alignment
                     row = layout.row()
@@ -218,7 +237,8 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = box.row()
                     row.prop(physics_props, "align_rotation_p1")
                     row = box.row()
-                    rp1 = row.operator("balance_point.referencepoint_set", text="Set Reference Point 1 From 3D Cursor")
+                    rp1 = row.operator(
+                        "balance_point.referencepoint_set", text="Set Reference Point 1 From 3D Cursor")
                     rp1.target = 1
 
                     # Right
@@ -227,7 +247,8 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = box.row()
                     row.prop(physics_props, "align_rotation_p2")
                     row = box.row()
-                    rp2 = row.operator("balance_point.referencepoint_set", text="Set Reference Point 2 From 3D Cursor")
+                    rp2 = row.operator(
+                        "balance_point.referencepoint_set", text="Set Reference Point 2 From 3D Cursor")
                     rp2.target = 2
 
                     # Align Axis
@@ -241,9 +262,12 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.prop(physics_props, "initial_angular_velocity")
                     row = layout.row()
-                    com_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
-                    moi = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, com_axis)
-                    row.label(text=f"Moment of Inertia: {str(round(moi, 4))} kg·m2")
+                    com_axis = Vector(
+                        (sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+                    moi = get_moment_of_inertia(
+                        sel_mog.mass_object_collection.all_objects, sel_mog.com_location, com_axis)
+                    row.label(
+                        text=f"Moment of Inertia: {str(round(moi, 4))} kg·m2")
                     row = layout.row()
                     row.operator("balance_point.calculate_angle_preview")
 
@@ -256,7 +280,8 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.prop(physics_props, "ballistics_p1")
                     row = layout.row()
-                    bp1 = row.operator("balance_point.referencepoint_set", text="Set Ballistics Reference Point From 3D Cursor")
+                    bp1 = row.operator("balance_point.referencepoint_set",
+                                       text="Set Ballistics Reference Point From 3D Cursor")
                     bp1.target = 3
                     row = layout.row()
                     row.prop(physics_props, "gravity")
@@ -274,9 +299,11 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.prop(physics_props, "frame_rate")
                     row = layout.row()
-                    row.label(text=f"Duration: {physics_props.frame_end - physics_props.frame_start}")
+                    row.label(
+                        text=f"Duration: {physics_props.frame_end - physics_props.frame_start}")
                     row = layout.row()
                     row.operator("balance_point.bake_physics")
             else:
                 row = layout.row()
-                row.label(text="Add a COM Object and a Pinned Rig to use the Physics Tools.")
+                row.label(
+                    text="Add a COM Object and a Pinned Rig to use the Physics Tools.")

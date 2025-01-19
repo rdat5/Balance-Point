@@ -160,7 +160,7 @@ class SetDensity(bpy.types.Operator):
     def execute(self, context):
         sel_obj = context.selected_objects
         com_props = context.scene.com_properties
-        
+
         for obj in sel_obj:
             if obj.get('density') is not None:
                 obj['density'] = com_props.mass_density_set
@@ -173,6 +173,7 @@ def set_active(obj, act):
         obj.display_type = 'SOLID'
     elif act == False:
         obj.display_type = 'WIRE'
+
 
 def get_volume(obj):
     volume = 0.0
