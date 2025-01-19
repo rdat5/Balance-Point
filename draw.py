@@ -121,15 +121,17 @@ def draw_bp(self, context):
 
             for index, point_position in enumerate(point_positions):
                 if index <= len(physics_props.calculated_mois):
-                    angle_batch = [(0.0, 0.0, 1.0), (0.0, 0.0, -1.0)]
+                    angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0), (-1.0, 0.0, 0.0), (1.0, 0.0, 0.0)]
 
                     com_x = com_obj.rotation_axis_angle[1]
                     com_y = com_obj.rotation_axis_angle[2]
                     com_z = com_obj.rotation_axis_angle[3]
 
+                    angle_color = (1.0, 0.5, 0.0, 1.0) if index + physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.5, 1.0)
+
                     moi_angle = physics_props.calculated_mois[index].angle
-                    angle_color = float(index) / float(len(point_positions))
-                    shader.uniform_float("color", (angle_color, angle_color, angle_color, 1.0))
+                    # angle_color = float(index) / float(len(point_positions))
+                    shader.uniform_float("color", angle_color)
                     gpu.state.line_width_set(1.0)
                     batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
                     batch.draw(shader)
