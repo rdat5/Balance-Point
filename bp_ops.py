@@ -1,6 +1,6 @@
 import bpy
 from math import radians
-from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia, projectile_position
+from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia, projectile_position, get_com
 from mathutils import Vector
 
 class ToggleDrawing(bpy.types.Operator):
@@ -123,19 +123,22 @@ class CalculateAnglePreview(bpy.types.Operator):
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
 
+        # Get Center of Mass
+        group_com = get_com(sel_mog.mass_object_collection.all_objects)
+
         bpy.context.scene.frame_set(physics_props.frame_start)
         angle = sel_mog.com_object.rotation_axis_angle[0]
         current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
-        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
 
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
 
-            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
 
             new_moi = mois.add()
             new_moi.angle = angle
-            new_moi.moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+            new_moi.moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
             angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
         
         bpy.context.scene.frame_set(original_frame)
@@ -161,7 +164,10 @@ class BakeBPPhysics(bpy.types.Operator):
         physics_props = context.scene.bp_physics_properties
         sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
 
-        physics_props.ballistics_p0 = sel_mog.com_object.matrix_world.translation
+        # Get Center of Mass
+        group_com = get_com(sel_mog.mass_object_collection.all_objects)
+
+        physics_props.ballistics_p0 = group_com
         p0 = physics_props.ballistics_p0
         p1 = physics_props.ballistics_p1
 
@@ -172,7 +178,7 @@ class BakeBPPhysics(bpy.types.Operator):
         angle = sel_mog.com_object.rotation_axis_angle[0]
         current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
 
-        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
 
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
@@ -182,7 +188,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
             sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', keytype='GENERATED')
 
-            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, sel_mog.com_location, current_axis)
+            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
             angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
         
             # Ballistics

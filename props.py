@@ -8,8 +8,6 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     com_floor_level: bpy.props.FloatProperty(name="Floor Level", default=0.0)
     line_to_floor: bpy.props.BoolProperty(
         name="Draw Line to Floor", default=False)
-    com_location: bpy.props.FloatVectorProperty(
-        name="Location of Center of Mass")
     color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     use_com_object: bpy.props.BoolProperty(

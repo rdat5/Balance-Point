@@ -1,5 +1,5 @@
 import bpy
-from .utils import get_total_mass, is_in_collection_group, get_moment_of_inertia
+from .utils import get_total_mass, is_in_collection_group, get_moment_of_inertia, get_com
 from mathutils import Vector
 
 
@@ -90,9 +90,9 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             row.label(text="Center of Mass:")
             sub = row.row()
             sub.alignment = 'RIGHT'
-            gcm = group.com_location
+            center_of_mass = get_com(group.mass_object_collection.all_objects)
             sub.label(text="({}, {}, {})".format(
-                round(gcm[0], 4), round(gcm[1], 4), round(gcm[2], 4)))
+                round(center_of_mass[0], 4), round(center_of_mass[1], 4), round(center_of_mass[2], 4)))
 
         row = layout.row()
         row.operator('balance_point.massgroup_remove', icon='REMOVE')
@@ -262,10 +262,11 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.prop(physics_props, "initial_angular_velocity")
                     row = layout.row()
+                    center_of_mass = get_com(sel_mog.mass_object_collection.all_objects)
                     com_axis = Vector(
                         (sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
                     moi = get_moment_of_inertia(
-                        sel_mog.mass_object_collection.all_objects, sel_mog.com_location, com_axis)
+                        sel_mog.mass_object_collection.all_objects, center_of_mass, com_axis)
                     row.label(
                         text=f"Moment of Inertia: {str(round(moi, 4))} kg·m2")
                     row = layout.row()

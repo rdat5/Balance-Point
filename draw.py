@@ -58,7 +58,7 @@ def draw_bp(self, context):
                     axis_vector = numpy.array([cx, cy, cz])
                     axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
                     group_com_loc = Vector(
-                        (group.com_location[0], group.com_location[1], group.com_location[2]))
+                        (group_com[0], group_com[1], group_com[2]))
                     axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
                         axis_unit[0], axis_unit[1], axis_unit[2])], group.axis_scale, group_com_loc)
                 # Draw Batch
