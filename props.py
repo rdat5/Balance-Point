@@ -18,8 +18,6 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         name="Pin Rig's COM to COM Object", default=False)
     pinned_rig: bpy.props.PointerProperty(
         name="Pinned Rig", type=bpy.types.Object)
-    scale: bpy.props.FloatProperty(name="CoM Marker Scale", default=0.05,
-                                   description="Size of the CoM Markers (in meters)", min=0)
     include_secondary_collection: bpy.props.BoolProperty(
         name="Include Secondary Mass Object Collection", default=False)
     secondary_mass_object_collection: bpy.props.PointerProperty(

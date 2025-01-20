@@ -36,7 +36,7 @@ def draw_bp(self, context):
                 floor_com_location = Vector(
                     (group_com[0], group_com[1], group.com_floor_level))
                 floor_com_verts = transform_indices(
-                    SHAPE_FLOOR_MARKER, group.scale, floor_com_location)
+                    SHAPE_FLOOR_MARKER, 0.05, floor_com_location)
                 batch = batch_for_shader(
                     shader, 'LINES', {"pos": floor_com_verts})
                 batch.draw(shader)

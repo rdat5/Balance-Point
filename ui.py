@@ -59,7 +59,6 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             if group.include_secondary_collection:
                 row.prop(group, "secondary_mass_object_collection")
             row = col.row(align=True)
-            row.prop(group, "scale")
             row.scale_x = 0.3
             row.prop(group, "color", text="")
             row = col.row()
