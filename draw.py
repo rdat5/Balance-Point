@@ -60,7 +60,7 @@ def draw_bp(self, context):
                     group_com_loc = Vector(
                         (group_com[0], group_com[1], group_com[2]))
                     axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
-                        axis_unit[0], axis_unit[1], axis_unit[2])], group.axis_scale, group_com_loc)
+                        axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com_loc)
                 # Draw Batch
                 batch = batch_for_shader(shader, 'LINES', {"pos": axis_verts})
                 batch.draw(shader)

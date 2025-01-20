@@ -211,8 +211,6 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.prop(sel_mog, "show_com_object_axis")
                     row = layout.row()
-                    row.prop(sel_mog, "axis_scale")
-                    row = layout.row()
                     row.prop(sel_mog.com_object,
                              "rotation_axis_angle", text="")
                     row = layout.row()
