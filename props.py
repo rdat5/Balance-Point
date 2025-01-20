@@ -22,8 +22,6 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         name="Include Secondary Mass Object Collection", default=False)
     secondary_mass_object_collection: bpy.props.PointerProperty(
         name="Secondary Mass Object Collection", type=bpy.types.Collection)
-    show_com_object_axis: bpy.props.BoolProperty(
-        name="Show Rotation Axis of COM Object", default=False)
 
 
 class ComProperties(bpy.types.PropertyGroup):
@@ -44,6 +42,8 @@ class CalculatedMOI(bpy.types.PropertyGroup):
 class PhysicsProperties(bpy.types.PropertyGroup):
     selected_mog: bpy.props.StringProperty(
         name="Mass Object Group", description="Selected Mass Object Group to use with Physics Tools")
+    show_com_object_axis: bpy.props.BoolProperty(
+        name="Show Rotation Axis of COM Object", default=False)
     align_rotation_p1: bpy.props.FloatVectorProperty(name="Point 1")
     align_rotation_p2: bpy.props.FloatVectorProperty(name="Point 2")
     is_align_preview: bpy.props.BoolProperty(

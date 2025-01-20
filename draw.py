@@ -51,7 +51,7 @@ def draw_bp(self, context):
 
                 # Draw COM Object rotation axis
                 axis_verts = []
-                if group.show_com_object_axis and group.use_com_object and group.com_object is not None:
+                if physics_props.show_com_object_axis and group.use_com_object and group.com_object is not None:
                     cx = group.com_object.rotation_axis_angle[1]
                     cy = group.com_object.rotation_axis_angle[2]
                     cz = group.com_object.rotation_axis_angle[3]

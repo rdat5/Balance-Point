@@ -208,7 +208,7 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                         text="Set the COM Object's rotation mode to 'Axis Angle'")
                 else:
                     row = layout.row()
-                    row.prop(sel_mog, "show_com_object_axis")
+                    row.prop(physics_props, "show_com_object_axis")
                     row = layout.row()
                     row.prop(sel_mog.com_object,
                              "rotation_axis_angle", text="")
