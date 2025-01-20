@@ -219,8 +219,11 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row.label(text="Moment of Inertia: ")
                     sub = row.row()
                     sub.alignment = 'RIGHT'
+                    center_of_mass = get_com(sel_mog.mass_object_collection.all_objects)
+                    current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+                    moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
                     sub.label(text="{} kg·m2".format(
-                        round(sel_mog.moment_of_inertia, 4)))
+                        round(moment_of_inertia, 4)))
 
                     # Axis Alignment
                     row = layout.row()
