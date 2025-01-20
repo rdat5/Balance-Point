@@ -19,7 +19,7 @@ def draw_bp(self, context):
     # Go through each collection, create a batch, render it
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:
-            if group.visible:
+            if group.visible and group.mass_object_collection is not None:
                 # Get color
                 shader.uniform_float(
                     "color", (group.color.r, group.color.g, group.color.b, 1.0))
