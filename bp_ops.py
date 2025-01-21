@@ -21,8 +21,20 @@ class AddMassObjectGroup(bpy.types.Operator):
     bl_label = "Add new Mass Object Group"
 
     def execute(self, context):
+        scene = context.scene
+
+        def get_unique_name(base_name, collection):
+            existing_names = {item.name for item in collection}
+            unique_name = base_name
+            suffix = 1
+            while unique_name in existing_names:
+                unique_name = f"{base_name}.{suffix:03}"
+                suffix += 1
+            return unique_name
+
         new_item = bpy.context.scene.bp_mass_object_groups.add()
-        new_item.name = f"Mass Object Group {len(bpy.context.scene.bp_mass_object_groups)}"
+        new_name = get_unique_name("Mass Object Group {:d}".format(len(scene.bp_mass_object_groups)), scene.bp_mass_object_groups)
+        new_item.name = new_name
         return {'FINISHED'}
 
 
