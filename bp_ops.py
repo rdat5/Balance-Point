@@ -29,17 +29,13 @@ class AddMassObjectGroup(bpy.types.Operator):
 class RemoveMassObjectGroup(bpy.types.Operator):
     """Adds a new Mass Object Group"""
     bl_idname = "balance_point.massgroup_remove"
-    bl_label = "Remove last Mass Object Group"
-
-    @classmethod
-    def poll(cls, context):
-        bp_mass_groups = context.scene.bp_mass_object_groups
-
-        return len(bp_mass_groups) > 0
+    bl_label = "Remove selected Mass Object Group"
 
     def execute(self, context):
-        if len(bpy.context.scene.bp_mass_object_groups) > 0:
-            bpy.context.scene.bp_mass_object_groups.remove(len(bpy.context.scene.bp_mass_object_groups) - 1)
+        scene = context.scene
+        index = scene.bp_group_index
+        scene.bp_mass_object_groups.remove(index)
+        scene.bp_group_index = max(0, index - 1)
         return {'FINISHED'}
 
 
