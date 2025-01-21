@@ -41,6 +41,8 @@ draw_handler = None
 classes = (
     MassObjectGroup,
     ComProperties,
+    MY_UL_List,
+    NewBPMain,
     BalancePointMain,
     BP_PT_mass_object_groups,
     MassPropertiesPanel,
@@ -75,6 +77,8 @@ def register():
         type=MassObjectGroup)
     bpy.types.Scene.bp_physics_properties = bpy.props.PointerProperty(
         type=PhysicsProperties)
+    bpy.types.Scene.bp_group_index = bpy.props.IntProperty(
+        name="Active Index")
 
     global draw_handler
 
@@ -91,6 +95,7 @@ def unregister():
     del bpy.types.Scene.com_properties
     del bpy.types.Scene.bp_mass_object_groups
     del bpy.types.Scene.bp_physics_properties
+    del bpy.types.Scene.bp_group_index
 
     global draw_handler
 

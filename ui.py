@@ -9,6 +9,31 @@ class BalancePointPanel(bpy.types.Panel):
     bl_category = "Balance Point"
 
 
+class MY_UL_List(bpy.types.UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_property, index):
+        row = layout.row(align=True)
+        row.prop(item, "name", text="", emboss=False)
+        row.prop(item, "color", text="", emboss=True)
+        row.prop(item, "visible", text="",
+                 icon='HIDE_OFF' if item.visible else 'HIDE_ON', emboss=False)
+
+
+class NewBPMain(BalancePointPanel, bpy.types.Panel):
+    bl_idname = "BP_PT_Main_new"
+    bl_label = "Balance Point New"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        
+        row = layout.row(align=True)
+        row.template_list("MY_UL_List", "my_custom_list", scene,
+                             "bp_mass_object_groups", scene, "bp_group_index", rows=4)
+        col = row.column(align=True)
+        col.operator("balance_point.massgroup_add", icon='ADD', text="")
+        col.operator("balance_point.massgroup_remove", icon='REMOVE', text="")
+
+
 class BalancePointMain(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_Main"
     bl_label = "Balance Point"
