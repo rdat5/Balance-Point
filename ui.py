@@ -89,7 +89,9 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             row.label(text="Center of Mass:")
             sub = row.row()
             sub.alignment = 'RIGHT'
-            center_of_mass = get_com(group.mass_object_collection.all_objects)
+            center_of_mass = (0.0, 0.0, 0.0)
+            if group.mass_object_collection is not None:
+                center_of_mass = get_com(group.mass_object_collection.all_objects)
             sub.label(text="({}, {}, {})".format(
                 round(center_of_mass[0], 4), round(center_of_mass[1], 4), round(center_of_mass[2], 4)))
 
