@@ -43,6 +43,13 @@ class RemoveMassObjectGroup(bpy.types.Operator):
     bl_idname = "balance_point.massgroup_remove"
     bl_label = "Remove selected Mass Object Group"
 
+    @classmethod
+    def poll(cls, context):
+        scene = context.scene
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        return selected_index < len(mass_object_groups)
+
     def execute(self, context):
         scene = context.scene
         index = scene.bp_group_index
