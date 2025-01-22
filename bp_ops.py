@@ -12,7 +12,7 @@ class ToggleDrawing(bpy.types.Operator):
         com_props = context.scene.com_properties
 
         com_props.com_drawing_on = not com_props.com_drawing_on
-        bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
+        bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
 class AddMassObjectGroup(bpy.types.Operator):
