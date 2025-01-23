@@ -39,7 +39,7 @@ class AddMassObjectGroup(bpy.types.Operator):
 
 
 class RemoveMassObjectGroup(bpy.types.Operator):
-    """Adds a new Mass Object Group"""
+    """Removes a new Mass Object Group"""
     bl_idname = "balance_point.massgroup_remove"
     bl_label = "Remove selected Mass Object Group"
 
