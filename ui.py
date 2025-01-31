@@ -12,10 +12,11 @@ class BalancePointPanel(bpy.types.Panel):
 class MY_UL_List(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_property, index):
         row = layout.row(align=True)
+        row.prop(item, "visible", text="", emboss=True)
         row.prop(item, "name", text="", emboss=False)
-        row.prop(item, "color", text="", emboss=True)
-        row.prop(item, "visible", text="",
-                 icon='HIDE_OFF' if item.visible else 'HIDE_ON', emboss=False)
+        color_col = row.column()
+        color_col.scale_x = 0.4
+        color_col.prop(item, "color", text="", emboss=True)
 
 
 class NewBPMain(BalancePointPanel, bpy.types.Panel):
@@ -25,14 +26,61 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        
-        row = layout.row(align=True)
+        com_props = scene.com_properties
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(mass_object_groups) else None
+
+        row = layout.row()
+        row.alignment = 'CENTER'
+        row.label(text="Mass Object Groups")
+        row = layout.row()
         row.template_list("MY_UL_List", "my_custom_list", scene,
-                             "bp_mass_object_groups", scene, "bp_group_index", rows=4)
+                             "bp_mass_object_groups", scene, "bp_group_index", rows=3)
         col = row.column(align=True)
         col.operator("balance_point.massgroup_add", icon='ADD', text="")
         col.operator("balance_point.massgroup_remove", icon='REMOVE', text="")
+        col.separator()
+        draw_icon = 'HIDE_OFF' if com_props.com_drawing_on else 'HIDE_ON'
+        col.prop(com_props, "com_drawing_on", toggle=1,
+                 icon=draw_icon, text="")
+        
+        if selected_mog is not None:
+            box = layout.box()
+            # box.use_property_split = True
+            row = box.row()
+            # MOG Settings
+            row.alignment = 'CENTER'
+            row.label(text=selected_mog.name + " Settings")
+            # Collection
+            main_box = box.box()
+            row = main_box.row()
+            row.scale_y = 1.5
+            row.prop(selected_mog, "mass_object_collection", text="Mass Collection")
 
+            # MOG Info
+            info_row = main_box.row()
+            info_row.alignment = 'CENTER'
+            group_com = (0.0, 0.0, 0.0)
+            if selected_mog.mass_object_collection is not None:
+                group_com = get_com(selected_mog.mass_object_collection.all_objects)
+            info_row.label(text="Center of Mass: ({}, {}, {})".format(
+                round(group_com[0], 3), round(group_com[1], 3), round(group_com[2], 3)))
+            total_mass = 0
+            if selected_mog.mass_object_collection is not None:
+                total_mass = get_total_mass(selected_mog.mass_object_collection.all_objects)
+            info_row.label(text="Total Mass: {} kg".format(round(total_mass, 3)))
+
+            # Pin
+            com_obj_row = box.row()
+            com_obj_row.prop(selected_mog, "use_com_object",
+                             text="")
+            com_obj_row.prop(selected_mog, "com_object")
+            pin_row = box.row()
+            pin_row.prop(selected_mog, "is_rig_pinned",
+                         text="")
+            pin_row.prop(selected_mog, "pinned_rig")
+            pin_row.enabled = selected_mog.use_com_object and selected_mog.com_object is not None
 
 class BalancePointMain(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_Main"
