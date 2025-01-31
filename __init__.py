@@ -41,7 +41,7 @@ draw_handler = None
 classes = (
     MassObjectGroup,
     ComProperties,
-    MY_UL_List,
+    BP_UL_List,
     NewBPMain,
     BalancePointMain,
     BP_PT_mass_object_groups,

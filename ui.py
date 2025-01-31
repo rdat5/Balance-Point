@@ -9,7 +9,7 @@ class BalancePointPanel(bpy.types.Panel):
     bl_category = "Balance Point"
 
 
-class MY_UL_List(bpy.types.UIList):
+class BP_UL_List(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_property, index):
         row = layout.row(align=True)
         row.prop(item, "visible", text="", emboss=True)
@@ -35,7 +35,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
         row.alignment = 'CENTER'
         row.label(text="Mass Object Groups")
         row = layout.row()
-        row.template_list("MY_UL_List", "my_custom_list", scene,
+        row.template_list("BP_UL_List", "my_custom_list", scene,
                              "bp_mass_object_groups", scene, "bp_group_index", rows=3)
         col = row.column(align=True)
         col.operator("balance_point.massgroup_add", icon='ADD', text="")
