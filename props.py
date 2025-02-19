@@ -10,6 +10,8 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         name="Draw Line to Floor", default=False)
     color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
+    com_location: bpy.props.FloatVectorProperty(name="CoM Location", description="Location of the CoM", default=(
+        0, 0, 0))
     # use_com_object: bpy.props.BoolProperty(
     #     name="Use COM Object", default=False)
     # com_object: bpy.props.PointerProperty(

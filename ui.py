@@ -59,13 +59,10 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog, "mass_object_collection", text="Mass Collection")
 
             # MOG Info
+            com_row = main_box.row()
+            com_row.prop(selected_mog, "com_location")
             info_row = main_box.row()
             info_row.alignment = 'CENTER'
-            group_com = (0.0, 0.0, 0.0)
-            if selected_mog.mass_object_collection is not None:
-                group_com = get_com(selected_mog.mass_object_collection.all_objects)
-            info_row.label(text="Center of Mass: ({}, {}, {})".format(
-                round(group_com[0], 3), round(group_com[1], 3), round(group_com[2], 3)))
             total_mass = 0
             if selected_mog.mass_object_collection is not None:
                 total_mass = get_total_mass(selected_mog.mass_object_collection.all_objects)

@@ -25,4 +25,7 @@ def update_mass_group_com(scene):
                     
     #                 if mass_group.use_com_object and mass_group.com_object is not None:
     #                     mass_group.com_object.matrix_world.translation = mgc
+    for group in bp_mass_groups:
+        if group.mass_object_collection is not None:
+            group.com_location = get_com(group.mass_object_collection.all_objects)
     pass
