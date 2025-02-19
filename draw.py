@@ -10,36 +10,35 @@ shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
 
 def draw_bp(self, context):
-    # com_props = bpy.context.scene.com_properties
-    # bp_mass_groups = bpy.context.scene.bp_mass_object_groups
-    # physics_props = bpy.context.scene.bp_physics_properties
+    com_props = bpy.context.scene.com_properties
+    bp_mass_groups = bpy.context.scene.bp_mass_object_groups
+    physics_props = bpy.context.scene.bp_physics_properties
 
-    # sel_mog = bp_mass_groups[physics_props.selected_mog] if physics_props.selected_mog else None
-    # com_obj = sel_mog.com_object if sel_mog else None
-    # # Go through each collection, create a batch, render it
-    # if com_props.com_drawing_on and len(bp_mass_groups) > 0:
-    #     for group in bp_mass_groups:
-    #         if group.visible and group.mass_object_collection is not None:
-    #             # Get color
-    #             shader.uniform_float(
-    #                 "color", (group.color.r, group.color.g, group.color.b, 1.0))
+    sel_mog = bp_mass_groups[physics_props.selected_mog] if physics_props.selected_mog else None
+    # Go through each collection, create a batch, render it
+    if com_props.com_drawing_on and len(bp_mass_groups) > 0:
+        for group in bp_mass_groups:
+            if group.visible and group.mass_object_collection is not None:
+                # Get color
+                shader.uniform_float(
+                    "color", (group.color.r, group.color.g, group.color.b, 1.0))
 
-    #             # Draw COM Shape
-    #             group_com = get_com(group.mass_object_collection.all_objects)
+                # Draw COM Shape
+                group_com = get_com(group.mass_object_collection.all_objects)
 
-    #             gpu.state.point_size_set(6.0)
-    #             batch = batch_for_shader(
-    #                 shader, 'POINTS', {"pos": [group_com]})
-    #             batch.draw(shader)
+                gpu.state.point_size_set(6.0)
+                batch = batch_for_shader(
+                    shader, 'POINTS', {"pos": [group_com]})
+                batch.draw(shader)
 
-    #             # Draw Floor COM
-    #             floor_com_location = Vector(
-    #                 (group_com[0], group_com[1], group.com_floor_level))
-    #             floor_com_verts = transform_indices(
-    #                 SHAPE_FLOOR_MARKER, 0.05, floor_com_location)
-    #             batch = batch_for_shader(
-    #                 shader, 'LINES', {"pos": floor_com_verts})
-    #             batch.draw(shader)
+                # Draw Floor COM
+                floor_com_location = Vector(
+                    (group_com[0], group_com[1], group.com_floor_level))
+                floor_com_verts = transform_indices(
+                    SHAPE_FLOOR_MARKER, 0.05, floor_com_location)
+                batch = batch_for_shader(
+                    shader, 'LINES', {"pos": floor_com_verts})
+                batch.draw(shader)
 
     #             # Draw COM line to floor
     #             if group.line_to_floor:

@@ -71,17 +71,6 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 total_mass = get_total_mass(selected_mog.mass_object_collection.all_objects)
             info_row.label(text="Total Mass: {} kg".format(round(total_mass, 3)))
 
-            # Pin
-            com_obj_row = box.row()
-            com_obj_row.prop(selected_mog, "use_com_object",
-                             text="")
-            com_obj_row.prop(selected_mog, "com_object")
-            pin_row = box.row()
-            pin_row.prop(selected_mog, "is_rig_pinned",
-                         text="")
-            pin_row.prop(selected_mog, "pinned_rig")
-            pin_row.enabled = selected_mog.use_com_object and selected_mog.com_object is not None
-
 class BalancePointMain(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_Main"
     bl_label = "Balance Point"
@@ -140,15 +129,15 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             sub.alignment = 'RIGHT'
             sub.prop(group, "line_to_floor")
             row = col.row()
-            row.prop(group, "use_com_object",
-                     text="" if group.use_com_object else "Use COM Object")
-            if group.use_com_object:
-                row.prop(group, "com_object")
-                row = col.row()
-                row.prop(group, "is_rig_pinned",
-                         text="" if group.is_rig_pinned else "Pin Rig's COM to COM Object")
-                if group.is_rig_pinned:
-                    row.prop(group, "pinned_rig")
+            # row.prop(group, "use_com_object",
+            #          text="" if group.use_com_object else "Use COM Object")
+            # if group.use_com_object:
+            #     row.prop(group, "com_object")
+            #     row = col.row()
+            #     row.prop(group, "is_rig_pinned",
+            #              text="" if group.is_rig_pinned else "Pin Rig's COM to COM Object")
+            #     if group.is_rig_pinned:
+            #         row.prop(group, "pinned_rig")
             row = col.row()
             row.label(text="Total Mass")
             sub = row.row()

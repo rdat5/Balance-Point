@@ -10,18 +10,18 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         name="Draw Line to Floor", default=False)
     color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
-    use_com_object: bpy.props.BoolProperty(
-        name="Use COM Object", default=False)
-    com_object: bpy.props.PointerProperty(
-        name="COM Object", type=bpy.types.Object)
-    is_rig_pinned: bpy.props.BoolProperty(
-        name="Pin Rig's COM to COM Object", default=False)
-    pinned_rig: bpy.props.PointerProperty(
-        name="Pinned Rig", type=bpy.types.Object)
-    include_secondary_collection: bpy.props.BoolProperty(
-        name="Include Secondary Mass Object Collection", default=False)
-    secondary_mass_object_collection: bpy.props.PointerProperty(
-        name="Secondary Mass Object Collection", type=bpy.types.Collection)
+    # use_com_object: bpy.props.BoolProperty(
+    #     name="Use COM Object", default=False)
+    # com_object: bpy.props.PointerProperty(
+    #     name="COM Object", type=bpy.types.Object)
+    # is_rig_pinned: bpy.props.BoolProperty(
+    #     name="Pin Rig's COM to COM Object", default=False)
+    # pinned_rig: bpy.props.PointerProperty(
+    #     name="Pinned Rig", type=bpy.types.Object)
+    # include_secondary_collection: bpy.props.BoolProperty(
+    #     name="Include Secondary Mass Object Collection", default=False)
+    # secondary_mass_object_collection: bpy.props.PointerProperty(
+    #     name="Secondary Mass Object Collection", type=bpy.types.Collection)
 
 
 class ComProperties(bpy.types.PropertyGroup):
