@@ -14,6 +14,12 @@ class BP_UL_List(bpy.types.UIList):
         row = layout.row(align=True)
         row.prop(item, "visible", text="", emboss=True)
         row.prop(item, "name", text="", emboss=False)
+        weight_col = row.column()
+        weight_col.scale_x = 0.6
+        total_mass = 0
+        if item.mass_object_collection is not None:
+            total_mass = get_total_mass(item.mass_object_collection.all_objects)
+        weight_col.label(text="{} kg".format(round(total_mass, 2)))
         color_col = row.column()
         color_col.scale_x = 0.4
         color_col.prop(item, "color", text="", emboss=True)
@@ -59,14 +65,14 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog, "mass_object_collection", text="Mass Collection")
 
             # MOG Info
-            com_row = main_box.row()
-            com_row.prop(selected_mog, "com_location")
-            info_row = main_box.row()
-            info_row.alignment = 'CENTER'
-            total_mass = 0
-            if selected_mog.mass_object_collection is not None:
-                total_mass = get_total_mass(selected_mog.mass_object_collection.all_objects)
-            info_row.label(text="Total Mass: {} kg".format(round(total_mass, 3)))
+            row = main_box.row()
+            row.prop(selected_mog, "com_location")
+            row = main_box.row()
+            row.prop(selected_mog, "pinned_rig")
+            row = main_box.row()
+            row.scale_y = 1.2
+            row.prop(selected_mog, "is_rig_pinned")
+
 
 class BalancePointMain(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_Main"
