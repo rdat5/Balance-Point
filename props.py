@@ -12,14 +12,12 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     com_location: bpy.props.FloatVectorProperty(name="CoM Location", description="Location of the CoM", default=(
         0, 0, 0))
+    is_rig_pinned: bpy.props.BoolProperty(name="Pin Center of Mass", default=False)
+    pinned_rig: bpy.props.PointerProperty(name="Pinned Rig", type=bpy.types.Object)
     # use_com_object: bpy.props.BoolProperty(
     #     name="Use COM Object", default=False)
     # com_object: bpy.props.PointerProperty(
     #     name="COM Object", type=bpy.types.Object)
-    # is_rig_pinned: bpy.props.BoolProperty(
-    #     name="Pin Rig's COM to COM Object", default=False)
-    # pinned_rig: bpy.props.PointerProperty(
-    #     name="Pinned Rig", type=bpy.types.Object)
     # include_secondary_collection: bpy.props.BoolProperty(
     #     name="Include Secondary Mass Object Collection", default=False)
     # secondary_mass_object_collection: bpy.props.PointerProperty(

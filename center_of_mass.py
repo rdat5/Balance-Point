@@ -27,5 +27,11 @@ def update_mass_group_com(scene):
     #                     mass_group.com_object.matrix_world.translation = mgc
     for group in bp_mass_groups:
         if group.mass_object_collection is not None:
-            group.com_location = get_com(group.mass_object_collection.all_objects)
+            if not group.is_rig_pinned:
+                group.com_location = get_com(group.mass_object_collection.all_objects)
+            else:
+                if group.pinned_rig is not None:
+                    difference = get_com(group.mass_object_collection.all_objects) - Vector(group.com_location)
+                    if difference.length > 0.0001:
+                        group.pinned_rig.location -= difference
     pass
