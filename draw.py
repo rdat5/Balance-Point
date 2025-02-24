@@ -40,6 +40,21 @@ def draw_bp(self, context):
                     shader, 'LINES', {"pos": floor_com_verts})
                 batch.draw(shader)
 
+                # Draw Rotation Axis
+                if group.show_axis:
+                    axis_verts = []
+
+                    cx = group.pinned_rig.rotation_axis_angle[1]
+                    cy = group.pinned_rig.rotation_axis_angle[2]
+                    cz = group.pinned_rig.rotation_axis_angle[3]
+                    axis_vector = numpy.array([cx, cy, cz])
+                    axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
+                    axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
+                        axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com)
+                    batch = batch_for_shader(shader, 'LINES', {"pos": axis_verts})
+                    batch = batch_for_shader(shader, 'LINES', {"pos": axis_verts})
+                    batch.draw(shader)
+
     #             # Draw COM line to floor
     #             if group.line_to_floor:
     #                 line_to_floot_verts = [
