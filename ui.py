@@ -69,22 +69,26 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog, "com_location")
             row = main_box.row()
             row.prop(selected_mog, "pinned_rig")
-            row = main_box.row()
-            row.scale_y = 1.2
-            row.prop(selected_mog, "is_rig_pinned")
 
             # Physics
             row = box.row()
             row.alignment = 'CENTER'
             row.label(text="Physics Settings")
 
-            phys_box = box.box()
             if selected_mog.pinned_rig is not None:
+                phys_box = box.box()
                 row = phys_box.row()
-                row.prop(selected_mog, "show_axis")
-                row = phys_box.row()
+                row.alignment = 'CENTER'
+                row.scale_y = 1.2
+                row.prop(selected_mog, "is_rig_pinned")
+                
+                # Axis
+                axis_box = phys_box.box()
+                row = axis_box.row()
+                row.enabled = selected_mog.is_rig_pinned
                 row.prop(selected_mog.pinned_rig, "rotation_axis_angle")
-                row = phys_box.row()
+                row = axis_box.row()
+                row.prop(selected_mog, "show_axis")
                 moment_of_inertia = 0.0
                 center_of_mass = get_com(selected_mog.mass_object_collection.all_objects)
                 current_axis = Vector((selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
@@ -92,7 +96,8 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.label(text="Moment of Inertia: {} kg·m2".format(
                     round(moment_of_inertia, 3)))
             else:
-                row = phys_box.row()
+                row = box.row()
+                row.alignment = 'CENTER'
                 row.label(text="Add a Pinned Rig.")
             
 
