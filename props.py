@@ -15,6 +15,8 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     is_rig_pinned: bpy.props.BoolProperty(name="Pin Center of Mass", default=False)
     pinned_rig: bpy.props.PointerProperty(name="Pinned Rig", type=bpy.types.Object)
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)
+    reference_point: bpy.props.FloatVectorProperty(name="Reference Point", description="Reference point for angle alignment and ballistics ruler.", default=(
+        0, 0, 0))
     # use_com_object: bpy.props.BoolProperty(
     #     name="Use COM Object", default=False)
     # com_object: bpy.props.PointerProperty(

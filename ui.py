@@ -82,6 +82,13 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.scale_y = 1.2
                 row.prop(selected_mog, "is_rig_pinned")
                 
+                # Reference Point
+                point_box = phys_box.box()
+                row = point_box.row()
+                row.prop(selected_mog, "reference_point")
+                row = point_box.row()
+                row.operator("balance_point.referencepoint_set")
+
                 # Axis
                 axis_box = phys_box.box()
                 row = axis_box.row()
