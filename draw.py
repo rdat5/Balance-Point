@@ -57,12 +57,13 @@ def draw_bp(self, context):
                 
                 # Physics Preview
                 # Draw Reference Point
-                gpu.state.point_size_set(6.0)
-                shader.uniform_float(
-                    "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
-                batch = batch_for_shader(
-                    shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
-                batch.draw(shader)
+                if group.show_reference_point:
+                    gpu.state.point_size_set(6.0)
+                    shader.uniform_float(
+                        "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
+                    batch = batch_for_shader(
+                        shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
+                    batch.draw(shader)
 
     #             # Draw COM line to floor
     #             if group.line_to_floor:

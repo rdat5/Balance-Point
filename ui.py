@@ -85,12 +85,10 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 # Reference Point
                 point_box = phys_box.box()
                 row = point_box.row()
-                col1 = row.column()
-                col1.scale_x = 0.5
-                col1.prop(selected_mog, "reference_color", text="")
-                col2 = row.column()
-                row = col2.row()
                 row.prop(selected_mog, "reference_point")
+                row = point_box.row()
+                row.prop(selected_mog, "show_reference_point")
+                row.prop(selected_mog, "reference_color", text="")
                 row = point_box.row()
                 row.operator("balance_point.referencepoint_set")
 
