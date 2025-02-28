@@ -67,7 +67,8 @@ class SetReferencePoint(bpy.types.Operator):
 
     def execute(self, context):
         physics_props = context.scene.bp_physics_properties
-        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
         cursor_loc = context.scene.cursor.location
         cursor_coords = [cursor_loc[0], cursor_loc[1], cursor_loc[2]]
