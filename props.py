@@ -17,6 +17,8 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)
     reference_point: bpy.props.FloatVectorProperty(name="Reference Point", description="Reference point for angle alignment and ballistics ruler.", default=(
         0, 0, 0))
+    reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
+        0, 1, 0), subtype='COLOR', min=0.0, max=1.0)
     # use_com_object: bpy.props.BoolProperty(
     #     name="Use COM Object", default=False)
     # com_object: bpy.props.PointerProperty(
