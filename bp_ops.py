@@ -89,31 +89,31 @@ class SetReferencePoint(bpy.types.Operator):
 
 
 class AlignAxisByPoints(bpy.types.Operator):
-    """Aligns COM Object's rotation axis about two reference points."""
+    """Aligns pinned rig's rotation axis to face the reference point."""
     bl_idname = "balance_point.align_axis"
-    bl_label = "Align COM Object's Axis"
+    bl_label = "Align Axis to Reference Point"
 
     @classmethod
     def poll(cls, context):
-        physics_props = context.scene.bp_physics_properties
-        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-        p1 = physics_props.align_rotation_p1
-        p2 = physics_props.align_rotation_p2
-        p3 = sel_mog.com_object.matrix_world.translation
+        p1 = sel_mog.reference_point
+        p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1], sel_mog.reference_point[2] + 1]
+        p3 = [rig_com[0], rig_com[1], rig_com[2]]
         return is_valid_triangle(p1, p2, p3)
 
     def execute(self, context):
-        physics_props = context.scene.bp_physics_properties
-        com_obj = context.scene.bp_mass_object_groups[physics_props.selected_mog].com_object
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-        p1 = physics_props.align_rotation_p1
-        p2 = physics_props.align_rotation_p2
-        p3 = com_obj.matrix_world.translation
+        p1 = sel_mog.reference_point
+        p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1], sel_mog.reference_point[2] + 1]
+        p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p1, p2, p3)
-        com_obj.rotation_axis_angle[1] = norm[0]
-        com_obj.rotation_axis_angle[2] = norm[1]
-        com_obj.rotation_axis_angle[3] = norm[2]
+        sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
+        sel_mog.pinned_rig.rotation_axis_angle[2] = norm[1]
+        sel_mog.pinned_rig.rotation_axis_angle[3] = norm[2]
         return {'FINISHED'}
 
 

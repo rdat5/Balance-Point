@@ -105,6 +105,8 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 moment_of_inertia = get_moment_of_inertia(selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
                 row.label(text="Moment of Inertia: {} kg·m2".format(
                     round(moment_of_inertia, 3)))
+                row = axis_box.row()
+                row.operator("balance_point.align_axis")
             else:
                 row = box.row()
                 row.alignment = 'CENTER'
