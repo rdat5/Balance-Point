@@ -101,7 +101,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.prop(selected_mog, "reference_point", text="Location")
                 row = point_box.row()
                 row = point_box.row()
-                row.operator("balance_point.referencepoint_set")
+                row.operator("balance_point.referencepoint_set", icon='CURSOR')
 
                 # Axis
                 axis_box = phys_box.box()
@@ -121,7 +121,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.label(text="Moment of Inertia: {} kg·m2".format(
                     round(moment_of_inertia, 3)))
                 row = axis_box.row()
-                row.operator("balance_point.align_axis")
+                row.operator("balance_point.align_axis", icon='TRACKING_FORWARDS_SINGLE')
 
                 # Ballistics Ruler
                 ballistics_box = phys_box.box()
