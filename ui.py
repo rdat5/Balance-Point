@@ -33,6 +33,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         com_props = scene.com_properties
+        phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(mass_object_groups) else None
@@ -107,6 +108,21 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                     round(moment_of_inertia, 3)))
                 row = axis_box.row()
                 row.operator("balance_point.align_axis")
+
+                # Ballistics Ruler
+                ballistics_box = phys_box.box()
+                row = ballistics_box.row()
+                row.alignment = 'CENTER'
+                row.label(text='Ballistics Ruler')
+                row = ballistics_box.row()
+                row.prop(phys_props, "is_ballistics_preview")
+                row = ballistics_box.row()
+                row.prop(phys_props, "initial_angular_velocity")
+                row = ballistics_box.row()
+                row.prop(phys_props, "gravity")
+                row = ballistics_box.row()
+                row.prop(phys_props, "time_of_flight")
+
             else:
                 row = box.row()
                 row.alignment = 'CENTER'
