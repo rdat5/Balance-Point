@@ -85,25 +85,39 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 
                 # Reference Point
                 point_box = phys_box.box()
+                ref_header_row = point_box.row()
+                ref_header_row.alignment = 'CENTER'
+                col1 = ref_header_row.column()
+                preview_on = selected_mog.show_reference_point
+                col1.prop(selected_mog, "show_reference_point", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+                col2 = ref_header_row.column()
+                t_row = col2.row()
+                t_row.alignment = 'CENTER'
+                t_row.label(text='Reference Point')
+                col3 = ref_header_row.column()
+                col3.scale_x = 0.5
+                col3.prop(selected_mog, "reference_color", text="")
                 row = point_box.row()
-                row.prop(selected_mog, "reference_point")
+                row.prop(selected_mog, "reference_point", text="Location")
                 row = point_box.row()
-                row.prop(selected_mog, "show_reference_point")
-                row.prop(selected_mog, "reference_color", text="")
                 row = point_box.row()
                 row.operator("balance_point.referencepoint_set")
 
                 # Axis
                 axis_box = phys_box.box()
+                axis_header = axis_box.row()
+                axis_header.alignment = 'CENTER'
+                axis_header.prop(selected_mog, "show_axis", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+                axis_header.label(text="Rotation Axis")
                 row = axis_box.row()
                 row.enabled = selected_mog.is_rig_pinned
                 row.prop(selected_mog.pinned_rig, "rotation_axis_angle")
-                row = axis_box.row()
-                row.prop(selected_mog, "show_axis")
                 moment_of_inertia = 0.0
                 center_of_mass = get_com(selected_mog.mass_object_collection.all_objects)
                 current_axis = Vector((selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
                 moment_of_inertia = get_moment_of_inertia(selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
+                row = axis_box.row()
+                row.alignment = 'RIGHT'
                 row.label(text="Moment of Inertia: {} kg·m2".format(
                     round(moment_of_inertia, 3)))
                 row = axis_box.row()
@@ -113,9 +127,9 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 ballistics_box = phys_box.box()
                 row = ballistics_box.row()
                 row.alignment = 'CENTER'
+                preview_on = phys_props.is_ballistics_preview
+                row.prop(phys_props, "is_ballistics_preview", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 row.label(text='Ballistics Ruler')
-                row = ballistics_box.row()
-                row.prop(phys_props, "is_ballistics_preview")
                 row = ballistics_box.row()
                 row.prop(phys_props, "initial_angular_velocity")
                 row = ballistics_box.row()
