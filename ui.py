@@ -137,6 +137,18 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row = ballistics_box.row()
                 row.prop(phys_props, "time_of_flight")
 
+                # Baking
+                bake_box = phys_box.box()
+                bake_box.use_property_split = True
+                bake_box.use_property_decorate = False
+                row = bake_box.row()
+                row.alignment = 'CENTER'
+                row.label(text='Baking')
+                col = bake_box.column(align=True)
+                col.prop(phys_props, "frame_start")
+                col.prop(phys_props, "frame_end")
+                col.prop(phys_props, "frame_rate")
+
             else:
                 row = box.row()
                 row.alignment = 'CENTER'
