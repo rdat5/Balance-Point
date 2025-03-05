@@ -66,9 +66,9 @@ class PhysicsProperties(bpy.types.PropertyGroup):
     time_of_flight: bpy.props.FloatProperty(
         name="Time of Flight", description="Elapsed frames until it reaches the ballistics reference point.", default=1, min=0.00001)
     frame_start: bpy.props.IntProperty(
-        name="Start Frame", description="First frame of the physics baking range.")
+        name="Frame Range Start", description="First frame of the physics baking range.")
     frame_end: bpy.props.IntProperty(
-        name="End Frame", description="First frame of the physics baking range.")
+        name="End", description="First frame of the physics baking range.")
     frame_rate: bpy.props.IntProperty(name="Frame Rate", default=24, min=1)
     is_angular_velocity_preview: bpy.props.BoolProperty(
         name="Preview Angular Velocity", default=False)
