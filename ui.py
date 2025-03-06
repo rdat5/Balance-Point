@@ -122,7 +122,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                     round(moment_of_inertia, 3)))
                 row = axis_box.row()
                 row.operator("balance_point.align_axis_cursor", icon='CURSOR')
-                row.operator("balance_point.align_axis", icon='TRACKING_FORWARDS_SINGLE')
+                row.operator("balance_point.align_axis", icon='DOT')
 
                 # Ballistics Ruler
                 ballistics_box = phys_box.box()
