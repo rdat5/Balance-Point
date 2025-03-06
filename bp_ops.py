@@ -117,6 +117,37 @@ class AlignAxisByPoints(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class AlignAxisByCursor(bpy.types.Operator):
+    """Aligns pinned rig's rotation axis to face the 3D Cursor."""
+    bl_idname = "balance_point.align_axis_cursor"
+    bl_label = "Align Axis to 3D Cursor"
+
+    @classmethod
+    def poll(cls, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        cursor = context.scene.cursor.location
+
+        p1 = sel_mog.reference_point
+        p2 = [cursor[0], cursor[1], cursor[2] + 1]
+        p3 = [rig_com[0], rig_com[1], rig_com[2]]
+        return is_valid_triangle(p1, p2, p3)
+
+    def execute(self, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        cursor = context.scene.cursor.location
+
+        p1 = sel_mog.reference_point
+        p2 = [cursor[0], cursor[1], cursor[2] + 1]
+        p3 = [rig_com[0], rig_com[1], rig_com[2]]
+        norm = get_triangle_normal(p1, p2, p3)
+        sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
+        sel_mog.pinned_rig.rotation_axis_angle[2] = norm[1]
+        sel_mog.pinned_rig.rotation_axis_angle[3] = norm[2]
+        return {'FINISHED'}
+
+
 class CalculateAnglePreview(bpy.types.Operator):
     """Calculates and stores Moment of Inertia for the given range."""
     bl_idname = "balance_point.calculate_angle_preview"

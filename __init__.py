@@ -13,7 +13,7 @@
 
 from .draw import draw_bp
 from .bp_ops import (ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup,
-                     SetReferencePoint, AlignAxisByPoints, BakeBPPhysics, CalculateAnglePreview)
+                     SetReferencePoint, AlignAxisByPoints, BakeBPPhysics, CalculateAnglePreview, AlignAxisByCursor)
 from .mass_ops import (AddMassProps, RemoveMassProps, ToggleActiveProperty,
                        ToggleActiveProperty, SetActiveTrue, SetActiveFalse,
                        CalculateVolume, SetDensity)
@@ -62,6 +62,7 @@ classes = (
     SetDensity,
     ToggleDrawing,
     SetReferencePoint,
+    AlignAxisByCursor,
     AlignAxisByPoints,
     BakeBPPhysics
 )
