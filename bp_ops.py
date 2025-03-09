@@ -128,7 +128,7 @@ class AlignAxisByCursor(bpy.types.Operator):
         rig_com = get_com(sel_mog.mass_object_collection.all_objects)
         cursor = context.scene.cursor.location
 
-        p1 = sel_mog.reference_point
+        p1 = cursor
         p2 = [cursor[0], cursor[1], cursor[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         return is_valid_triangle(p1, p2, p3)
@@ -138,7 +138,7 @@ class AlignAxisByCursor(bpy.types.Operator):
         rig_com = get_com(sel_mog.mass_object_collection.all_objects)
         cursor = context.scene.cursor.location
 
-        p1 = sel_mog.reference_point
+        p1 = cursor
         p2 = [cursor[0], cursor[1], cursor[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p1, p2, p3)
