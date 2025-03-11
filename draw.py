@@ -56,13 +56,21 @@ def draw_bp(self, context):
                     batch.draw(shader)
                 
                 # Physics Preview
-                # Draw Reference Point
+                # Draw Reference Points
                 if group.show_reference_point:
+                    # Reference Point
                     gpu.state.point_size_set(6.0)
                     shader.uniform_float(
                         "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
                     batch = batch_for_shader(
                         shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
+                    batch.draw(shader)
+
+                    # Ballistics Starting Point
+                    shader.uniform_float(
+                        "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, 1.0))
+                    batch = batch_for_shader(
+                        shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
                     batch.draw(shader)
                 
                 # Draw ballistics curve
@@ -74,7 +82,7 @@ def draw_bp(self, context):
                         total_frames = physics_props.frame_end - physics_props.frame_start
 
                         # Get points
-                        p0 = get_com(group.mass_object_collection.all_objects)
+                        p0 = Vector(group.ballistics_starting_point)
                         p1 = Vector(group.reference_point)
 
                         for frame in range(total_frames + 1):

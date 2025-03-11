@@ -88,6 +88,36 @@ class SetReferencePoint(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class SetStartingPoint(bpy.types.Operator):
+    """Sets the coordinate of a ballistics starting point."""
+    bl_idname = "balance_point.startingpoint_set"
+    bl_label = "Set Starting Point From 3D Cursor"
+
+    # target: bpy.props.IntProperty(name="Reference point being set.")
+
+    def execute(self, context):
+        physics_props = context.scene.bp_physics_properties
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+
+        cursor_loc = context.scene.cursor.location
+        cursor_coords = [cursor_loc[0], cursor_loc[1], cursor_loc[2]]
+
+        # match self.target:
+        #     case 1:
+        #         physics_props.align_rotation_p1 = cursor_coords
+        #     case 2: 
+        #         physics_props.align_rotation_p2 = cursor_coords
+        #     case 3:
+        #         physics_props.ballistics_p0 = sel_mog.com_object.matrix_world.translation
+        #         physics_props.ballistics_p1 = cursor_coords
+
+        sel_mog.ballistics_starting_point = cursor_coords
+        
+        bpy.context.region.tag_redraw()
+        return {'FINISHED'}
+
+
 class AlignAxisByPoints(bpy.types.Operator):
     """Aligns pinned rig's rotation axis to face the reference point."""
     bl_idname = "balance_point.align_axis"

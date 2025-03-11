@@ -83,7 +83,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.scale_y = 1.2
                 row.prop(selected_mog, "is_rig_pinned")
                 
-                # Reference Point
+                # Reference Points
                 point_box = phys_box.box()
                 ref_header_row = point_box.row()
                 ref_header_row.alignment = 'CENTER'
@@ -93,13 +93,23 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 col2 = ref_header_row.column()
                 t_row = col2.row()
                 t_row.alignment = 'CENTER'
-                t_row.label(text='Reference Point')
-                col3 = ref_header_row.column()
-                col3.scale_x = 0.5
-                col3.prop(selected_mog, "reference_color", text="")
+                t_row.label(text='Reference Points')
+                row = point_box.row(align=True)
+                col_l = row.column()
+                row_l = col_l.row()
+                row_l.prop(selected_mog, "ballistics_starting_point", text="Start")
+                col_r = row.column()
+                col_r.scale_x = 0.5
+                col_r.prop(selected_mog, "ballistics_starting_point_color", text="")
                 row = point_box.row()
-                row.prop(selected_mog, "reference_point", text="Location")
-                row = point_box.row()
+                row.operator("balance_point.startingpoint_set", icon='CURSOR')
+                row = point_box.row(align=True)
+                col1 = row.column()
+                row_l = col1.row()
+                row_l.prop(selected_mog, "reference_point")
+                col_r = row.column()
+                col_r.scale_x = 0.5
+                col_r.prop(selected_mog, "reference_color", text="")
                 row = point_box.row()
                 row.operator("balance_point.referencepoint_set", icon='CURSOR')
 

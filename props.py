@@ -19,7 +19,11 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         0, 0, 0))
     reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
         0, 1, 0), subtype='COLOR', min=0.0, max=1.0)
-    show_reference_point: bpy.props.BoolProperty(name="Show Reference Point", default=True)
+    show_reference_point: bpy.props.BoolProperty(name="Show Reference Points", default=True)
+    ballistics_starting_point: bpy.props.FloatVectorProperty(name="Ballistics Starting Point", description="Starting point of ballistics curve.", default=(
+        0, 0, 0))
+    ballistics_starting_point_color : bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
+        1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
     # use_com_object: bpy.props.BoolProperty(
     #     name="Use COM Object", default=False)
     # com_object: bpy.props.PointerProperty(
