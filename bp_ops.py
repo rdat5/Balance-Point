@@ -118,6 +118,33 @@ class SetStartingPoint(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class SetStartingPointToCOM(bpy.types.Operator):
+    """Sets the coordinate of a ballistics starting point to Pinned Rig's center of mass."""
+    bl_idname = "balance_point.startingpointcom_set"
+    bl_label = "Set Starting Point From Pinned Rig's Center of Mass"
+
+    @classmethod
+    def poll(cls, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        if sel_mog.mass_object_collection is None:
+            False
+
+        return True
+
+    def execute(self, context):
+        physics_props = context.scene.bp_physics_properties
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+
+        # cursor_loc = context.scene.cursor.location
+        # cursor_coords = [cursor_loc[0], cursor_loc[1], cursor_loc[2]]
+
+        sel_mog.ballistics_starting_point = get_com(sel_mog.mass_object_collection.all_objects)
+        
+        bpy.context.region.tag_redraw()
+        return {'FINISHED'}
+
+
 class AlignAxisByPoints(bpy.types.Operator):
     """Aligns pinned rig's rotation axis to face the reference point."""
     bl_idname = "balance_point.align_axis"

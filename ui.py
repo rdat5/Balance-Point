@@ -103,6 +103,8 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 col_r.prop(selected_mog, "ballistics_starting_point_color", text="")
                 row = point_box.row()
                 row.operator("balance_point.startingpoint_set", icon='CURSOR')
+                row = point_box.row()
+                row.operator("balance_point.startingpointcom_set", icon='SNAP_FACE')
                 row = point_box.row(align=True)
                 col1 = row.column()
                 row_l = col1.row()
