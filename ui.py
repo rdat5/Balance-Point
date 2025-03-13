@@ -119,6 +119,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 axis_box = phys_box.box()
                 axis_header = axis_box.row()
                 axis_header.alignment = 'CENTER'
+                preview_on = selected_mog.show_axis
                 axis_header.prop(selected_mog, "show_axis", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 axis_header.label(text="Rotation Axis")
                 row = axis_box.row()
