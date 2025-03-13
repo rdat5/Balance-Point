@@ -94,26 +94,49 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 t_row = col2.row()
                 t_row.alignment = 'CENTER'
                 t_row.label(text='Reference Points')
-                row = point_box.row(align=True)
-                col_l = row.column()
-                row_l = col_l.row()
-                row_l.prop(selected_mog, "ballistics_starting_point", text="Start")
-                col_r = row.column()
-                col_r.scale_x = 0.5
-                col_r.prop(selected_mog, "ballistics_starting_point_color", text="")
-                row = point_box.row()
+
+                # Left Starting Point Column
+                points_split = point_box.split()
+                left_col = points_split.column()
+                starting_box = left_col.box()
+                start_header_row = starting_box.row(align=True)
+                start_header_row.alignment = 'CENTER'
+
+                left_col = start_header_row.column()
+                start_head = left_col.row()
+                start_head.alignment = 'CENTER'
+                start_head.label(text="Start Point")
+                right_col = start_header_row.column()
+                col = right_col.row()
+                col.scale_x = 0.35
+                col.prop(selected_mog, "ballistics_starting_point_color", text="")
+                
+                row = starting_box.row()
+                row.prop(selected_mog, "ballistics_starting_point", text="")
+                row = starting_box.row()
                 row.operator("balance_point.startingpoint_set", icon='CURSOR')
-                row = point_box.row()
+                row = starting_box.row()
                 row.operator("balance_point.startingpointcom_set", icon='SNAP_FACE')
-                row = point_box.row(align=True)
-                col1 = row.column()
-                row_l = col1.row()
-                row_l.prop(selected_mog, "reference_point")
-                col_r = row.column()
-                col_r.scale_x = 0.5
-                col_r.prop(selected_mog, "reference_color", text="")
-                row = point_box.row()
+
+                # Right Reference Point Column
+                right_col = points_split.column()
+                ref_box = right_col.box()
+                ref_header = ref_box.row(align=True)
+                ref_header.alignment = 'CENTER'
+                left_col = ref_header.column()
+                row = left_col.row()
+                row.alignment='CENTER'
+                ref_header.label(text="Reference Point")
+                right_col = ref_header.column()
+                col = right_col.row()
+                col.scale_x = 0.35
+                col.prop(selected_mog, "reference_color", text="")
+
+                row = ref_box.row()
+                row.prop(selected_mog, "reference_point", text="")
+                row = ref_box.row()
                 row.operator("balance_point.referencepoint_set", icon='CURSOR')
+
 
                 # Axis
                 axis_box = phys_box.box()
