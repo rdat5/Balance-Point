@@ -140,20 +140,23 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
 
                 # Axis
                 axis_box = phys_box.box()
+
+                # Axis Header
                 axis_header = axis_box.row()
                 axis_header.alignment = 'CENTER'
                 preview_on = selected_mog.show_axis
                 axis_header.prop(selected_mog, "show_axis", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 axis_header.label(text="Rotation Axis")
+
                 row = axis_box.row()
                 row.enabled = selected_mog.is_rig_pinned
-                row.prop(selected_mog.pinned_rig, "rotation_axis_angle")
+                row.prop(selected_mog.pinned_rig, "rotation_axis_angle", text="")
                 moment_of_inertia = 0.0
                 center_of_mass = get_com(selected_mog.mass_object_collection.all_objects)
                 current_axis = Vector((selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
                 moment_of_inertia = get_moment_of_inertia(selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
                 row = axis_box.row()
-                row.alignment = 'RIGHT'
+                row.alignment = 'CENTER'
                 row.label(text="Moment of Inertia: {} kg·m2".format(
                     round(moment_of_inertia, 3)))
                 row = axis_box.row()
