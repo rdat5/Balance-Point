@@ -21,7 +21,7 @@ class BP_UL_List(bpy.types.UIList):
             total_mass = get_total_mass(item.mass_object_collection.all_objects)
         weight_col.label(text="{} kg".format(round(total_mass, 2)))
         color_col = row.column()
-        color_col.scale_x = 0.4
+        color_col.scale_x = 0.35
         color_col.prop(item, "color", text="", emboss=True)
 
 
