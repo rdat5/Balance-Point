@@ -188,6 +188,8 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 col.prop(phys_props, "frame_start")
                 col.prop(phys_props, "frame_end")
                 col.prop(phys_props, "frame_rate")
+                row = bake_box.row()
+                row.operator("balance_point.bake_physics")
 
             else:
                 row = box.row()

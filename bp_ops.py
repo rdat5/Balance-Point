@@ -230,7 +230,6 @@ class BakeBPPhysics(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         physics_props = context.scene.bp_physics_properties
-        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
 
         if physics_props.frame_end <= physics_props.frame_start:
             return False
@@ -240,21 +239,22 @@ class BakeBPPhysics(bpy.types.Operator):
 
     def execute(self, context):
         physics_props = context.scene.bp_physics_properties
-        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-        physics_props.ballistics_p0 = group_com
-        p0 = physics_props.ballistics_p0
-        p1 = physics_props.ballistics_p1
+        p0 = sel_mog.ballistics_starting_point
+        p1 = sel_mog.reference_point
 
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
 
         bpy.context.scene.frame_set(physics_props.frame_start)
-        angle = sel_mog.com_object.rotation_axis_angle[0]
-        current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+
+        angle = sel_mog.pinned_rig.rotation_axis_angle[0]
+        current_axis = Vector((sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
 
         initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
 
@@ -262,11 +262,12 @@ class BakeBPPhysics(bpy.types.Operator):
             bpy.context.scene.frame_set(f)
             
             # Rotation
-            sel_mog.com_object.rotation_axis_angle[0] = radians(angle)
+            sel_mog.pinned_rig.rotation_axis_angle[0] = radians(angle)
+            sel_mog.pinned_rig.keyframe_insert(data_path='rotation_axis_angle', keytype='GENERATED')
 
-            sel_mog.com_object.keyframe_insert(data_path='rotation_axis_angle', keytype='GENERATED')
+            current_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
+            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, current_com, current_axis)
             angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
         
             # Ballistics
@@ -278,9 +279,13 @@ class BakeBPPhysics(bpy.types.Operator):
 
             point_position = projectile_position(start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
 
-            sel_mog.com_object.matrix_world.translation = point_position
-            sel_mog.com_object.keyframe_insert(data_path='location', keytype='GENERATED')
-        
+            sel_mog.com_location = point_position
+            context.scene.keyframe_insert(data_path=f"bp_mass_object_groups[{selected_index}].com_location", keytype='GENERATED')
+
+            sel_mog.is_rig_pinned = True
+            context.scene.keyframe_insert(data_path=f"bp_mass_object_groups[{selected_index}].is_rig_pinned", keytype='GENERATED')
+
+        # Return to original frame
         bpy.context.scene.frame_set(original_frame)
 
         return {'FINISHED'}
