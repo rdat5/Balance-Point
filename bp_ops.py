@@ -242,16 +242,16 @@ class BakeBPPhysics(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
+        # For returning to original frame after operation
+        original_frame = bpy.context.scene.frame_current
+
+        bpy.context.scene.frame_set(physics_props.frame_start)
+        
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
 
         p0 = sel_mog.ballistics_starting_point
         p1 = sel_mog.reference_point
-
-        # For returning to original frame after operation
-        original_frame = bpy.context.scene.frame_current
-
-        bpy.context.scene.frame_set(physics_props.frame_start)
 
         angle = sel_mog.pinned_rig.rotation_axis_angle[0]
         current_axis = Vector((sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
