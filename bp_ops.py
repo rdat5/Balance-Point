@@ -262,13 +262,14 @@ class BakeBPPhysics(bpy.types.Operator):
             bpy.context.scene.frame_set(f)
             
             # Rotation
-            sel_mog.pinned_rig.rotation_axis_angle[0] = radians(angle)
-            sel_mog.pinned_rig.keyframe_insert(data_path='rotation_axis_angle', keytype='GENERATED')
+            if physics_props.initial_angular_velocity != 0:
+                sel_mog.pinned_rig.rotation_axis_angle[0] = radians(angle)
+                sel_mog.pinned_rig.keyframe_insert(data_path='rotation_axis_angle', index=0, keytype='GENERATED')
 
-            current_com = get_com(sel_mog.mass_object_collection.all_objects)
+                current_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, current_com, current_axis)
-            angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
+                current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, current_com, current_axis)
+                angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
         
             # Ballistics
             start_pos = (p0[0], p0[1], p0[2])
