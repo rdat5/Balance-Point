@@ -1,5 +1,10 @@
 import bpy
 
+class CalculatedMOI(bpy.types.PropertyGroup):
+    moment_of_inertia: bpy.props.FloatProperty(
+        name="Set Density", default=1.0, soft_min=0)
+    angle: bpy.props.FloatProperty(name="Angle")
+
 
 class MassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
@@ -24,14 +29,8 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         0, 0, 0))
     ballistics_starting_point_color : bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
         1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
-    # use_com_object: bpy.props.BoolProperty(
-    #     name="Use COM Object", default=False)
-    # com_object: bpy.props.PointerProperty(
-    #     name="COM Object", type=bpy.types.Object)
-    # include_secondary_collection: bpy.props.BoolProperty(
-    #     name="Include Secondary Mass Object Collection", default=False)
-    # secondary_mass_object_collection: bpy.props.PointerProperty(
-    #     name="Secondary Mass Object Collection", type=bpy.types.Collection)
+    calculated_mois: bpy.props.CollectionProperty(type=CalculatedMOI)
+    show_angle_preview: bpy.props.BoolProperty(name="Show Calculated Angles on Ballistics Curve", default=True)
 
 
 class ComProperties(bpy.types.PropertyGroup):
@@ -41,12 +40,6 @@ class ComProperties(bpy.types.PropertyGroup):
         name="CoM Drawing Enabled", default=False)
     mass_density_set: bpy.props.FloatProperty(
         name="Set Density", default=1.0, soft_min=0)
-
-
-class CalculatedMOI(bpy.types.PropertyGroup):
-    moment_of_inertia: bpy.props.FloatProperty(
-        name="Set Density", default=1.0, soft_min=0)
-    angle: bpy.props.FloatProperty(name="Angle")
 
 
 class PhysicsProperties(bpy.types.PropertyGroup):

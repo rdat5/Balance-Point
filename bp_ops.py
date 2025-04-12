@@ -193,26 +193,33 @@ class CalculateAnglePreview(bpy.types.Operator):
 
     def execute(self, context):
         physics_props = context.scene.bp_physics_properties
-        sel_mog = context.scene.bp_mass_object_groups[physics_props.selected_mog]
-        mois = physics_props.calculated_mois
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        mois = sel_mog.calculated_mois
 
         mois.clear()
 
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
 
+        # Start frame
+        bpy.context.scene.frame_set(physics_props.frame_start)
+
+        # Get angle
+        angle = sel_mog.pinned_rig.rotation_axis_angle[0]
+        current_axis = Vector((sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
+
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-        bpy.context.scene.frame_set(physics_props.frame_start)
-        angle = sel_mog.com_object.rotation_axis_angle[0]
-        current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+        # Get initial moment of inertia
         initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
 
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
 
-            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
+            current_com = get_com(sel_mog.mass_object_collection.all_objects)
+
+            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, current_com, current_axis)
 
             new_moi = mois.add()
             new_moi.angle = angle
@@ -221,6 +228,28 @@ class CalculateAnglePreview(bpy.types.Operator):
         
         bpy.context.scene.frame_set(original_frame)
         return {'FINISHED'}
+
+
+class ClearAnglePreview(bpy.types.Operator):
+    """Clears Moment of Inertia for Angle Preview."""
+    bl_idname = "balance_point.clear_angle_preview"
+    bl_label = "Clear Angle Preview Data"
+
+    @classmethod
+    def poll(cls, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+
+        return len(sel_mog.calculated_mois) > 0
+
+    def execute(self, context):
+        physics_props = context.scene.bp_physics_properties
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        mois = sel_mog.calculated_mois
+
+        mois.clear()
+        bpy.context.region.tag_redraw()
+        return {'FINISHED'}
+
 
 class BakeBPPhysics(bpy.types.Operator):
     """Bakes the rotation and ballistics curve for the given range."""

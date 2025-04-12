@@ -123,6 +123,29 @@ def draw_bp(self, context):
                                 shader, 'POINTS', {"pos": point_positions})
                             batch.draw(shader)
 
+
+                        # Draw Angle Preview
+                        if sel_mog.show_angle_preview:
+                            for index, point_position in enumerate(point_positions):
+                                if index <= len(sel_mog.calculated_mois):
+                                    angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0),
+                                                (-0.5, 0.0, 0.0), (0.5, 0.0, 0.0)]
+
+                                    com_x = sel_mog.pinned_rig.rotation_axis_angle[1]
+                                    com_y = sel_mog.pinned_rig.rotation_axis_angle[2]
+                                    com_z = sel_mog.pinned_rig.rotation_axis_angle[3]
+
+                                    angle_color = (1.0, 1.0, 0.0, 1.0) if index + \
+                                        physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 1.0, 1.0)
+
+                                    moi_angle = sel_mog.calculated_mois[index].angle
+                                    shader.uniform_float("color", angle_color)
+                                    gpu.state.line_width_set(1.0)
+                                    batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(
+                                        angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
+                                    batch.draw(shader)
+
+                        
     #             # Draw COM line to floor
     #             if group.line_to_floor:
     #                 line_to_floot_verts = [

@@ -173,9 +173,17 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.prop(phys_props, "is_ballistics_preview", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 row.label(text='Ballistics')
                 col = ballistics_box.column()
-                col.prop(phys_props, "initial_angular_velocity")
                 col.prop(phys_props, "gravity")
                 col.prop(phys_props, "time_of_flight")
+                row = ballistics_box.row()
+                col = row.column()
+                col.prop(phys_props, "initial_angular_velocity")
+                row = col.row()
+                col_l = row.column()
+                col_l.operator("balance_point.calculate_angle_preview", icon="CURVE_PATH")
+                col_r = row.column()
+                col_r.scale_x = 0.6
+                col_r.operator("balance_point.clear_angle_preview", text="Clear", icon="PANEL_CLOSE")
 
                 # Baking
                 bake_box = phys_box.box()
