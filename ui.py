@@ -114,9 +114,12 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row = starting_box.row()
                 row.prop(selected_mog, "ballistics_starting_point", text="")
                 row = starting_box.row()
-                row.operator("balance_point.startingpoint_set", icon='CURSOR')
+                row.alignment = 'CENTER'
+                row.label(text="Set Starting Point To")
                 row = starting_box.row()
-                row.operator("balance_point.startingpointcom_set", icon='SNAP_FACE')
+                col = row.column(align=True)
+                col.operator("balance_point.startingpoint_set", icon='CURSOR', text="3D Cursor")
+                col.operator("balance_point.startingpointcom_set", icon='DOT', text="Center of Mass")
 
                 # Right Reference Point Column
                 right_col = points_split.column()
@@ -135,9 +138,12 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row = ref_box.row()
                 row.prop(selected_mog, "reference_point", text="")
                 row = ref_box.row()
-                row.operator("balance_point.referencepoint_set", icon='CURSOR')
+                row.alignment = 'CENTER'
+                row.label(text="Set Reference Point To")
                 row = ref_box.row()
-                row.operator("balance_point.referencepointcom_set", icon='DOT')
+                col = row.column(align=True)
+                col.operator("balance_point.referencepoint_set", icon='CURSOR', text="3D Cursor")
+                col.operator("balance_point.referencepointcom_set", icon='DOT', text="Center of Mass")
 
 
                 # Axis
@@ -174,7 +180,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 preview_on = phys_props.is_ballistics_preview
                 row.prop(phys_props, "is_ballistics_preview", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 row.label(text='Ballistics')
-                col = ballistics_box.column()
+                col = ballistics_box.column(align=True)
                 col.prop(phys_props, "gravity")
                 col.prop(phys_props, "time_of_flight")
                 row = ballistics_box.row()
