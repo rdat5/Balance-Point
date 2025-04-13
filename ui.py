@@ -136,6 +136,8 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.prop(selected_mog, "reference_point", text="")
                 row = ref_box.row()
                 row.operator("balance_point.referencepoint_set", icon='CURSOR')
+                row = ref_box.row()
+                row.operator("balance_point.referencepointcom_set", icon='DOT')
 
 
                 # Axis

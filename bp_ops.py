@@ -76,6 +76,29 @@ class SetReferencePoint(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class SetReferencePointToCOM(bpy.types.Operator):
+    """Sets the coordinate of a ballistics reference point to Pinned Rig's center of mass."""
+    bl_idname = "balance_point.referencepointcom_set"
+    bl_label = "Set Reference Point To Pinned Rig's Center of Mass"
+
+    @classmethod
+    def poll(cls, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        if sel_mog.mass_object_collection is None:
+            False
+
+        return True
+
+    def execute(self, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+
+        sel_mog.reference_point = get_com(sel_mog.mass_object_collection.all_objects)
+        
+        bpy.context.region.tag_redraw()
+        return {'FINISHED'}
+
+
 class SetStartingPoint(bpy.types.Operator):
     """Sets the coordinate of a ballistics starting point."""
     bl_idname = "balance_point.startingpoint_set"
