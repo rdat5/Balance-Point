@@ -77,7 +77,7 @@ class SetReferencePoint(bpy.types.Operator):
 
 
 class SetReferencePointToCOM(bpy.types.Operator):
-    """Sets the coordinate of a ballistics reference point to Pinned Rig's center of mass."""
+    """Sets the coordinate of ballistics reference point to Pinned Rig's center of mass."""
     bl_idname = "balance_point.referencepointcom_set"
     bl_label = "Set Reference Point To Pinned Rig's Center of Mass"
 
@@ -100,7 +100,7 @@ class SetReferencePointToCOM(bpy.types.Operator):
 
 
 class SetStartingPoint(bpy.types.Operator):
-    """Sets the coordinate of a ballistics starting point."""
+    """Sets the coordinate of the ballistics starting point."""
     bl_idname = "balance_point.startingpoint_set"
     bl_label = "Set Starting Point From 3D Cursor"
 
@@ -118,7 +118,7 @@ class SetStartingPoint(bpy.types.Operator):
 
 
 class SetStartingPointToCOM(bpy.types.Operator):
-    """Sets the coordinate of a ballistics starting point to Pinned Rig's center of mass."""
+    """Sets the coordinate of the ballistics starting point to Pinned Rig's center of mass."""
     bl_idname = "balance_point.startingpointcom_set"
     bl_label = "Set Starting Point From Pinned Rig's Center of Mass"
 
