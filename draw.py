@@ -125,7 +125,7 @@ def draw_bp(self, context):
 
 
                         # Draw Angle Preview
-                        if sel_mog.show_angle_preview:
+                        if len(sel_mog.calculated_mois) > 0:
                             for index, point_position in enumerate(point_positions):
                                 if index <= len(sel_mog.calculated_mois):
                                     angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0),
