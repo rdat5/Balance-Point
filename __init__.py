@@ -12,12 +12,30 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from .draw import draw_bp
-from .bp_ops import (ToggleDrawing, AddMassObjectGroup, RemoveMassObjectGroup,
-                     SetReferencePoint, AlignAxisByPoints, BakeBPPhysics, CalculateAnglePreview, AlignAxisByCursor,
-                     SetStartingPoint, SetStartingPointToCOM, ClearAnglePreview, SetReferencePointToCOM)
-from .mass_ops import (AddMassProps, RemoveMassProps, ToggleActiveProperty,
-                       ToggleActiveProperty, SetActiveTrue, SetActiveFalse,
-                       CalculateVolume, SetDensity)
+from .bp_ops import (
+    ToggleDrawing,
+    AddMassObjectGroup,
+    RemoveMassObjectGroup,
+    SetReferencePoint,
+    AlignAxisByPoints,
+    BakeBPPhysics,
+    CalculateAnglePreview,
+    AlignAxisByCursor,
+    SetStartingPoint,
+    SetStartingPointToCOM,
+    ClearAnglePreview,
+    SetReferencePointToCOM
+)
+from .mass_ops import (
+    AddMassProps,
+    RemoveMassProps,
+    ToggleActiveProperty,
+    ToggleActiveProperty,
+    SetActiveTrue,
+    SetActiveFalse,
+    CalculateVolume,
+    SetDensity
+)
 from .ui import *
 from .props import *
 from .center_of_mass import update_mass_group_com
@@ -45,12 +63,8 @@ classes = (
     ComProperties,
     BP_UL_List,
     NewBPMain,
-    # BalancePointMain,
-    # BP_PT_mass_object_groups,
     MassPropertiesPanel,
     BP_PT_mass_selected,
-    # PhysicsPanel,
-    # CalculatedMOI,
     CalculateAnglePreview,
     PhysicsProperties,
     AddMassObjectGroup,

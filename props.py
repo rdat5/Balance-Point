@@ -30,7 +30,6 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     ballistics_starting_point_color : bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
         1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
     calculated_mois: bpy.props.CollectionProperty(type=CalculatedMOI)
-    # show_angle_preview: bpy.props.BoolProperty(name="Show Calculated Angles on Ballistics Curve", default=True)
 
 
 class ComProperties(bpy.types.PropertyGroup):
