@@ -3,6 +3,7 @@ from math import radians
 from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia, projectile_position, get_com
 from mathutils import Vector
 
+
 class ToggleDrawing(bpy.types.Operator):
     """Adds/Removes center of mass render function from draw handler"""
     bl_idname = "balance_point.toggle_drawing"
@@ -14,6 +15,7 @@ class ToggleDrawing(bpy.types.Operator):
         com_props.com_drawing_on = not com_props.com_drawing_on
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
+
 
 class AddMassObjectGroup(bpy.types.Operator):
     """Adds a new Mass Object Group"""
@@ -33,7 +35,8 @@ class AddMassObjectGroup(bpy.types.Operator):
             return unique_name
 
         new_item = bpy.context.scene.bp_mass_object_groups.add()
-        new_name = get_unique_name("Mass Object Group {:d}".format(len(scene.bp_mass_object_groups)), scene.bp_mass_object_groups)
+        new_name = get_unique_name("Mass Object Group {:d}".format(
+            len(scene.bp_mass_object_groups)), scene.bp_mass_object_groups)
         new_item.name = new_name
         return {'FINISHED'}
 
@@ -71,7 +74,7 @@ class SetReferencePoint(bpy.types.Operator):
         cursor_coords = [cursor_loc[0], cursor_loc[1], cursor_loc[2]]
 
         sel_mog.reference_point = cursor_coords
-        
+
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -93,8 +96,9 @@ class SetReferencePointToCOM(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
-        sel_mog.reference_point = get_com(sel_mog.mass_object_collection.all_objects)
-        
+        sel_mog.reference_point = get_com(
+            sel_mog.mass_object_collection.all_objects)
+
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -112,7 +116,7 @@ class SetStartingPoint(bpy.types.Operator):
         cursor_coords = [cursor_loc[0], cursor_loc[1], cursor_loc[2]]
 
         sel_mog.ballistics_starting_point = cursor_coords
-        
+
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -134,8 +138,9 @@ class SetStartingPointToCOM(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
-        sel_mog.ballistics_starting_point = get_com(sel_mog.mass_object_collection.all_objects)
-        
+        sel_mog.ballistics_starting_point = get_com(
+            sel_mog.mass_object_collection.all_objects)
+
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -151,7 +156,8 @@ class AlignAxisByPoints(bpy.types.Operator):
         rig_com = get_com(sel_mog.mass_object_collection.all_objects)
 
         p1 = sel_mog.reference_point
-        p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1], sel_mog.reference_point[2] + 1]
+        p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1],
+              sel_mog.reference_point[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         return is_valid_triangle(p1, p2, p3)
 
@@ -160,7 +166,8 @@ class AlignAxisByPoints(bpy.types.Operator):
         rig_com = get_com(sel_mog.mass_object_collection.all_objects)
 
         p1 = sel_mog.reference_point
-        p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1], sel_mog.reference_point[2] + 1]
+        p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1],
+              sel_mog.reference_point[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p3, p2, p1)
         sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
@@ -229,26 +236,31 @@ class CalculateAnglePreview(bpy.types.Operator):
 
         # Get angle
         angle = sel_mog.pinned_rig.rotation_axis_angle[0]
-        current_axis = Vector((sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
+        current_axis = Vector(
+            (sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
 
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
 
         # Get initial moment of inertia
-        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
+        initial_moment_of_inertia = get_moment_of_inertia(
+            sel_mog.mass_object_collection.all_objects, group_com, current_axis)
 
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
 
             current_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-            current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, current_com, current_axis)
+            current_moment_of_inertia = get_moment_of_inertia(
+                sel_mog.mass_object_collection.all_objects, current_com, current_axis)
 
             new_moi = mois.add()
             new_moi.angle = angle
-            new_moi.moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
-            angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
-        
+            new_moi.moment_of_inertia = get_moment_of_inertia(
+                sel_mog.mass_object_collection.all_objects, group_com, current_axis)
+            angle += physics_props.initial_angular_velocity * \
+                (initial_moment_of_inertia / current_moment_of_inertia)
+
         bpy.context.scene.frame_set(original_frame)
         return {'FINISHED'}
 
@@ -288,7 +300,6 @@ class BakeBPPhysics(bpy.types.Operator):
 
         return True
 
-
     def execute(self, context):
         physics_props = context.scene.bp_physics_properties
         selected_index = context.scene.bp_group_index
@@ -298,7 +309,7 @@ class BakeBPPhysics(bpy.types.Operator):
         original_frame = bpy.context.scene.frame_current
 
         bpy.context.scene.frame_set(physics_props.frame_start)
-        
+
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
 
@@ -306,37 +317,47 @@ class BakeBPPhysics(bpy.types.Operator):
         p1 = sel_mog.reference_point
 
         angle = sel_mog.pinned_rig.rotation_axis_angle[0]
-        current_axis = Vector((sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
+        current_axis = Vector(
+            (sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
 
-        initial_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, group_com, current_axis)
+        initial_moment_of_inertia = get_moment_of_inertia(
+            sel_mog.mass_object_collection.all_objects, group_com, current_axis)
 
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
-            
+
             # Rotation
             if physics_props.initial_angular_velocity != 0:
                 sel_mog.pinned_rig.rotation_axis_angle[0] = radians(angle)
-                sel_mog.pinned_rig.keyframe_insert(data_path='rotation_axis_angle', index=0, keytype='GENERATED')
+                sel_mog.pinned_rig.keyframe_insert(
+                    data_path='rotation_axis_angle', index=0, keytype='GENERATED')
 
-                current_com = get_com(sel_mog.mass_object_collection.all_objects)
+                current_com = get_com(
+                    sel_mog.mass_object_collection.all_objects)
 
-                current_moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, current_com, current_axis)
-                angle += physics_props.initial_angular_velocity * (initial_moment_of_inertia / current_moment_of_inertia)
-        
+                current_moment_of_inertia = get_moment_of_inertia(
+                    sel_mog.mass_object_collection.all_objects, current_com, current_axis)
+                angle += physics_props.initial_angular_velocity * \
+                    (initial_moment_of_inertia / current_moment_of_inertia)
+
             # Ballistics
             start_pos = (p0[0], p0[1], p0[2])
             ref_pos = (p1[0], p1[1], p1[2])
             gravity = physics_props.gravity
             time_of_flight = float(physics_props.time_of_flight)
-            elapsed_time = float(f - physics_props.frame_start) / physics_props.frame_rate
+            elapsed_time = float(
+                f - physics_props.frame_start) / physics_props.frame_rate
 
-            point_position = projectile_position(start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
+            point_position = projectile_position(
+                start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
 
             sel_mog.com_location = point_position
-            context.scene.keyframe_insert(data_path=f"bp_mass_object_groups[{selected_index}].com_location", keytype='GENERATED')
+            context.scene.keyframe_insert(
+                data_path=f"bp_mass_object_groups[{selected_index}].com_location", keytype='GENERATED')
 
             sel_mog.is_rig_pinned = True
-            context.scene.keyframe_insert(data_path=f"bp_mass_object_groups[{selected_index}].is_rig_pinned", keytype='GENERATED')
+            context.scene.keyframe_insert(
+                data_path=f"bp_mass_object_groups[{selected_index}].is_rig_pinned", keytype='GENERATED')
 
         # Return to original frame
         bpy.context.scene.frame_set(original_frame)

@@ -1,5 +1,6 @@
 import bpy
 
+
 class CalculatedMOI(bpy.types.PropertyGroup):
     moment_of_inertia: bpy.props.FloatProperty(
         name="Set Density", default=1.0, soft_min=0)
@@ -17,17 +18,20 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     com_location: bpy.props.FloatVectorProperty(name="CoM Location", description="Location of the CoM", default=(
         0, 0, 0))
-    is_rig_pinned: bpy.props.BoolProperty(name="Pin Center of Mass", default=False)
-    pinned_rig: bpy.props.PointerProperty(name="Pinned Rig", type=bpy.types.Object)
+    is_rig_pinned: bpy.props.BoolProperty(
+        name="Pin Center of Mass", default=False)
+    pinned_rig: bpy.props.PointerProperty(
+        name="Pinned Rig", type=bpy.types.Object)
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)
     reference_point: bpy.props.FloatVectorProperty(name="Reference Point", description="Reference point for angle alignment and ballistics ruler.", default=(
         0, 0, 0))
     reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
         0, 1, 0), subtype='COLOR', min=0.0, max=1.0)
-    show_reference_point: bpy.props.BoolProperty(name="Show Reference Points", default=True)
+    show_reference_point: bpy.props.BoolProperty(
+        name="Show Reference Points", default=True)
     ballistics_starting_point: bpy.props.FloatVectorProperty(name="Ballistics Starting Point", description="Starting point of ballistics curve.", default=(
         0, 0, 0))
-    ballistics_starting_point_color : bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
+    ballistics_starting_point_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
         1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
     calculated_mois: bpy.props.CollectionProperty(type=CalculatedMOI)
 

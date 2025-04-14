@@ -51,10 +51,12 @@ def draw_bp(self, context):
                     axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
                     axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
                         axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com)
-                    batch = batch_for_shader(shader, 'LINES', {"pos": axis_verts})
-                    batch = batch_for_shader(shader, 'LINES', {"pos": axis_verts})
+                    batch = batch_for_shader(
+                        shader, 'LINES', {"pos": axis_verts})
+                    batch = batch_for_shader(
+                        shader, 'LINES', {"pos": axis_verts})
                     batch.draw(shader)
-                
+
                 # Physics Preview
                 # Draw Reference Points
                 if group.show_reference_point:
@@ -72,7 +74,7 @@ def draw_bp(self, context):
                     batch = batch_for_shader(
                         shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
                     batch.draw(shader)
-                
+
                 # Draw ballistics curve
                 if physics_props.is_ballistics_preview:
 
@@ -89,14 +91,17 @@ def draw_bp(self, context):
                             start_pos = (p0[0], p0[1], p0[2])
                             ref_pos = (p1[0], p1[1], p1[2])
                             gravity = physics_props.gravity
-                            time_of_flight = float(physics_props.time_of_flight)
-                            elapsed_time = float(frame) / physics_props.frame_rate
+                            time_of_flight = float(
+                                physics_props.time_of_flight)
+                            elapsed_time = float(
+                                frame) / physics_props.frame_rate
 
                             point_positions.append(projectile_position(
                                 start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
 
                         # Draw lines
-                        for index, point_position in enumerate(point_positions):
+                        for index, point_position in enumerate(
+                                point_positions):
                             line_batch = []
                             line_color = (1.0, 0.0, 0.0, 1.0) if index + \
                                 physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
@@ -112,24 +117,26 @@ def draw_bp(self, context):
                                                 point_coordinate[1], point_coordinate[2])]
 
                             gpu.state.line_width_set(2.0)
-                            batch = batch_for_shader(shader, 'LINES', {"pos": line_batch})
+                            batch = batch_for_shader(
+                                shader, 'LINES', {"pos": line_batch})
                             batch.draw(shader)
 
                         # Draw points
-                        for index, point_position in enumerate(point_positions):
+                        for index, point_position in enumerate(
+                                point_positions):
                             shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
                             gpu.state.point_size_set(4.0)
                             batch = batch_for_shader(
                                 shader, 'POINTS', {"pos": point_positions})
                             batch.draw(shader)
 
-
                         # Draw Angle Preview
                         if len(sel_mog.calculated_mois) > 0:
-                            for index, point_position in enumerate(point_positions):
+                            for index, point_position in enumerate(
+                                    point_positions):
                                 if index <= len(sel_mog.calculated_mois):
                                     angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0),
-                                                (-0.5, 0.0, 0.0), (0.5, 0.0, 0.0)]
+                                                   (-0.5, 0.0, 0.0), (0.5, 0.0, 0.0)]
 
                                     com_x = sel_mog.pinned_rig.rotation_axis_angle[1]
                                     com_y = sel_mog.pinned_rig.rotation_axis_angle[2]
@@ -177,7 +184,8 @@ def rotate_points(points, angle_deg, axis):
     return rotated_points
 
 
-def transform_indices(vertices, scale, translate_vector, angle_deg=0, axis=(0, 1, 0)):
+def transform_indices(vertices, scale, translate_vector,
+                      angle_deg=0, axis=(0, 1, 0)):
     rotated_verts = rotate_points(vertices, angle_deg, axis)
     new_vertices = []
     for v in rotated_verts:

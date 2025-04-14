@@ -18,7 +18,8 @@ class BP_UL_List(bpy.types.UIList):
         weight_col.scale_x = 0.6
         total_mass = 0
         if item.mass_object_collection is not None:
-            total_mass = get_total_mass(item.mass_object_collection.all_objects)
+            total_mass = get_total_mass(
+                item.mass_object_collection.all_objects)
         weight_col.label(text="{} kg".format(round(total_mass, 2)))
         color_col = row.column()
         color_col.scale_x = 0.35
@@ -36,14 +37,15 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
         phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
-        selected_mog = mass_object_groups[selected_index] if selected_index < len(mass_object_groups) else None
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
 
         row = layout.row()
         row.alignment = 'CENTER'
         row.label(text="Mass Object Groups")
         row = layout.row()
         row.template_list("BP_UL_List", "my_custom_list", scene,
-                             "bp_mass_object_groups", scene, "bp_group_index", rows=3)
+                          "bp_mass_object_groups", scene, "bp_group_index", rows=3)
         col = row.column(align=True)
         col.operator("balance_point.massgroup_add", icon='ADD', text="")
         col.operator("balance_point.massgroup_remove", icon='REMOVE', text="")
@@ -51,7 +53,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
         draw_icon = 'HIDE_OFF' if com_props.com_drawing_on else 'HIDE_ON'
         col.prop(com_props, "com_drawing_on", toggle=1,
                  icon=draw_icon, text="")
-        
+
         if selected_mog is not None:
             box = layout.box()
             # box.use_property_split = True
@@ -63,7 +65,8 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
             main_box = box.box()
             row = main_box.row()
             row.scale_y = 1.5
-            row.prop(selected_mog, "mass_object_collection", text="Mass Collection")
+            row.prop(selected_mog, "mass_object_collection",
+                     text="Mass Collection")
 
             # MOG Info
             row = main_box.row()
@@ -82,14 +85,15 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.alignment = 'CENTER'
                 row.scale_y = 1.2
                 row.prop(selected_mog, "is_rig_pinned")
-                
+
                 # Reference Points
                 point_box = phys_box.box()
                 ref_header_row = point_box.row()
                 ref_header_row.alignment = 'CENTER'
                 col1 = ref_header_row.column()
                 preview_on = selected_mog.show_reference_point
-                col1.prop(selected_mog, "show_reference_point", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+                col1.prop(selected_mog, "show_reference_point", text="",
+                          icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 col2 = ref_header_row.column()
                 t_row = col2.row()
                 t_row.alignment = 'CENTER'
@@ -110,7 +114,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 col = right_col.row()
                 col.scale_x = 0.35
                 col.prop(selected_mog, "ballistics_starting_point_color", text="")
-                
+
                 row = starting_box.row()
                 row.prop(selected_mog, "ballistics_starting_point", text="")
                 row = starting_box.row()
@@ -118,8 +122,10 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.label(text="Set Starting Point To")
                 row = starting_box.row()
                 col = row.column(align=True)
-                col.operator("balance_point.startingpoint_set", icon='CURSOR', text="3D Cursor")
-                col.operator("balance_point.startingpointcom_set", icon='DOT', text="Center of Mass")
+                col.operator("balance_point.startingpoint_set",
+                             icon='CURSOR', text="3D Cursor")
+                col.operator("balance_point.startingpointcom_set",
+                             icon='DOT', text="Center of Mass")
 
                 # Right Reference Point Column
                 right_col = points_split.column()
@@ -128,7 +134,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 ref_header.alignment = 'CENTER'
                 left_col = ref_header.column()
                 row = left_col.row()
-                row.alignment='CENTER'
+                row.alignment = 'CENTER'
                 ref_header.label(text="Reference Point")
                 right_col = ref_header.column()
                 col = right_col.row()
@@ -142,9 +148,10 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.label(text="Set Reference Point To")
                 row = ref_box.row()
                 col = row.column(align=True)
-                col.operator("balance_point.referencepoint_set", icon='CURSOR', text="3D Cursor")
-                col.operator("balance_point.referencepointcom_set", icon='DOT', text="Center of Mass")
-
+                col.operator("balance_point.referencepoint_set",
+                             icon='CURSOR', text="3D Cursor")
+                col.operator("balance_point.referencepointcom_set",
+                             icon='DOT', text="Center of Mass")
 
                 # Axis
                 axis_box = phys_box.box()
@@ -153,16 +160,21 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 axis_header = axis_box.row()
                 axis_header.alignment = 'CENTER'
                 preview_on = selected_mog.show_axis
-                axis_header.prop(selected_mog, "show_axis", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+                axis_header.prop(selected_mog, "show_axis", text="",
+                                 icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 axis_header.label(text="Rotation Axis")
 
                 row = axis_box.row()
                 row.enabled = selected_mog.is_rig_pinned
-                row.prop(selected_mog.pinned_rig, "rotation_axis_angle", text="")
+                row.prop(selected_mog.pinned_rig,
+                         "rotation_axis_angle", text="")
                 moment_of_inertia = 0.0
-                center_of_mass = get_com(selected_mog.mass_object_collection.all_objects)
-                current_axis = Vector((selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
-                moment_of_inertia = get_moment_of_inertia(selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
+                center_of_mass = get_com(
+                    selected_mog.mass_object_collection.all_objects)
+                current_axis = Vector(
+                    (selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
+                moment_of_inertia = get_moment_of_inertia(
+                    selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
                 row = axis_box.row()
                 row.alignment = 'CENTER'
                 row.label(text="Moment of Inertia: {} kg·m2".format(
@@ -178,7 +190,8 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row = ballistics_box.row()
                 row.alignment = 'CENTER'
                 preview_on = phys_props.is_ballistics_preview
-                row.prop(phys_props, "is_ballistics_preview", text="", icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+                row.prop(phys_props, "is_ballistics_preview", text="",
+                         icon='HIDE_OFF' if preview_on else 'HIDE_ON')
                 row.label(text='Ballistics')
                 col = ballistics_box.column(align=True)
                 col.prop(phys_props, "gravity")
@@ -188,10 +201,12 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 col.prop(phys_props, "initial_angular_velocity")
                 row = col.row()
                 col_l = row.column()
-                col_l.operator("balance_point.calculate_angle_preview", icon="CURVE_PATH")
+                col_l.operator(
+                    "balance_point.calculate_angle_preview", icon="CURVE_PATH")
                 col_r = row.column()
                 col_r.scale_x = 0.6
-                col_r.operator("balance_point.clear_angle_preview", text="Clear", icon="PANEL_CLOSE")
+                col_r.operator("balance_point.clear_angle_preview",
+                               text="Clear", icon="PANEL_CLOSE")
 
                 # Baking
                 bake_box = phys_box.box()
@@ -211,7 +226,6 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row = box.row()
                 row.alignment = 'CENTER'
                 row.label(text="Add a Pinned Rig.")
-            
 
 
 class BalancePointMain(BalancePointPanel, bpy.types.Panel):
@@ -296,7 +310,8 @@ class BP_PT_mass_object_groups(BalancePointPanel, bpy.types.Panel):
             sub.alignment = 'RIGHT'
             center_of_mass = (0.0, 0.0, 0.0)
             if group.mass_object_collection is not None:
-                center_of_mass = get_com(group.mass_object_collection.all_objects)
+                center_of_mass = get_com(
+                    group.mass_object_collection.all_objects)
             sub.label(text="({}, {}, {})".format(
                 round(center_of_mass[0], 4), round(center_of_mass[1], 4), round(center_of_mass[2], 4)))
 
@@ -423,9 +438,12 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row.label(text="Moment of Inertia: ")
                     sub = row.row()
                     sub.alignment = 'RIGHT'
-                    center_of_mass = get_com(sel_mog.mass_object_collection.all_objects)
-                    current_axis = Vector((sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
-                    moment_of_inertia = get_moment_of_inertia(sel_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
+                    center_of_mass = get_com(
+                        sel_mog.mass_object_collection.all_objects)
+                    current_axis = Vector(
+                        (sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
+                    moment_of_inertia = get_moment_of_inertia(
+                        sel_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
                     sub.label(text="{} kg·m2".format(
                         round(moment_of_inertia, 4)))
 
@@ -469,7 +487,8 @@ class PhysicsPanel(BalancePointPanel, bpy.types.Panel):
                     row = layout.row()
                     row.prop(physics_props, "initial_angular_velocity")
                     row = layout.row()
-                    center_of_mass = get_com(sel_mog.mass_object_collection.all_objects)
+                    center_of_mass = get_com(
+                        sel_mog.mass_object_collection.all_objects)
                     com_axis = Vector(
                         (sel_mog.com_object.rotation_axis_angle[1], sel_mog.com_object.rotation_axis_angle[2], sel_mog.com_object.rotation_axis_angle[3]))
                     moi = get_moment_of_inertia(
