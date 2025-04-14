@@ -3,7 +3,7 @@ import gpu
 import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-from .utils import projectile_position, remap, get_com
+from .utils import projectile_position, get_com
 from .shapes import *
 
 shader = gpu.shader.from_builtin('UNIFORM_COLOR')
@@ -13,8 +13,9 @@ def draw_bp(self, context):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
     physics_props = bpy.context.scene.bp_physics_properties
+    selected_index = bpy.context.scene.bp_group_index
 
-    sel_mog = bp_mass_groups[physics_props.selected_mog] if physics_props.selected_mog else None
+    sel_mog = bp_mass_groups[selected_index] if len(bp_mass_groups) > 0 else None
     # Go through each collection, create a batch, render it
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:

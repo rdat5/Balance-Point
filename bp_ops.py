@@ -4,19 +4,6 @@ from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia
 from mathutils import Vector
 
 
-class ToggleDrawing(bpy.types.Operator):
-    """Adds/Removes center of mass render function from draw handler"""
-    bl_idname = "balance_point.toggle_drawing"
-    bl_label = "Toggle Drawing"
-
-    def execute(self, context):
-        com_props = context.scene.com_properties
-
-        com_props.com_drawing_on = not com_props.com_drawing_on
-        bpy.context.region.tag_redraw()
-        return {'FINISHED'}
-
-
 class AddMassObjectGroup(bpy.types.Operator):
     """Adds a new Mass Object Group"""
     bl_idname = "balance_point.massgroup_add"
@@ -277,7 +264,6 @@ class ClearAnglePreview(bpy.types.Operator):
         return len(sel_mog.calculated_mois) > 0
 
     def execute(self, context):
-        physics_props = context.scene.bp_physics_properties
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
         mois = sel_mog.calculated_mois
 

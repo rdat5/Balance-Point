@@ -13,7 +13,6 @@
 
 from .draw import draw_bp
 from .bp_ops import (
-    ToggleDrawing,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
     SetReferencePoint,
@@ -76,7 +75,6 @@ classes = (
     SetActiveFalse,
     CalculateVolume,
     SetDensity,
-    ToggleDrawing,
     SetReferencePoint,
     AlignAxisByCursor,
     AlignAxisByPoints,
