@@ -29,7 +29,6 @@ from .mass_ops import (
     AddMassProps,
     RemoveMassProps,
     ToggleActiveProperty,
-    ToggleActiveProperty,
     SetActiveTrue,
     SetActiveFalse,
     CalculateVolume,
