@@ -96,7 +96,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 col2 = ref_header_row.column()
                 t_row = col2.row()
                 t_row.alignment = 'CENTER'
-                t_row.label(text='Reference Points')
+                t_row.label(text="Reference Points")
 
                 # Left Starting Point Column
                 points_split = point_box.split()
@@ -191,7 +191,7 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 preview_on = phys_props.is_ballistics_preview
                 row.prop(phys_props, "is_ballistics_preview", text="",
                          icon='HIDE_OFF' if preview_on else 'HIDE_ON')
-                row.label(text='Ballistics')
+                row.label(text="Ballistics")
                 col = ballistics_box.column(align=True)
                 col.prop(phys_props, "gravity")
                 col.prop(phys_props, "time_of_flight")
@@ -262,7 +262,7 @@ class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
         row.alignment = 'CENTER'
         row.label(text="Origin Setting")
         row = layout.row()
-        row.operator("object.origin_set", text='Origin to Center of Mass (Volume)',
+        row.operator("object.origin_set", text="Origin to Center of Mass (Volume)",
                      icon='DOT').type = 'ORIGIN_CENTER_OF_VOLUME'
         row = layout.row()
         row.alignment = 'CENTER'
@@ -288,12 +288,12 @@ class BP_PT_mass_selected(BalancePointPanel, bpy.types.Panel):
             round(get_total_mass(sel_obj), 4)))
 
         for obj in sel_obj:
-            if obj.get('volume') is not None:
+            if obj.get("volume") is not None:
                 box = layout.box()
 
                 row = box.row()
                 obj_active = 'RADIOBUT_ON' if obj.get(
-                    'active') else 'RADIOBUT_OFF'
+                    "active") else 'RADIOBUT_OFF'
                 row.label(text="", icon=obj_active)
                 row.label(text=obj.name)
                 sub = row.row()

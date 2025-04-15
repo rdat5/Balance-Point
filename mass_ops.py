@@ -19,11 +19,11 @@ class AddMassProps(bpy.types.Operator):
 
         for obj in sel_obj:
             if obj.type == 'MESH':
-                if obj.get('active') is None:
+                if obj.get("active") is None:
                     obj["active"] = True
-                if obj.get('density') is None:
+                if obj.get("density") is None:
                     obj["density"] = 1.0
-                if obj.get('volume') is None:
+                if obj.get("volume") is None:
                     obj["volume"] = 1.0
         return {'FINISHED'}
 
@@ -46,11 +46,11 @@ class RemoveMassProps(bpy.types.Operator):
 
         for obj in sel_obj:
             if obj.type == 'MESH':
-                if obj.get('active') is not None:
+                if obj.get("active") is not None:
                     del obj["active"]
-                if obj.get('density') is not None:
+                if obj.get("density") is not None:
                     del obj["density"]
-                if obj.get('volume') is not None:
+                if obj.get("volume") is not None:
                     del obj["volume"]
         return {'FINISHED'}
 
@@ -66,14 +66,14 @@ class ToggleActiveProperty(bpy.types.Operator):
 
         if obj is None or not isinstance(obj, bpy.types.Object):
             return False
-        return obj.type == 'MESH' and obj.get('active') is not None
+        return obj.type == 'MESH' and obj.get("active") is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
 
         for obj in sel_obj:
-            if obj.get('active') is not None:
-                set_active(obj, (not obj['active']))
+            if obj.get("active") is not None:
+                set_active(obj, (not obj["active"]))
         return {'FINISHED'}
 
 
@@ -88,13 +88,13 @@ class SetActiveTrue(bpy.types.Operator):
 
         if obj is None or not isinstance(obj, bpy.types.Object):
             return False
-        return obj.type == 'MESH' and obj.get('active') is not None
+        return obj.type == 'MESH' and obj.get("active") is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
 
         for obj in sel_obj:
-            if obj.get('active') is not None:
+            if obj.get("active") is not None:
                 set_active(obj, True)
         return {'FINISHED'}
 
@@ -110,13 +110,13 @@ class SetActiveFalse(bpy.types.Operator):
 
         if obj is None or not isinstance(obj, bpy.types.Object):
             return False
-        return obj.type == 'MESH' and obj.get('active') is not None
+        return obj.type == 'MESH' and obj.get("active") is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
 
         for obj in sel_obj:
-            if obj.get('active') is not None:
+            if obj.get("active") is not None:
                 set_active(obj, False)
         return {'FINISHED'}
 
@@ -132,14 +132,14 @@ class CalculateVolume(bpy.types.Operator):
 
         if obj is None or not isinstance(obj, bpy.types.Object):
             return False
-        return obj.type == 'MESH' and obj.get('volume') is not None
+        return obj.type == 'MESH' and obj.get("volume") is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
 
         for obj in sel_obj:
-            if obj.get('volume') is not None and obj.type == 'MESH':
-                obj['volume'] = get_volume(obj) * 1000
+            if obj.get("volume") is not None and obj.type == 'MESH':
+                obj["volume"] = get_volume(obj) * 1000
         return {'FINISHED'}
 
 
@@ -154,20 +154,20 @@ class SetDensity(bpy.types.Operator):
 
         if obj is None or not isinstance(obj, bpy.types.Object):
             return False
-        return obj.type == 'MESH' and obj.get('density') is not None
+        return obj.type == 'MESH' and obj.get("density") is not None
 
     def execute(self, context):
         sel_obj = context.selected_objects
         com_props = context.scene.com_properties
 
         for obj in sel_obj:
-            if obj.get('density') is not None:
-                obj['density'] = com_props.mass_density_set
+            if obj.get("density") is not None:
+                obj["density"] = com_props.mass_density_set
         return {'FINISHED'}
 
 
 def set_active(obj, act):
-    obj['active'] = act
+    obj["active"] = act
     if act == True:
         obj.display_type = 'SOLID'
     elif act == False:

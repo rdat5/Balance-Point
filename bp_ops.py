@@ -17,7 +17,7 @@ class AddMassObjectGroup(bpy.types.Operator):
             unique_name = base_name
             suffix = 1
             while unique_name in existing_names:
-                unique_name = f"{base_name}.{suffix:03}"
+                unique_name = "{}.{:03}".format(base_name, suffix)
                 suffix += 1
             return unique_name
 
@@ -339,11 +339,11 @@ class BakeBPPhysics(bpy.types.Operator):
 
             sel_mog.com_location = point_position
             context.scene.keyframe_insert(
-                data_path=f"bp_mass_object_groups[{selected_index}].com_location", keytype='GENERATED')
+                data_path="bp_mass_object_groups[{}].com_location".format(selected_index), keytype='GENERATED')
 
             sel_mog.is_rig_pinned = True
             context.scene.keyframe_insert(
-                data_path=f"bp_mass_object_groups[{selected_index}].is_rig_pinned", keytype='GENERATED')
+                data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), keytype='GENERATED')
 
         # Return to original frame
         bpy.context.scene.frame_set(original_frame)
