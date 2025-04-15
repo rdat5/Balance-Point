@@ -1,8 +1,8 @@
-import numpy as np
 from mathutils import Vector
 
 
 def is_valid_triangle(p1, p2, p3):
+    import numpy as np
     A = np.array([p1[0], p1[1], p1[2]])
     B = np.array([p2[0], p2[1], p2[2]])
     C = np.array([p3[0], p3[1], p3[2]])
@@ -16,6 +16,7 @@ def is_valid_triangle(p1, p2, p3):
 
 
 def get_triangle_normal(p1, p2, p3):
+    import numpy as np
     v1 = np.array(p2) - np.array(p1)
     v2 = np.array(p3) - np.array(p1)
     normal = np.cross(v1, v2)
@@ -42,6 +43,7 @@ def is_in_collection_group(key, collection):
 
 
 def get_moment_of_inertia(objects, center_of_mass, axis_vector):
+    import numpy as np
     # Normalize
     axis_vector = np.array(axis_vector)
     axis_unit = axis_vector / np.linalg.norm(axis_vector)

@@ -1,6 +1,5 @@
 import bpy
 import gpu
-import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
 from .utils import projectile_position, get_com
@@ -10,6 +9,8 @@ shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
 
 def draw_bp(self, context):
+    import numpy
+
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
     physics_props = bpy.context.scene.bp_physics_properties
@@ -155,6 +156,8 @@ def draw_bp(self, context):
 
 
 def rotate_points(points, angle_deg, axis):
+    import numpy
+
     # Convert list of tuples to numpy array
     points_np = numpy.array(points)
 

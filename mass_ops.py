@@ -1,5 +1,4 @@
 import bpy
-import bmesh
 
 
 class AddMassProps(bpy.types.Operator):
@@ -176,6 +175,7 @@ def set_active(obj, act):
 
 
 def get_volume(obj):
+    import bmesh
     volume = 0.0
 
     depsgraph = bpy.context.evaluated_depsgraph_get()
