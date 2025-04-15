@@ -35,13 +35,6 @@ def get_total_mass(objects):
     return total_mass
 
 
-def is_in_collection_group(key, collection):
-    for item in collection:
-        if item.name == key:
-            return True
-    return False
-
-
 def get_moment_of_inertia(objects, center_of_mass, axis_vector):
     import numpy as np
     # Normalize
@@ -87,16 +80,6 @@ def get_com(objects):
         center_of_mass = weighted_sum / total_mass
 
     return center_of_mass
-
-
-def combine_coll_objects(collections):
-    combined_objects = []
-
-    for coll in collections:
-        for obj in coll.all_objects:
-            combined_objects.append(obj)
-
-    return combined_objects
 
 
 def projectile_position(start_pos, second_pos, gravity, time_of_flight, elapsed_time):
