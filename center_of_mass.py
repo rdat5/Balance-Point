@@ -2,7 +2,7 @@ import bpy
 # import numpy
 from bpy.app.handlers import persistent
 from mathutils import Vector
-from .utils import get_com, combine_coll_objects
+from .utils import get_com
 
 
 @persistent

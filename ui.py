@@ -1,5 +1,5 @@
 import bpy
-from .utils import get_total_mass, is_in_collection_group, get_moment_of_inertia, get_com
+from .utils import get_total_mass, get_moment_of_inertia, get_com
 from mathutils import Vector
 
 
