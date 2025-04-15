@@ -26,9 +26,9 @@ class BP_UL_List(bpy.types.UIList):
         color_col.prop(item, "color", text="", emboss=True)
 
 
-class NewBPMain(BalancePointPanel, bpy.types.Panel):
-    bl_idname = "BP_PT_Main_new"
-    bl_label = "Balance Point New"
+class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
+    bl_idname = "BP_PT_MainMenu"
+    bl_label = "Balance Point"
 
     def draw(self, context):
         layout = self.layout
@@ -227,10 +227,10 @@ class NewBPMain(BalancePointPanel, bpy.types.Panel):
                 row.label(text="Add a Pinned Rig.")
 
 
-class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
+class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
     """Mass properties panel"""
     bl_label = "Mass Property Editing"
-    bl_idname = "BP_PT_mass_editing_panel"
+    bl_idname = "BP_PT_MassPropertyEditor"
 
     def draw(self, context):
         layout = self.layout
@@ -274,8 +274,8 @@ class MassPropertiesPanel(BalancePointPanel, bpy.types.Panel):
         row.operator("balance_point.toggle_active", icon='ARROW_LEFTRIGHT')
 
 
-class BP_PT_mass_selected(BalancePointPanel, bpy.types.Panel):
-    bl_parent_id = "BP_PT_mass_editing_panel"
+class BP_PT_MassSelected(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_MassPropertyEditor"
     bl_label = "Selected Mass Objects"
 
     def draw(self, context):
