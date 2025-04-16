@@ -17,9 +17,7 @@ def draw_bp(self, context):
     com_props = bpy.context.scene.com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
     physics_props = bpy.context.scene.bp_physics_properties
-    selected_index = bpy.context.scene.bp_group_index
 
-    sel_mog = bp_mass_groups[selected_index] if len(bp_mass_groups) > 0 else None
     # Go through each collection, create a batch, render it
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:
@@ -136,21 +134,21 @@ def draw_bp(self, context):
                             batch.draw(shader)
 
                         # Draw Angle Preview
-                        if len(sel_mog.calculated_mois) > 0:
+                        if len(group.calculated_mois) > 0:
                             for index, point_position in enumerate(
                                     point_positions):
-                                if index <= len(sel_mog.calculated_mois):
+                                if index <= len(group.calculated_mois):
                                     angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0),
                                                    (-0.5, 0.0, 0.0), (0.5, 0.0, 0.0)]
 
-                                    com_x = sel_mog.pinned_rig.rotation_axis_angle[1]
-                                    com_y = sel_mog.pinned_rig.rotation_axis_angle[2]
-                                    com_z = sel_mog.pinned_rig.rotation_axis_angle[3]
+                                    com_x = group.pinned_rig.rotation_axis_angle[1]
+                                    com_y = group.pinned_rig.rotation_axis_angle[2]
+                                    com_z = group.pinned_rig.rotation_axis_angle[3]
 
                                     angle_color = (1.0, 1.0, 0.0, 1.0) if index + \
                                         physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 1.0, 1.0)
 
-                                    moi_angle = sel_mog.calculated_mois[index].angle
+                                    moi_angle = group.calculated_mois[index].angle
                                     shader.uniform_float("color", angle_color)
                                     gpu.state.line_width_set(1.0)
                                     batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(
