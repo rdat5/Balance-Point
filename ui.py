@@ -38,7 +38,6 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         com_props = scene.com_properties
-        phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
@@ -57,40 +56,47 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
         draw_icon = 'HIDE_OFF' if com_props.com_drawing_on else 'HIDE_ON'
         col.prop(com_props, "com_drawing_on", toggle=1,
                  icon=draw_icon, text="")
+        
+        row = layout.row()
+        # MOG Settings
+        row.alignment = 'CENTER'
+        row.label(text=selected_mog.name + " Settings")
+        # Collection
+        row = layout.row()
+        row.scale_y = 1.5
+        row.prop(selected_mog, "mass_object_collection",
+                    text="Mass Collection")
 
+        # MOG Info
+        row = layout.row()
+        row.prop(selected_mog, "pinned_rig")
+
+class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
+    bl_idname = "BP_PT_PhysicsTools"
+    bl_label = "Physics Tools"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        phys_props = scene.bp_physics_properties
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
+        
         if selected_mog is not None:
-            box = layout.box()
-            row = box.row()
-            # MOG Settings
-            row.alignment = 'CENTER'
-            row.label(text=selected_mog.name + " Settings")
-            # Collection
-            main_box = box.box()
-            row = main_box.row()
-            row.scale_y = 1.5
-            row.prop(selected_mog, "mass_object_collection",
-                     text="Mass Collection")
-
-            # MOG Info
-            row = main_box.row()
-            row.prop(selected_mog, "com_location")
-            row = main_box.row()
-            row.prop(selected_mog, "pinned_rig")
-
-            # Physics
-            row = box.row()
-            row.alignment = 'CENTER'
-            row.label(text="Physics Settings")
-
             if selected_mog.pinned_rig is not None:
-                phys_box = box.box()
-                row = phys_box.row()
+                # phys_box = layout.box()
+                row = layout.row()
                 row.alignment = 'CENTER'
                 row.scale_y = 1.2
                 row.prop(selected_mog, "is_rig_pinned")
+                com_row = layout.row()
+                com_row.enabled = selected_mog.is_rig_pinned
+                com_row.prop(selected_mog, "com_location")
 
                 # Reference Points
-                point_box = phys_box.box()
+                point_box = layout.box()
                 ref_header_row = point_box.row()
                 ref_header_row.alignment = 'CENTER'
                 col1 = ref_header_row.column()
@@ -157,7 +163,7 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                              icon='DOT', text="Center of Mass")
 
                 # Axis
-                axis_box = phys_box.box()
+                axis_box = layout.box()
 
                 # Axis Header
                 axis_header = axis_box.row()
@@ -187,7 +193,7 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                 row.operator("balance_point.align_axis", icon='DOT')
 
                 # Ballistics Ruler
-                ballistics_box = phys_box.box()
+                ballistics_box = layout.box()
                 ballistics_box.use_property_split = True
                 ballistics_box.use_property_decorate = False
                 row = ballistics_box.row()
@@ -212,7 +218,7 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                                text="Clear", icon="PANEL_CLOSE")
 
                 # Baking
-                bake_box = phys_box.box()
+                bake_box = layout.box()
                 bake_box.use_property_split = True
                 bake_box.use_property_decorate = False
                 row = bake_box.row()
@@ -226,9 +232,16 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                 row.operator("balance_point.bake_physics")
 
             else:
-                row = box.row()
+                row = layout.row()
+                row.enabled = selected_mog.is_rig_pinned
+                row.prop(selected_mog, "com_location")
+                row = layout.row()
                 row.alignment = 'CENTER'
-                row.label(text="Add a Pinned Rig.")
+                row.label(text="Add a Pinned Rig to Use Physics.")
+        else:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(text="Create and select a Mass Object Group.")
 
 
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):

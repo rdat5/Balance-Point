@@ -37,6 +37,7 @@ from .mass_ops import (
 from .ui import (
     BP_UL_List,
     BP_PT_MainMenu,
+    BP_PT_PhysicsTools,
     BP_PT_MassPropertyEditor,
     BP_PT_MassSelected,
 )
@@ -71,6 +72,7 @@ classes = (
     ComProperties,
     BP_UL_List,
     BP_PT_MainMenu,
+    BP_PT_PhysicsTools,
     BP_PT_MassPropertyEditor,
     BP_PT_MassSelected,
     CalculateAnglePreview,
