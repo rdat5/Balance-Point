@@ -23,7 +23,7 @@ from .bp_ops import (
     SetStartingPoint,
     SetStartingPointToCOM,
     ClearAnglePreview,
-    SetReferencePointToCOM
+    SetReferencePointToCOM,
 )
 from .mass_ops import (
     AddMassProps,
@@ -32,10 +32,20 @@ from .mass_ops import (
     SetActiveTrue,
     SetActiveFalse,
     CalculateVolume,
-    SetDensity
+    SetDensity,
 )
-from .ui import *
-from .props import *
+from .ui import (
+    BP_UL_List,
+    BP_PT_MainMenu,
+    BP_PT_MassPropertyEditor,
+    BP_PT_MassSelected,
+)
+from .props import (
+    CalculatedMOI,
+    MassObjectGroup,
+    ComProperties,
+    PhysicsProperties,
+)
 from .center_of_mass import update_mass_group_com
 import bpy
 bl_info = {

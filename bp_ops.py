@@ -1,7 +1,14 @@
 import bpy
 from math import radians
-from .utils import is_valid_triangle, get_triangle_normal, get_moment_of_inertia, projectile_position, get_com
+from .utils import (
+    is_valid_triangle, 
+    get_triangle_normal, 
+    get_moment_of_inertia, 
+    projectile_position, 
+    get_com
+)
 from mathutils import Vector
+
 
 
 class AddMassObjectGroup(bpy.types.Operator):

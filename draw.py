@@ -2,8 +2,11 @@ import bpy
 import gpu
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-from .utils import projectile_position, get_com
-from .shapes import *
+from .utils import (
+    projectile_position, 
+    get_com,
+)
+from .shapes import SHAPE_FLOOR_MARKER
 
 shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
