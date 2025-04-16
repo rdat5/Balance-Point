@@ -84,10 +84,11 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
         
-        row = layout.row()
-        row.alignment = 'CENTER'
-        row.scale_y = 1.2
-        row.prop(selected_mog, "is_rig_pinned")
+        if selected_mog.pinned_rig is not None:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.scale_y = 1.2
+            row.prop(selected_mog, "is_rig_pinned")
         com_row = layout.row()
         com_row.enabled = selected_mog.is_rig_pinned
         com_row.prop(selected_mog, "com_location")
@@ -203,31 +204,33 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
         col = ballistics_box.column(align=True)
         col.prop(phys_props, "gravity")
         col.prop(phys_props, "time_of_flight")
-        row = ballistics_box.row()
-        col = row.column()
-        col.prop(phys_props, "initial_angular_velocity")
-        row = col.row()
-        col_l = row.column()
-        col_l.operator(
-            "balance_point.calculate_angle_preview", icon="CURVE_PATH")
-        col_r = row.column()
-        col_r.scale_x = 0.6
-        col_r.operator("balance_point.clear_angle_preview",
-                        text="Clear", icon="PANEL_CLOSE")
+        if selected_mog.pinned_rig is not None:
+            row = ballistics_box.row()
+            col = row.column()
+            col.prop(phys_props, "initial_angular_velocity")
+            row = col.row()
+            col_l = row.column()
+            col_l.operator(
+                "balance_point.calculate_angle_preview", icon="CURVE_PATH")
+            col_r = row.column()
+            col_r.scale_x = 0.6
+            col_r.operator("balance_point.clear_angle_preview",
+                            text="Clear", icon="PANEL_CLOSE")
 
         # Baking
-        bake_box = layout.box()
-        bake_box.use_property_split = True
-        bake_box.use_property_decorate = False
-        row = bake_box.row()
-        row.alignment = 'CENTER'
-        row.label(text='Baking')
-        col = bake_box.column(align=True)
-        col.prop(phys_props, "frame_start")
-        col.prop(phys_props, "frame_end")
-        col.prop(phys_props, "frame_rate")
-        row = bake_box.row()
-        row.operator("balance_point.bake_physics")
+        if selected_mog.pinned_rig is not None:
+            bake_box = layout.box()
+            bake_box.use_property_split = True
+            bake_box.use_property_decorate = False
+            row = bake_box.row()
+            row.alignment = 'CENTER'
+            row.label(text='Baking')
+            col = bake_box.column(align=True)
+            col.prop(phys_props, "frame_start")
+            col.prop(phys_props, "frame_end")
+            col.prop(phys_props, "frame_rate")
+            row = bake_box.row()
+            row.operator("balance_point.bake_physics")
 
 
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
