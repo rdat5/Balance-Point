@@ -52,7 +52,7 @@ class PhysicsProperties(bpy.types.PropertyGroup):
                                                       description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per frame.")
     gravity: bpy.props.FloatProperty(name="Gravity", default=9.807)
     time_of_flight: bpy.props.FloatProperty(
-        name="Time of Flight", description="Elapsed frames until it reaches the ballistics reference point.", default=1, min=0.00001)
+        name="Time of Flight", description="Elapsed time in seconds until center of mass reaches the ballistics reference point from the starting point.", default=1, min=0.00001)
     frame_start: bpy.props.IntProperty(
         name="Frame Range Start", description="First frame of the physics baking range.")
     frame_end: bpy.props.IntProperty(
