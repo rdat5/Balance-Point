@@ -81,7 +81,7 @@ def draw_bp(self, context):
                     batch.draw(shader)
 
                 # Draw ballistics curve
-                if physics_props.is_ballistics_preview:
+                if group.is_ballistics_preview:
 
                     if physics_props.frame_end > physics_props.frame_start and physics_props.time_of_flight > 0:
                         point_positions = []
