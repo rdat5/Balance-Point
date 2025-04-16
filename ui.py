@@ -84,164 +84,150 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
         
-        if selected_mog is not None:
-            if selected_mog.pinned_rig is not None:
-                # phys_box = layout.box()
-                row = layout.row()
-                row.alignment = 'CENTER'
-                row.scale_y = 1.2
-                row.prop(selected_mog, "is_rig_pinned")
-                com_row = layout.row()
-                com_row.enabled = selected_mog.is_rig_pinned
-                com_row.prop(selected_mog, "com_location")
+        row = layout.row()
+        row.alignment = 'CENTER'
+        row.scale_y = 1.2
+        row.prop(selected_mog, "is_rig_pinned")
+        com_row = layout.row()
+        com_row.enabled = selected_mog.is_rig_pinned
+        com_row.prop(selected_mog, "com_location")
 
-                # Reference Points
-                point_box = layout.box()
-                ref_header_row = point_box.row()
-                ref_header_row.alignment = 'CENTER'
-                col1 = ref_header_row.column()
-                preview_on = selected_mog.show_reference_point
-                col1.prop(selected_mog, "show_reference_point", text="",
-                          icon='HIDE_OFF' if preview_on else 'HIDE_ON')
-                col2 = ref_header_row.column()
-                t_row = col2.row()
-                t_row.alignment = 'CENTER'
-                t_row.label(text="Reference Points")
+        # Reference Points
+        point_box = layout.box()
+        ref_header_row = point_box.row()
+        ref_header_row.alignment = 'CENTER'
+        col1 = ref_header_row.column()
+        preview_on = selected_mog.show_reference_point
+        col1.prop(selected_mog, "show_reference_point", text="",
+                    icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+        col2 = ref_header_row.column()
+        t_row = col2.row()
+        t_row.alignment = 'CENTER'
+        t_row.label(text="Reference Points")
 
-                # Left Starting Point Column
-                points_split = point_box.split()
-                left_col = points_split.column()
-                starting_box = left_col.box()
-                start_header_row = starting_box.row(align=True)
-                start_header_row.alignment = 'CENTER'
+        # Left Starting Point Column
+        points_split = point_box.split()
+        left_col = points_split.column()
+        starting_box = left_col.box()
+        start_header_row = starting_box.row(align=True)
+        start_header_row.alignment = 'CENTER'
 
-                left_col = start_header_row.column()
-                start_head = left_col.row()
-                start_head.alignment = 'CENTER'
-                start_head.label(text="Start Point")
-                right_col = start_header_row.column()
-                col = right_col.row()
-                col.scale_x = 0.35
-                col.prop(selected_mog, "ballistics_starting_point_color", text="")
+        left_col = start_header_row.column()
+        start_head = left_col.row()
+        start_head.alignment = 'CENTER'
+        start_head.label(text="Start Point")
+        right_col = start_header_row.column()
+        col = right_col.row()
+        col.scale_x = 0.35
+        col.prop(selected_mog, "ballistics_starting_point_color", text="")
 
-                row = starting_box.row()
-                row.prop(selected_mog, "ballistics_starting_point", text="")
-                row = starting_box.row()
-                row.alignment = 'CENTER'
-                row.label(text="Set Starting Point To")
-                row = starting_box.row()
-                col = row.column(align=True)
-                col.operator("balance_point.startingpoint_set",
-                             icon='CURSOR', text="3D Cursor")
-                col.operator("balance_point.startingpointcom_set",
-                             icon='DOT', text="Center of Mass")
+        row = starting_box.row()
+        row.prop(selected_mog, "ballistics_starting_point", text="")
+        row = starting_box.row()
+        row.alignment = 'CENTER'
+        row.label(text="Set Starting Point To")
+        row = starting_box.row()
+        col = row.column(align=True)
+        col.operator("balance_point.startingpoint_set",
+                        icon='CURSOR', text="3D Cursor")
+        col.operator("balance_point.startingpointcom_set",
+                        icon='DOT', text="Center of Mass")
 
-                # Right Reference Point Column
-                right_col = points_split.column()
-                ref_box = right_col.box()
-                ref_header = ref_box.row(align=True)
-                ref_header.alignment = 'CENTER'
-                left_col = ref_header.column()
-                row = left_col.row()
-                row.alignment = 'CENTER'
-                ref_header.label(text="Reference Point")
-                right_col = ref_header.column()
-                col = right_col.row()
-                col.scale_x = 0.35
-                col.prop(selected_mog, "reference_color", text="")
+        # Right Reference Point Column
+        right_col = points_split.column()
+        ref_box = right_col.box()
+        ref_header = ref_box.row(align=True)
+        ref_header.alignment = 'CENTER'
+        left_col = ref_header.column()
+        row = left_col.row()
+        row.alignment = 'CENTER'
+        ref_header.label(text="Reference Point")
+        right_col = ref_header.column()
+        col = right_col.row()
+        col.scale_x = 0.35
+        col.prop(selected_mog, "reference_color", text="")
 
-                row = ref_box.row()
-                row.prop(selected_mog, "reference_point", text="")
-                row = ref_box.row()
-                row.alignment = 'CENTER'
-                row.label(text="Set Reference Point To")
-                row = ref_box.row()
-                col = row.column(align=True)
-                col.operator("balance_point.referencepoint_set",
-                             icon='CURSOR', text="3D Cursor")
-                col.operator("balance_point.referencepointcom_set",
-                             icon='DOT', text="Center of Mass")
+        row = ref_box.row()
+        row.prop(selected_mog, "reference_point", text="")
+        row = ref_box.row()
+        row.alignment = 'CENTER'
+        row.label(text="Set Reference Point To")
+        row = ref_box.row()
+        col = row.column(align=True)
+        col.operator("balance_point.referencepoint_set",
+                        icon='CURSOR', text="3D Cursor")
+        col.operator("balance_point.referencepointcom_set",
+                        icon='DOT', text="Center of Mass")
 
-                # Axis
-                axis_box = layout.box()
+        # Axis
+        if selected_mog.pinned_rig is not None:
+            axis_box = layout.box()
 
-                # Axis Header
-                axis_header = axis_box.row()
-                axis_header.alignment = 'CENTER'
-                preview_on = selected_mog.show_axis
-                axis_header.prop(selected_mog, "show_axis", text="",
-                                 icon='HIDE_OFF' if preview_on else 'HIDE_ON')
-                axis_header.label(text="Rotation Axis")
+            # Axis Header
+            axis_header = axis_box.row()
+            axis_header.alignment = 'CENTER'
+            preview_on = selected_mog.show_axis
+            axis_header.prop(selected_mog, "show_axis", text="",
+                                icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+            axis_header.label(text="Rotation Axis")
 
-                row = axis_box.row()
-                row.enabled = selected_mog.is_rig_pinned
-                row.prop(selected_mog.pinned_rig,
-                         "rotation_axis_angle", text="")
-                moment_of_inertia = 0.0
-                center_of_mass = get_com(
-                    selected_mog.mass_object_collection.all_objects)
-                current_axis = Vector(
-                    (selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
-                moment_of_inertia = get_moment_of_inertia(
-                    selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
-                row = axis_box.row()
-                row.alignment = 'CENTER'
-                row.label(text="Moment of Inertia: {} kg·m2".format(
-                    round(moment_of_inertia, 3)))
-                row = axis_box.row()
-                row.operator("balance_point.align_axis_cursor", icon='CURSOR')
-                row.operator("balance_point.align_axis", icon='DOT')
-
-                # Ballistics Ruler
-                ballistics_box = layout.box()
-                ballistics_box.use_property_split = True
-                ballistics_box.use_property_decorate = False
-                row = ballistics_box.row()
-                row.alignment = 'CENTER'
-                preview_on = selected_mog.is_ballistics_preview
-                row.prop(selected_mog, "is_ballistics_preview", text="",
-                         icon='HIDE_OFF' if preview_on else 'HIDE_ON')
-                row.label(text="Ballistics")
-                col = ballistics_box.column(align=True)
-                col.prop(phys_props, "gravity")
-                col.prop(phys_props, "time_of_flight")
-                row = ballistics_box.row()
-                col = row.column()
-                col.prop(phys_props, "initial_angular_velocity")
-                row = col.row()
-                col_l = row.column()
-                col_l.operator(
-                    "balance_point.calculate_angle_preview", icon="CURVE_PATH")
-                col_r = row.column()
-                col_r.scale_x = 0.6
-                col_r.operator("balance_point.clear_angle_preview",
-                               text="Clear", icon="PANEL_CLOSE")
-
-                # Baking
-                bake_box = layout.box()
-                bake_box.use_property_split = True
-                bake_box.use_property_decorate = False
-                row = bake_box.row()
-                row.alignment = 'CENTER'
-                row.label(text='Baking')
-                col = bake_box.column(align=True)
-                col.prop(phys_props, "frame_start")
-                col.prop(phys_props, "frame_end")
-                col.prop(phys_props, "frame_rate")
-                row = bake_box.row()
-                row.operator("balance_point.bake_physics")
-
-            else:
-                row = layout.row()
-                row.enabled = selected_mog.is_rig_pinned
-                row.prop(selected_mog, "com_location")
-                row = layout.row()
-                row.alignment = 'CENTER'
-                row.label(text="Add a Pinned Rig to Use Physics.")
-        else:
-            row = layout.row()
+            row = axis_box.row()
+            row.enabled = selected_mog.is_rig_pinned
+            row.prop(selected_mog.pinned_rig,
+                        "rotation_axis_angle", text="")
+            moment_of_inertia = 0.0
+            center_of_mass = get_com(
+                selected_mog.mass_object_collection.all_objects)
+            current_axis = Vector(
+                (selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
+            moment_of_inertia = get_moment_of_inertia(
+                selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
+            row = axis_box.row()
             row.alignment = 'CENTER'
-            row.label(text="Create and select a Mass Object Group.")
+            row.label(text="Moment of Inertia: {} kg·m2".format(
+                round(moment_of_inertia, 3)))
+            row = axis_box.row()
+            row.operator("balance_point.align_axis_cursor", icon='CURSOR')
+            row.operator("balance_point.align_axis", icon='DOT')
+
+        # Ballistics Ruler
+        ballistics_box = layout.box()
+        ballistics_box.use_property_split = True
+        ballistics_box.use_property_decorate = False
+        row = ballistics_box.row()
+        row.alignment = 'CENTER'
+        preview_on = selected_mog.is_ballistics_preview
+        row.prop(selected_mog, "is_ballistics_preview", text="",
+                    icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+        row.label(text="Ballistics")
+        col = ballistics_box.column(align=True)
+        col.prop(phys_props, "gravity")
+        col.prop(phys_props, "time_of_flight")
+        row = ballistics_box.row()
+        col = row.column()
+        col.prop(phys_props, "initial_angular_velocity")
+        row = col.row()
+        col_l = row.column()
+        col_l.operator(
+            "balance_point.calculate_angle_preview", icon="CURVE_PATH")
+        col_r = row.column()
+        col_r.scale_x = 0.6
+        col_r.operator("balance_point.clear_angle_preview",
+                        text="Clear", icon="PANEL_CLOSE")
+
+        # Baking
+        bake_box = layout.box()
+        bake_box.use_property_split = True
+        bake_box.use_property_decorate = False
+        row = bake_box.row()
+        row.alignment = 'CENTER'
+        row.label(text='Baking')
+        col = bake_box.column(align=True)
+        col.prop(phys_props, "frame_start")
+        col.prop(phys_props, "frame_end")
+        col.prop(phys_props, "frame_rate")
+        row = bake_box.row()
+        row.operator("balance_point.bake_physics")
 
 
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):

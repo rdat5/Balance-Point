@@ -44,7 +44,7 @@ def draw_bp(self, context):
                 batch.draw(shader)
 
                 # Draw Rotation Axis
-                if group.show_axis:
+                if group.show_axis and group.pinned_rig is not None:
                     axis_verts = []
 
                     cx = group.pinned_rig.rotation_axis_angle[1]
@@ -134,7 +134,7 @@ def draw_bp(self, context):
                             batch.draw(shader)
 
                         # Draw Angle Preview
-                        if len(group.calculated_mois) > 0:
+                        if len(group.calculated_mois) > 0 and group.pinned_rig is not None:
                             for index, point_position in enumerate(
                                     point_positions):
                                 if index <= len(group.calculated_mois):
