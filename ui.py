@@ -301,7 +301,6 @@ class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        sel_obj = context.selected_objects
         com_props = context.scene.com_properties
 
         row = layout.row()
