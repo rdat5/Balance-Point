@@ -78,7 +78,6 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
@@ -90,13 +89,25 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
             row.scale_y = 1.2
             row.prop(selected_mog, "is_rig_pinned")
         if selected_mog.mass_object_collection is not None:
-            com_row = layout.row()
-            com_row.enabled = selected_mog.is_rig_pinned
-            com_row.prop(selected_mog, "com_location")
+            row = layout.row()
+            row.enabled = selected_mog.is_rig_pinned
+            row.prop(selected_mog, "com_location")
+
+
+class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_PhysicsTools"
+    bl_label = "Reference Points"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
 
         # Reference Points
-        point_box = layout.box()
-        ref_header_row = point_box.row()
+        ref_header_row = layout.row()
         ref_header_row.alignment = 'CENTER'
         col1 = ref_header_row.column()
         preview_on = selected_mog.show_reference_point
@@ -108,7 +119,7 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
         t_row.label(text="Reference Points")
 
         # Left Starting Point Column
-        points_split = point_box.split()
+        points_split = layout.split()
         left_col = points_split.column()
         starting_box = left_col.box()
         start_header_row = starting_box.row(align=True)
@@ -161,19 +172,30 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
         col.operator("balance_point.referencepointcom_set",
                         icon='DOT', text="Center of Mass")
 
+
+class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_PhysicsTools"
+    bl_label = "Rotation Axis"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
+        
         # Axis
         if selected_mog.pinned_rig is not None:
-            axis_box = layout.box()
-
             # Axis Header
-            axis_header = axis_box.row()
+            axis_header = layout.row()
             axis_header.alignment = 'CENTER'
             preview_on = selected_mog.show_axis
             axis_header.prop(selected_mog, "show_axis", text="",
                                 icon='HIDE_OFF' if preview_on else 'HIDE_ON')
             axis_header.label(text="Rotation Axis")
 
-            row = axis_box.row()
+            row = layout.row()
             row.enabled = selected_mog.is_rig_pinned
             row.prop(selected_mog.pinned_rig,
                         "rotation_axis_angle", text="")
@@ -184,29 +206,46 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
                 (selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
             moment_of_inertia = get_moment_of_inertia(
                 selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
-            row = axis_box.row()
+            row = layout.row()
             row.alignment = 'CENTER'
             row.label(text="Moment of Inertia: {} kg·m2".format(
                 round(moment_of_inertia, 3)))
-            row = axis_box.row()
+            row = layout.row()
             row.operator("balance_point.align_axis_cursor", icon='CURSOR')
             row.operator("balance_point.align_axis", icon='DOT')
+        else:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(text="Add a Pinned Rig to use the rotation axis features.")
 
-        # Ballistics Ruler
-        ballistics_box = layout.box()
-        ballistics_box.use_property_split = True
-        ballistics_box.use_property_decorate = False
-        row = ballistics_box.row()
+
+class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_PhysicsTools"
+    bl_label = "Ballistics Ruler"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        mass_object_groups = scene.bp_mass_object_groups
+        phys_props = scene.bp_physics_properties
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
+        
+        # ballistics_box = layout.box()
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+        row = layout.row()
         row.alignment = 'CENTER'
         preview_on = selected_mog.is_ballistics_preview
         row.prop(selected_mog, "is_ballistics_preview", text="",
                     icon='HIDE_OFF' if preview_on else 'HIDE_ON')
         row.label(text="Ballistics")
-        col = ballistics_box.column(align=True)
+        col = layout.column(align=True)
         col.prop(phys_props, "gravity")
         col.prop(phys_props, "time_of_flight")
         if selected_mog.pinned_rig is not None:
-            row = ballistics_box.row()
+            row = layout.row()
             col = row.column()
             col.prop(phys_props, "initial_angular_velocity")
             row = col.row()
@@ -217,21 +256,42 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
             col_r.scale_x = 0.6
             col_r.operator("balance_point.clear_angle_preview",
                             text="Clear", icon="PANEL_CLOSE")
+        else:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(text="Add a Pinned Rig to use the angular momentum features.")
 
+
+class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_PhysicsTools"
+    bl_label = "Baking"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        phys_props = scene.bp_physics_properties
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
+        
         # Baking
         if selected_mog.pinned_rig is not None:
-            bake_box = layout.box()
-            bake_box.use_property_split = True
-            bake_box.use_property_decorate = False
-            row = bake_box.row()
+            layout.use_property_split = True
+            layout.use_property_decorate = False
+            row = layout.row()
             row.alignment = 'CENTER'
             row.label(text='Baking')
-            col = bake_box.column(align=True)
+            col = layout.column(align=True)
             col.prop(phys_props, "frame_start")
             col.prop(phys_props, "frame_end")
             col.prop(phys_props, "frame_rate")
-            row = bake_box.row()
+            row = layout.row()
             row.operator("balance_point.bake_physics")
+        else:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(text="Add a Pinned Rig to use the baking features.")
 
 
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
