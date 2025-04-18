@@ -47,7 +47,7 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
         row.alignment = 'CENTER'
         row.label(text="Mass Object Groups")
         row = layout.row()
-        row.template_list("BP_UL_List", "my_custom_list", scene,
+        row.template_list("BP_UL_List", "balance_point_group_list", scene,
                           "bp_mass_object_groups", scene, "bp_group_index", rows=3)
         col = row.column(align=True)
         col.operator("balance_point.massgroup_add", icon='ADD', text="")
