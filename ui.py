@@ -279,9 +279,6 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
         if selected_mog.pinned_rig is not None:
             layout.use_property_split = True
             layout.use_property_decorate = False
-            row = layout.row()
-            row.alignment = 'CENTER'
-            row.label(text='Baking')
             col = layout.column(align=True)
             col.prop(phys_props, "frame_start")
             col.prop(phys_props, "frame_end")
