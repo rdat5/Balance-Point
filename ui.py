@@ -291,6 +291,37 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             row.label(text="Add a Pinned Rig to use the baking features.")
 
 
+class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_PhysicsTools"
+    bl_label = "Motion Path"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        phys_props = scene.bp_physics_properties
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
+        
+        if selected_mog.mass_object_collection is not None:
+            layout.use_property_split = True
+            layout.use_property_decorate = False
+            col = layout.column(align=True)
+            col.prop(phys_props, "motion_path_frame_start")
+            col.prop(phys_props, "motion_path_frame_end", text="End")
+            row = layout.row()
+            col_l = row.column()
+            col_l.operator("balance_point.calculate_com_motion_path")
+            col_r = row.column()
+            col_r.scale_x = 0.6
+            col_r.operator("balance_point.clear_motion_path", text="Clear")
+        else:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(text="Add a Mass Object Collection to use the motion path features.")
+
+
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
     """Mass properties panel"""
     bl_label = "Mass Property Editing"

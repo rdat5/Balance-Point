@@ -154,7 +154,49 @@ def draw_bp(self, context):
                                     batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(
                                         angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
                                     batch.draw(shader)
+                        
+                # Draw Motion Path
+                if len(group.motion_path_points) > 0 and group.mass_object_collection is not None:
+                    point_positions = []
 
+                    # Get Points
+                    for path_point in group.motion_path_points:
+                        point_loc = path_point.point_location
+                        point_positions.append(Vector((point_loc[0], point_loc[1], point_loc[2])))
+                
+
+                    # Draw lines
+                    for index, point_position in enumerate(
+                            point_positions):
+                        line_batch = []
+                        line_color = (1.0, 0.0, 0.0, 1.0) if index + \
+                            physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                        shader.uniform_float("color", line_color)
+                        point_coordinate = (
+                            point_position[0], point_position[1], point_position[2])
+
+                        if index > 0:
+                            previous_coordinate = point_positions[index - 1]
+                            line_batch += [(previous_coordinate[0],
+                                            previous_coordinate[1], previous_coordinate[2])]
+                            line_batch += [(point_coordinate[0],
+                                            point_coordinate[1], point_coordinate[2])]
+
+                        gpu.state.line_width_set(2.0)
+                        batch = batch_for_shader(
+                            shader, 'LINES', {"pos": line_batch})
+                        batch.draw(shader)
+
+
+                    # Draw Points
+                    for index, point_position in enumerate(
+                                    point_positions):
+                        shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
+                        gpu.state.point_size_set(4.0)
+                        batch = batch_for_shader(
+                            shader, 'POINTS', {"pos": point_positions})
+                        batch.draw(shader)
+      
 
 def rotate_points(points, angle_deg, axis):
     import numpy

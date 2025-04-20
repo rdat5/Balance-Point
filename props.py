@@ -7,6 +7,11 @@ class CalculatedMOI(bpy.types.PropertyGroup):
     angle: bpy.props.FloatProperty(name="Angle")
 
 
+class BP_MotionPathPoint(bpy.types.PropertyGroup):
+    point_location: bpy.props.FloatVectorProperty(name="Motion Path Point", description="Center of mass motion point.", default=(
+        0, 0, 0))
+
+
 class MassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
     mass_object_collection: bpy.props.PointerProperty(
@@ -36,6 +41,7 @@ class MassObjectGroup(bpy.types.PropertyGroup):
     is_ballistics_preview: bpy.props.BoolProperty(
         name="Preview Ballistics Curve", default=False)
     calculated_mois: bpy.props.CollectionProperty(type=CalculatedMOI)
+    motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
 
 
 class ComProperties(bpy.types.PropertyGroup):
@@ -58,3 +64,7 @@ class PhysicsProperties(bpy.types.PropertyGroup):
     frame_end: bpy.props.IntProperty(
         name="End", description="First frame of the physics baking range.")
     frame_rate: bpy.props.IntProperty(name="Frame Rate", default=24, min=1)
+    motion_path_frame_start: bpy.props.IntProperty(
+        name="Motion Path Range Start", description="First frame of the calculated motion path range.", default=0)
+    motion_path_frame_end: bpy.props.IntProperty(
+        name="Motion Path Range End", description="Last frame of the calculated motion path range.", default=10)

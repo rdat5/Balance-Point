@@ -356,3 +356,72 @@ class BakeBPPhysics(bpy.types.Operator):
         bpy.context.scene.frame_set(original_frame)
 
         return {'FINISHED'}
+
+
+class CalculateBPMotionPath(bpy.types.Operator):
+    """Calculate the motion path of the mass object group's center of mass for the given range."""
+    bl_idname = "balance_point.calculate_com_motion_path"
+    bl_label = "Calulate Center of Mass Motion Path"
+
+    @classmethod
+    def poll(cls, context):
+        physics_props = context.scene.bp_physics_properties
+
+        if physics_props.motion_path_frame_end <= physics_props.motion_path_frame_start:
+            return False
+
+        return True
+
+    def execute(self, context):
+        physics_props = context.scene.bp_physics_properties
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+        motion_path_points = sel_mog.motion_path_points
+
+        # Clear points
+        motion_path_points.clear()
+
+        # For returning to original frame after operation
+        original_frame = bpy.context.scene.frame_current
+
+        # Go to start of range
+        bpy.context.scene.frame_set(physics_props.motion_path_frame_start)
+
+        for f in range(physics_props.frame_start, physics_props.motion_path_frame_end + 1):
+            # Add motion path point
+            motion_path_points.add()
+
+            # Set Frame
+            bpy.context.scene.frame_set(f)
+
+            # Get center of mass
+            group_com = get_com(sel_mog.mass_object_collection.all_objects)
+
+            # Set created point as center of mass
+            motion_path_points[-1].point_location = group_com
+
+
+        # Return to original frame
+        bpy.context.scene.frame_set(original_frame)
+
+        return {'FINISHED'}
+
+
+class ClearBPMotionPath(bpy.types.Operator):
+    """Clears Calculated Center of Mass Motion Path."""
+    bl_idname = "balance_point.clear_motion_path"
+    bl_label = "Clear Motion Path"
+
+    @classmethod
+    def poll(cls, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+
+        return len(sel_mog.motion_path_points) > 0
+
+    def execute(self, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        mois = sel_mog.motion_path_points
+
+        mois.clear()
+        bpy.context.region.tag_redraw()
+        return {'FINISHED'}

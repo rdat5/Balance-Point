@@ -24,6 +24,8 @@ from .bp_ops import (
     SetStartingPointToCOM,
     ClearAnglePreview,
     SetReferencePointToCOM,
+    CalculateBPMotionPath,
+    ClearBPMotionPath,
 )
 from .mass_ops import (
     AddMassProps,
@@ -43,10 +45,12 @@ from .ui import (
     BP_PT_MassPropertyEditor,
     BP_PT_BallisticsRuler,
     BP_PT_Baking,
+    BP_PT_Motion_Path,
     BP_PT_MassSelected,
 )
 from .props import (
     CalculatedMOI,
+    BP_MotionPathPoint,
     MassObjectGroup,
     ComProperties,
     PhysicsProperties,
@@ -72,6 +76,7 @@ draw_handler = None
 
 classes = (
     CalculatedMOI,
+    BP_MotionPathPoint,
     MassObjectGroup,
     ComProperties,
     BP_UL_List,
@@ -81,6 +86,7 @@ classes = (
     BP_PT_RotationAxis,
     BP_PT_BallisticsRuler,
     BP_PT_Baking,
+    BP_PT_Motion_Path,
     BP_PT_MassPropertyEditor,
     BP_PT_MassSelected,
     CalculateAnglePreview,
@@ -101,7 +107,9 @@ classes = (
     SetStartingPoint,
     SetStartingPointToCOM,
     ClearAnglePreview,
-    SetReferencePointToCOM
+    SetReferencePointToCOM,
+    CalculateBPMotionPath,
+    ClearBPMotionPath,
 )
 
 
