@@ -167,6 +167,7 @@ class AlignAxisByPoints(bpy.types.Operator):
         sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
         sel_mog.pinned_rig.rotation_axis_angle[2] = norm[1]
         sel_mog.pinned_rig.rotation_axis_angle[3] = norm[2]
+        bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
 
@@ -198,6 +199,7 @@ class AlignAxisByCursor(bpy.types.Operator):
         sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
         sel_mog.pinned_rig.rotation_axis_angle[2] = norm[1]
         sel_mog.pinned_rig.rotation_axis_angle[3] = norm[2]
+        bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
 
