@@ -64,7 +64,7 @@ def draw_bp(self, context):
                 # Draw Reference Points
                 if group.show_reference_point:
                     # Reference Point
-                    gpu.state.point_size_set(6.0)
+                    gpu.state.point_size_set(8.0)
                     shader.uniform_float(
                         "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
                     batch = batch_for_shader(
