@@ -14,7 +14,7 @@ shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 def draw_bp(self, context):
     import numpy
 
-    com_props = bpy.context.scene.com_properties
+    com_props = bpy.context.scene.bp_com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
     physics_props = bpy.context.scene.bp_physics_properties
 

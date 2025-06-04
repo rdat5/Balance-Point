@@ -1,7 +1,7 @@
 import bpy
 
 
-class CalculatedMOI(bpy.types.PropertyGroup):
+class BPCalculatedMOI(bpy.types.PropertyGroup):
     moment_of_inertia: bpy.props.FloatProperty(
         name="Set Density", default=1.0, soft_min=0)
     angle: bpy.props.FloatProperty(name="Angle")
@@ -12,7 +12,7 @@ class BP_MotionPathPoint(bpy.types.PropertyGroup):
         0, 0, 0))
 
 
-class MassObjectGroup(bpy.types.PropertyGroup):
+class BPMassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
     mass_object_collection: bpy.props.PointerProperty(
         name="Mass Object Collection", type=bpy.types.Collection)
@@ -40,18 +40,18 @@ class MassObjectGroup(bpy.types.PropertyGroup):
         1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
     is_ballistics_preview: bpy.props.BoolProperty(
         name="Preview Ballistics Curve", default=False)
-    calculated_mois: bpy.props.CollectionProperty(type=CalculatedMOI)
+    calculated_mois: bpy.props.CollectionProperty(type=BPCalculatedMOI)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
 
 
-class ComProperties(bpy.types.PropertyGroup):
+class BPComProperties(bpy.types.PropertyGroup):
     com_drawing_on: bpy.props.BoolProperty(
         name="CoM Drawing Enabled", default=False)
     mass_density_set: bpy.props.FloatProperty(
         name="Set Density", default=1.0, soft_min=0)
 
 
-class PhysicsProperties(bpy.types.PropertyGroup):
+class BPPhysicsProperties(bpy.types.PropertyGroup):
     selected_mog: bpy.props.StringProperty(
         name="Mass Object Group", description="Selected Mass Object Group to use with Physics Tools")
     initial_angular_velocity: bpy.props.FloatProperty(name="Initial Angular Velocity",

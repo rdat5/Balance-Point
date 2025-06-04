@@ -37,7 +37,7 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        com_props = scene.com_properties
+        com_props = scene.bp_com_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
@@ -329,7 +329,7 @@ class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        com_props = context.scene.com_properties
+        com_props = context.scene.bp_com_properties
 
         row = layout.row()
         row.alignment = 'CENTER'

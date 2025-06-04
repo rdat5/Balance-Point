@@ -49,11 +49,11 @@ from .ui import (
     BP_PT_MassSelected,
 )
 from .props import (
-    CalculatedMOI,
+    BPCalculatedMOI,
     BP_MotionPathPoint,
-    MassObjectGroup,
-    ComProperties,
-    PhysicsProperties,
+    BPMassObjectGroup,
+    BPComProperties,
+    BPPhysicsProperties,
 )
 from .center_of_mass import update_mass_group_com
 import bpy
@@ -75,10 +75,10 @@ draw_handler = None
 
 
 classes = (
-    CalculatedMOI,
+    BPCalculatedMOI,
     BP_MotionPathPoint,
-    MassObjectGroup,
-    ComProperties,
+    BPMassObjectGroup,
+    BPComProperties,
     BP_UL_List,
     BP_PT_MainMenu,
     BP_PT_PhysicsTools,
@@ -90,7 +90,7 @@ classes = (
     BP_PT_MassPropertyEditor,
     BP_PT_MassSelected,
     CalculateAnglePreview,
-    PhysicsProperties,
+    BPPhysicsProperties,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
     AddMassProps,
@@ -117,12 +117,12 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.com_properties = bpy.props.PointerProperty(
-        type=ComProperties)
+    bpy.types.Scene.bp_com_properties = bpy.props.PointerProperty(
+        type=BPComProperties)
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(
-        type=MassObjectGroup)
+        type=BPMassObjectGroup)
     bpy.types.Scene.bp_physics_properties = bpy.props.PointerProperty(
-        type=PhysicsProperties)
+        type=BPPhysicsProperties)
     bpy.types.Scene.bp_group_index = bpy.props.IntProperty(
         name="Active Index")
 
@@ -138,7 +138,7 @@ def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
-    del bpy.types.Scene.com_properties
+    del bpy.types.Scene.bp_com_properties
     del bpy.types.Scene.bp_mass_object_groups
     del bpy.types.Scene.bp_physics_properties
     del bpy.types.Scene.bp_group_index

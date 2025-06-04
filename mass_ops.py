@@ -158,7 +158,7 @@ class SetDensity(bpy.types.Operator):
 
     def execute(self, context):
         sel_obj = context.selected_objects
-        com_props = context.scene.com_properties
+        com_props = context.scene.bp_com_properties
 
         for obj in sel_obj:
             if obj.get("density") is not None:
