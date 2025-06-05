@@ -312,10 +312,10 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
             col.prop(phys_props, "motion_path_frame_end", text="End")
             row = layout.row()
             col_l = row.column()
-            col_l.operator("balance_point.calculate_com_motion_path")
+            col_l.operator("balance_point.calculate_com_motion_path", icon="CURVE_PATH")
             col_r = row.column()
             col_r.scale_x = 0.6
-            col_r.operator("balance_point.clear_motion_path", text="Clear")
+            col_r.operator("balance_point.clear_motion_path", text="Clear", icon="PANEL_CLOSE")
         else:
             row = layout.row()
             row.alignment = 'CENTER'
