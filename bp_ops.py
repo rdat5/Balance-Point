@@ -1,14 +1,13 @@
 import bpy
 from math import radians
 from .utils import (
-    is_valid_triangle, 
-    get_triangle_normal, 
-    get_moment_of_inertia, 
-    projectile_position, 
+    is_valid_triangle,
+    get_triangle_normal,
+    get_moment_of_inertia,
+    projectile_position,
     get_com
 )
 from mathutils import Vector
-
 
 
 class AddMassObjectGroup(bpy.types.Operator):
@@ -401,7 +400,6 @@ class CalculateBPMotionPath(bpy.types.Operator):
 
             # Set created point as center of mass
             motion_path_points[-1].point_location = group_com
-
 
         # Return to original frame
         bpy.context.scene.frame_set(original_frame)

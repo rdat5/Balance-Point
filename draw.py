@@ -3,7 +3,7 @@ import gpu
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
 from .utils import (
-    projectile_position, 
+    projectile_position,
     get_com,
 )
 from .shapes import SHAPE_FLOOR_MARKER
@@ -154,7 +154,7 @@ def draw_bp(self, context):
                                     batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(
                                         angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
                                     batch.draw(shader)
-                        
+
                 # Draw Motion Path
                 if len(group.motion_path_points) > 0 and group.mass_object_collection is not None:
                     point_positions = []
@@ -162,8 +162,8 @@ def draw_bp(self, context):
                     # Get Points
                     for path_point in group.motion_path_points:
                         point_loc = path_point.point_location
-                        point_positions.append(Vector((point_loc[0], point_loc[1], point_loc[2])))
-                
+                        point_positions.append(
+                            Vector((point_loc[0], point_loc[1], point_loc[2])))
 
                     # Draw lines
                     for index, point_position in enumerate(
@@ -187,16 +187,15 @@ def draw_bp(self, context):
                             shader, 'LINES', {"pos": line_batch})
                         batch.draw(shader)
 
-
                     # Draw Points
                     for index, point_position in enumerate(
-                                    point_positions):
+                            point_positions):
                         shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
                         gpu.state.point_size_set(4.0)
                         batch = batch_for_shader(
                             shader, 'POINTS', {"pos": point_positions})
                         batch.draw(shader)
-      
+
 
 def rotate_points(points, angle_deg, axis):
     import numpy
