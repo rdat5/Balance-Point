@@ -21,7 +21,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Draw Line to Floor", default=False)
     color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
-    com_location: bpy.props.FloatVectorProperty(name="CoM Location", description="Location of the CoM", default=(
+    com_location: bpy.props.FloatVectorProperty(name="CoM Location", subtype="XYZ", description="Location of the CoM", default=(
         0, 0, 0))
     is_rig_pinned: bpy.props.BoolProperty(
         name="Pin Center of Mass", default=False)
