@@ -25,6 +25,8 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         0, 0, 0))
     is_rig_pinned: bpy.props.BoolProperty(
         name="Pin Center of Mass", default=False)
+    pin_xyz: bpy.props.BoolVectorProperty(
+        name="Pin Lock", subtype="XYZ", description="Lock/Unlock XYZ Translation of CoM Pin", default=(True, True, True))
     pinned_rig: bpy.props.PointerProperty(
         name="Pinned Rig", type=bpy.types.Object)
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)

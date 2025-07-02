@@ -89,6 +89,8 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
             row.alignment = 'CENTER'
             row.scale_y = 1.2
             row.prop(selected_mog, "is_rig_pinned")
+            row = layout.row(align=True)
+            row.prop(selected_mog, "pin_xyz")
         if selected_mog.mass_object_collection is not None:
             row = layout.row()
             row.enabled = selected_mog.is_rig_pinned

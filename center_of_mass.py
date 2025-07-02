@@ -15,8 +15,10 @@ def update_mass_group_com(scene):
                     group.mass_object_collection.all_objects)
             else:
                 if group.pinned_rig is not None:
-                    difference = get_com(
-                        group.mass_object_collection.all_objects) - Vector(group.com_location)
+                    group_com = get_com(
+                        group.mass_object_collection.all_objects)
+                    difference = group_com - Vector(group.com_location)
                     if difference.length > 0.0001:
-                        group.pinned_rig.location -= difference
+                        group.pinned_rig.location -= Vector(
+                            (difference.x * group.pin_xyz[0], difference.y * group.pin_xyz[1], difference.z * group.pin_xyz[2]))
     pass
