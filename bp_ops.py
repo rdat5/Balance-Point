@@ -288,8 +288,13 @@ class BakeBPPhysics(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         physics_props = context.scene.bp_physics_properties
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
         if physics_props.frame_end <= physics_props.frame_start:
+            return False
+
+        if not (sel_mog.pin_xyz[0] == True and sel_mog.pin_xyz[1] == True and sel_mog.pin_xyz[2] == True):
             return False
 
         return True
