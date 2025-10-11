@@ -57,19 +57,20 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
         col.prop(com_props, "com_drawing_on", toggle=1,
                  icon=draw_icon, text="")
 
-        row = layout.row()
         # MOG Settings
-        row.alignment = 'CENTER'
-        row.label(text=selected_mog.name + " Settings")
-        # Collection
-        row = layout.row()
-        row.scale_y = 1.5
-        row.prop(selected_mog, "mass_object_collection",
-                 text="Mass Collection")
+        if selected_mog is not None:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(text=selected_mog.name + " Settings")
+            # Collection
+            row = layout.row()
+            row.scale_y = 1.5
+            row.prop(selected_mog, "mass_object_collection",
+                    text="Mass Collection")
 
-        # MOG Info
-        row = layout.row()
-        row.prop(selected_mog, "pinned_rig")
+            # MOG Info
+            row = layout.row()
+            row.prop(selected_mog, "pinned_rig")
 
 
 class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
@@ -84,14 +85,14 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
 
-        if selected_mog.pinned_rig is not None:
+        if selected_mog is not None and selected_mog.pinned_rig is not None:
             row = layout.row()
             row.alignment = 'CENTER'
             row.scale_y = 1.2
             row.prop(selected_mog, "is_rig_pinned")
             row = layout.row(align=True)
             row.prop(selected_mog, "pin_xyz")
-        if selected_mog.mass_object_collection is not None:
+        if selected_mog is not None and selected_mog.mass_object_collection is not None:
             row = layout.row()
             row.enabled = selected_mog.is_rig_pinned
             row.prop(selected_mog, "com_location")
@@ -112,69 +113,73 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
         # Reference Points
         ref_header_row = layout.row()
         ref_header_row.alignment = 'CENTER'
-        col1 = ref_header_row.column()
-        preview_on = selected_mog.show_reference_point
-        col1.prop(selected_mog, "show_reference_point", text="",
-                  icon='HIDE_OFF' if preview_on else 'HIDE_ON')
-        col2 = ref_header_row.column()
-        t_row = col2.row()
-        t_row.alignment = 'CENTER'
-        t_row.label(text="Reference Points")
+        if selected_mog is not None:
+            col1 = ref_header_row.column()
+            preview_on = selected_mog.show_reference_point
+            col1.prop(selected_mog, "show_reference_point", text="",
+                    icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+            col2 = ref_header_row.column()
+            t_row = col2.row()
+            t_row.alignment = 'CENTER'
+            t_row.label(text="Reference Points")
 
-        # Left Starting Point Column
-        points_split = layout.split()
-        left_col = points_split.column()
-        starting_box = left_col.box()
-        start_header_row = starting_box.row(align=True)
-        start_header_row.alignment = 'CENTER'
+            # Left Starting Point Column
+            points_split = layout.split()
+            left_col = points_split.column()
+            starting_box = left_col.box()
+            start_header_row = starting_box.row(align=True)
+            start_header_row.alignment = 'CENTER'
 
-        left_col = start_header_row.column()
-        start_head = left_col.row()
-        start_head.alignment = 'CENTER'
-        start_head.label(text="Start Point")
-        right_col = start_header_row.column()
-        col = right_col.row()
-        col.scale_x = 0.35
-        col.prop(selected_mog, "ballistics_starting_point_color", text="")
+            left_col = start_header_row.column()
+            start_head = left_col.row()
+            start_head.alignment = 'CENTER'
+            start_head.label(text="Start Point")
+            right_col = start_header_row.column()
+            col = right_col.row()
+            col.scale_x = 0.35
+            col.prop(selected_mog, "ballistics_starting_point_color", text="")
 
-        row = starting_box.row()
-        row.prop(selected_mog, "ballistics_starting_point", text="")
-        row = starting_box.row()
-        row.alignment = 'CENTER'
-        row.label(text="Set Starting Point To")
-        row = starting_box.row()
-        col = row.column(align=True)
-        col.operator("balance_point.startingpoint_set",
-                     icon='CURSOR', text="3D Cursor")
-        col.operator("balance_point.startingpointcom_set",
-                     icon='DOT', text="Center of Mass")
+            row = starting_box.row()
+            row.prop(selected_mog, "ballistics_starting_point", text="")
+            row = starting_box.row()
+            row.alignment = 'CENTER'
+            row.label(text="Set Starting Point To")
+            row = starting_box.row()
+            col = row.column(align=True)
+            col.operator("balance_point.startingpoint_set",
+                        icon='CURSOR', text="3D Cursor")
+            if selected_mog.mass_object_collection is not None:
+                col.operator("balance_point.startingpointcom_set",
+                            icon='DOT', text="Center of Mass")
 
-        # Right Reference Point Column
-        right_col = points_split.column()
-        ref_box = right_col.box()
-        ref_header = ref_box.row(align=True)
-        ref_header.alignment = 'CENTER'
-        left_col = ref_header.column()
-        row = left_col.row()
-        row.alignment = 'CENTER'
-        ref_header.label(text="Reference Point")
-        right_col = ref_header.column()
-        col = right_col.row()
-        col.scale_x = 0.35
-        col.prop(selected_mog, "reference_color", text="")
+            # Right Reference Point Column
+            right_col = points_split.column()
+            ref_box = right_col.box()
+            ref_header = ref_box.row(align=True)
+            ref_header.alignment = 'CENTER'
+            left_col = ref_header.column()
+            row = left_col.row()
+            row.alignment = 'CENTER'
+            ref_header.label(text="Reference Point")
+            right_col = ref_header.column()
+            col = right_col.row()
+            col.scale_x = 0.35
+            col.prop(selected_mog, "reference_color", text="")
 
-        row = ref_box.row()
-        row.prop(selected_mog, "reference_point", text="")
-        row = ref_box.row()
-        row.alignment = 'CENTER'
-        row.label(text="Set Reference Point To")
-        row = ref_box.row()
-        col = row.column(align=True)
-        col.operator("balance_point.referencepoint_set",
-                     icon='CURSOR', text="3D Cursor")
-        col.operator("balance_point.referencepointcom_set",
-                     icon='DOT', text="Center of Mass")
-
+            row = ref_box.row()
+            row.prop(selected_mog, "reference_point", text="")
+            row = ref_box.row()
+            row.alignment = 'CENTER'
+            row.label(text="Set Reference Point To")
+            row = ref_box.row()
+            col = row.column(align=True)
+            col.operator("balance_point.referencepoint_set",
+                        icon='CURSOR', text="3D Cursor")
+            if selected_mog.mass_object_collection is not None:
+                col.operator("balance_point.referencepointcom_set",
+                            icon='DOT', text="Center of Mass")
+        else:
+            ref_header_row.label(text="Add and select a mass object group to use the reference point features.")
 
 class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_PhysicsTools"
@@ -189,7 +194,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             mass_object_groups) else None
 
         # Axis
-        if selected_mog.pinned_rig is not None:
+        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.mass_object_collection is not None:
             # Axis Header
             axis_header = layout.row()
             axis_header.alignment = 'CENTER'
@@ -240,30 +245,33 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
         layout.use_property_decorate = False
         row = layout.row()
         row.alignment = 'CENTER'
-        preview_on = selected_mog.is_ballistics_preview
-        row.prop(selected_mog, "is_ballistics_preview", text="",
-                 icon='HIDE_OFF' if preview_on else 'HIDE_ON')
-        row.label(text="Ballistics")
-        col = layout.column(align=True)
-        col.prop(phys_props, "gravity")
-        col.prop(phys_props, "time_of_flight")
-        if selected_mog.pinned_rig is not None:
-            row = layout.row()
-            col = row.column()
-            col.prop(phys_props, "initial_angular_velocity")
-            row = col.row()
-            col_l = row.column()
-            col_l.operator(
-                "balance_point.calculate_angle_preview", icon="CURVE_PATH")
-            col_r = row.column()
-            col_r.scale_x = 0.6
-            col_r.operator("balance_point.clear_angle_preview",
-                           text="Clear", icon="PANEL_CLOSE")
+        if selected_mog is not None:
+            preview_on = selected_mog.is_ballistics_preview
+            row.prop(selected_mog, "is_ballistics_preview", text="",
+                    icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+            row.label(text="Ballistics")
+            col = layout.column(align=True)
+            col.prop(phys_props, "gravity")
+            col.prop(phys_props, "time_of_flight")
+            if selected_mog.pinned_rig is not None:
+                row = layout.row()
+                col = row.column()
+                col.prop(phys_props, "initial_angular_velocity")
+                row = col.row()
+                col_l = row.column()
+                col_l.operator(
+                    "balance_point.calculate_angle_preview", icon="CURVE_PATH")
+                col_r = row.column()
+                col_r.scale_x = 0.6
+                col_r.operator("balance_point.clear_angle_preview",
+                            text="Clear", icon="PANEL_CLOSE")
+            else:
+                row = layout.row()
+                row.alignment = 'CENTER'
+                row.label(
+                    text="Add a Pinned Rig to use the angular momentum features.")
         else:
-            row = layout.row()
-            row.alignment = 'CENTER'
-            row.label(
-                text="Add a Pinned Rig to use the angular momentum features.")
+            row.label(text="Add and select a mass object group to use the ballistics features.")
 
 
 class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
@@ -280,7 +288,7 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             mass_object_groups) else None
 
         # Baking
-        if selected_mog.pinned_rig is not None:
+        if selected_mog is not None and selected_mog.pinned_rig is not None:
             layout.use_property_split = True
             layout.use_property_decorate = False
             col = layout.column(align=True)
@@ -308,7 +316,7 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
 
-        if selected_mog.mass_object_collection is not None:
+        if selected_mog is not None and selected_mog.mass_object_collection is not None:
             layout.use_property_split = True
             layout.use_property_decorate = False
             col = layout.column(align=True)
