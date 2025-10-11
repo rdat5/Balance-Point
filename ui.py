@@ -240,7 +240,6 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
 
-        # ballistics_box = layout.box()
         layout.use_property_split = True
         layout.use_property_decorate = False
         row = layout.row()
