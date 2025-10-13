@@ -60,8 +60,8 @@ import bpy
 bl_info = {
     "name": "Balance Point",
     "author": "Ray Allen Datuin",
-    "version": (2, 0, 0),
-    "blender": (4, 2, 0),
+    "version": (3, 0, 0),
+    "blender": (4, 5, 1),
     "location": "View3D > Sidebar > Balance Point",
     "description": "Visualizes the center of mass of collections of objects",
     "warning": "",
