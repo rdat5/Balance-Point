@@ -287,19 +287,16 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             mass_object_groups) else None
 
         # Baking
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+        col = layout.column(align=True)
+        col.prop(phys_props, "frame_start")
+        col.prop(phys_props, "frame_end")
+        col.prop(phys_props, "frame_rate")
+
+        row = layout.row()
         if selected_mog is not None and selected_mog.pinned_rig is not None:
-            layout.use_property_split = True
-            layout.use_property_decorate = False
-            col = layout.column(align=True)
-            col.prop(phys_props, "frame_start")
-            col.prop(phys_props, "frame_end")
-            col.prop(phys_props, "frame_rate")
-            row = layout.row()
             row.operator("balance_point.bake_physics")
-        else:
-            row = layout.row()
-            row.alignment = 'CENTER'
-            row.label(text="Add a Pinned Rig to use the baking features.")
 
 
 class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):

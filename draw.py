@@ -21,86 +21,150 @@ def draw_bp(self, context):
     # Go through each collection, create a batch, render it
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:
-            if group.visible and group.mass_object_collection is not None:
-                # Get color
-                shader.uniform_float(
-                    "color", (group.color.r, group.color.g, group.color.b, 1.0))
-
-                # Draw COM Shape
-                group_com = get_com(group.mass_object_collection.all_objects)
-
-                gpu.state.point_size_set(6.0)
-                batch = batch_for_shader(
-                    shader, 'POINTS', {"pos": [group_com]})
-                batch.draw(shader)
-
-                # Draw Floor COM
-                floor_com_location = Vector(
-                    (group_com[0], group_com[1], group.com_floor_level))
-                floor_com_verts = transform_indices(
-                    SHAPE_FLOOR_MARKER, 0.05, floor_com_location)
-                batch = batch_for_shader(
-                    shader, 'LINES', {"pos": floor_com_verts})
-                batch.draw(shader)
-
-                # Draw Rotation Axis
-                if group.show_axis and group.pinned_rig is not None:
-                    axis_verts = []
-
-                    cx = group.pinned_rig.rotation_axis_angle[1]
-                    cy = group.pinned_rig.rotation_axis_angle[2]
-                    cz = group.pinned_rig.rotation_axis_angle[3]
-                    axis_vector = numpy.array([cx, cy, cz])
-                    axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
-                    axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
-                        axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com)
-                    batch = batch_for_shader(
-                        shader, 'LINES', {"pos": axis_verts})
-                    batch = batch_for_shader(
-                        shader, 'LINES', {"pos": axis_verts})
-                    batch.draw(shader)
-
-                # Physics Preview
-                # Draw Reference Points
-                if group.show_reference_point:
-                    # Reference Point
-                    gpu.state.point_size_set(8.0)
+            if group.visible:
+                if group.mass_object_collection is not None:
+                    # Get color
                     shader.uniform_float(
-                        "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
+                        "color", (group.color.r, group.color.g, group.color.b, 1.0))
+
+                    # Draw COM Shape
+                    group_com = get_com(group.mass_object_collection.all_objects)
+
+                    gpu.state.point_size_set(6.0)
                     batch = batch_for_shader(
-                        shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
+                        shader, 'POINTS', {"pos": [group_com]})
                     batch.draw(shader)
 
-                    # Ballistics Starting Point
-                    shader.uniform_float(
-                        "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, 1.0))
+                    # Draw Floor COM
+                    floor_com_location = Vector(
+                        (group_com[0], group_com[1], group.com_floor_level))
+                    floor_com_verts = transform_indices(
+                        SHAPE_FLOOR_MARKER, 0.05, floor_com_location)
                     batch = batch_for_shader(
-                        shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
+                        shader, 'LINES', {"pos": floor_com_verts})
                     batch.draw(shader)
 
-                # Draw ballistics curve
-                if group.is_ballistics_preview:
+                    # Draw Rotation Axis
+                    if group.show_axis and group.pinned_rig is not None:
+                        axis_verts = []
 
-                    if physics_props.frame_end > physics_props.frame_start and physics_props.time_of_flight > 0:
+                        cx = group.pinned_rig.rotation_axis_angle[1]
+                        cy = group.pinned_rig.rotation_axis_angle[2]
+                        cz = group.pinned_rig.rotation_axis_angle[3]
+                        axis_vector = numpy.array([cx, cy, cz])
+                        axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
+                        axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
+                            axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com)
+                        batch = batch_for_shader(
+                            shader, 'LINES', {"pos": axis_verts})
+                        batch = batch_for_shader(
+                            shader, 'LINES', {"pos": axis_verts})
+                        batch.draw(shader)
+
+                    # Physics Preview
+                    # Draw Reference Points
+                    if group.show_reference_point:
+                        # Reference Point
+                        gpu.state.point_size_set(8.0)
+                        shader.uniform_float(
+                            "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
+                        batch = batch_for_shader(
+                            shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
+                        batch.draw(shader)
+
+                        # Ballistics Starting Point
+                        shader.uniform_float(
+                            "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, 1.0))
+                        batch = batch_for_shader(
+                            shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
+                        batch.draw(shader)
+
+                    # Draw ballistics curve
+                    if group.is_ballistics_preview:
+
+                        if physics_props.frame_end > physics_props.frame_start and physics_props.time_of_flight > 0:
+                            point_positions = []
+
+                            total_frames = physics_props.frame_end - physics_props.frame_start
+
+                            # Get points
+                            p0 = Vector(group.ballistics_starting_point)
+                            p1 = Vector(group.reference_point)
+
+                            for frame in range(total_frames + 1):
+                                start_pos = (p0[0], p0[1], p0[2])
+                                ref_pos = (p1[0], p1[1], p1[2])
+                                gravity = physics_props.gravity
+                                time_of_flight = float(
+                                    physics_props.time_of_flight)
+                                elapsed_time = float(
+                                    frame) / physics_props.frame_rate
+
+                                point_positions.append(projectile_position(
+                                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
+
+                            # Draw lines
+                            for index, point_position in enumerate(
+                                    point_positions):
+                                line_batch = []
+                                line_color = (1.0, 0.0, 0.0, 1.0) if index + \
+                                    physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                                shader.uniform_float("color", line_color)
+                                point_coordinate = (
+                                    point_position[0], point_position[1], point_position[2])
+
+                                if index > 0:
+                                    previous_coordinate = point_positions[index - 1]
+                                    line_batch += [(previous_coordinate[0],
+                                                    previous_coordinate[1], previous_coordinate[2])]
+                                    line_batch += [(point_coordinate[0],
+                                                    point_coordinate[1], point_coordinate[2])]
+
+                                gpu.state.line_width_set(2.0)
+                                batch = batch_for_shader(
+                                    shader, 'LINES', {"pos": line_batch})
+                                batch.draw(shader)
+
+                            # Draw points
+                            for index, point_position in enumerate(
+                                    point_positions):
+                                shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
+                                gpu.state.point_size_set(4.0)
+                                batch = batch_for_shader(
+                                    shader, 'POINTS', {"pos": point_positions})
+                                batch.draw(shader)
+
+                            # Draw Angle Preview
+                            if len(group.calculated_mois) > 0 and group.pinned_rig is not None:
+                                for index, point_position in enumerate(
+                                        point_positions):
+                                    if index <= len(group.calculated_mois):
+                                        angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0),
+                                                    (-0.5, 0.0, 0.0), (0.5, 0.0, 0.0)]
+
+                                        com_x = group.pinned_rig.rotation_axis_angle[1]
+                                        com_y = group.pinned_rig.rotation_axis_angle[2]
+                                        com_z = group.pinned_rig.rotation_axis_angle[3]
+
+                                        angle_color = (1.0, 1.0, 0.0, 1.0) if index + \
+                                            physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 1.0, 1.0)
+
+                                        moi_angle = group.calculated_mois[index].angle
+                                        shader.uniform_float("color", angle_color)
+                                        gpu.state.line_width_set(1.0)
+                                        batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(
+                                            angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
+                                        batch.draw(shader)
+
+                    # Draw Motion Path
+                    if len(group.motion_path_points) > 0 and group.mass_object_collection is not None:
                         point_positions = []
 
-                        total_frames = physics_props.frame_end - physics_props.frame_start
-
-                        # Get points
-                        p0 = Vector(group.ballistics_starting_point)
-                        p1 = Vector(group.reference_point)
-
-                        for frame in range(total_frames + 1):
-                            start_pos = (p0[0], p0[1], p0[2])
-                            ref_pos = (p1[0], p1[1], p1[2])
-                            gravity = physics_props.gravity
-                            time_of_flight = float(
-                                physics_props.time_of_flight)
-                            elapsed_time = float(
-                                frame) / physics_props.frame_rate
-
-                            point_positions.append(projectile_position(
-                                start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
+                        # Get Points
+                        for path_point in group.motion_path_points:
+                            point_loc = path_point.point_location
+                            point_positions.append(
+                                Vector((point_loc[0], point_loc[1], point_loc[2])))
 
                         # Draw lines
                         for index, point_position in enumerate(
@@ -124,7 +188,7 @@ def draw_bp(self, context):
                                 shader, 'LINES', {"pos": line_batch})
                             batch.draw(shader)
 
-                        # Draw points
+                        # Draw Points
                         for index, point_position in enumerate(
                                 point_positions):
                             shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
@@ -132,70 +196,79 @@ def draw_bp(self, context):
                             batch = batch_for_shader(
                                 shader, 'POINTS', {"pos": point_positions})
                             batch.draw(shader)
+                else:
+                    # Physics Preview
+                    # Draw Reference Points
+                    if group.show_reference_point:
+                        # Reference Point
+                        gpu.state.point_size_set(8.0)
+                        shader.uniform_float(
+                            "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
+                        batch = batch_for_shader(
+                            shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
+                        batch.draw(shader)
 
-                        # Draw Angle Preview
-                        if len(group.calculated_mois) > 0 and group.pinned_rig is not None:
+                        # Ballistics Starting Point
+                        shader.uniform_float(
+                            "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, 1.0))
+                        batch = batch_for_shader(
+                            shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
+                        batch.draw(shader)
+
+                    # Draw ballistics curve
+                    if group.is_ballistics_preview:
+
+                        if physics_props.frame_end > physics_props.frame_start and physics_props.time_of_flight > 0:
+                            point_positions = []
+
+                            total_frames = physics_props.frame_end - physics_props.frame_start
+
+                            # Get points
+                            p0 = Vector(group.ballistics_starting_point)
+                            p1 = Vector(group.reference_point)
+
+                            for frame in range(total_frames + 1):
+                                start_pos = (p0[0], p0[1], p0[2])
+                                ref_pos = (p1[0], p1[1], p1[2])
+                                gravity = physics_props.gravity
+                                time_of_flight = float(
+                                    physics_props.time_of_flight)
+                                elapsed_time = float(
+                                    frame) / physics_props.frame_rate
+
+                                point_positions.append(projectile_position(
+                                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
+
+                            # Draw lines
                             for index, point_position in enumerate(
                                     point_positions):
-                                if index <= len(group.calculated_mois):
-                                    angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0),
-                                                   (-0.5, 0.0, 0.0), (0.5, 0.0, 0.0)]
+                                line_batch = []
+                                line_color = (1.0, 0.0, 0.0, 1.0) if index + \
+                                    physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                                shader.uniform_float("color", line_color)
+                                point_coordinate = (
+                                    point_position[0], point_position[1], point_position[2])
 
-                                    com_x = group.pinned_rig.rotation_axis_angle[1]
-                                    com_y = group.pinned_rig.rotation_axis_angle[2]
-                                    com_z = group.pinned_rig.rotation_axis_angle[3]
+                                if index > 0:
+                                    previous_coordinate = point_positions[index - 1]
+                                    line_batch += [(previous_coordinate[0],
+                                                    previous_coordinate[1], previous_coordinate[2])]
+                                    line_batch += [(point_coordinate[0],
+                                                    point_coordinate[1], point_coordinate[2])]
 
-                                    angle_color = (1.0, 1.0, 0.0, 1.0) if index + \
-                                        physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 1.0, 1.0)
+                                gpu.state.line_width_set(2.0)
+                                batch = batch_for_shader(
+                                    shader, 'LINES', {"pos": line_batch})
+                                batch.draw(shader)
 
-                                    moi_angle = group.calculated_mois[index].angle
-                                    shader.uniform_float("color", angle_color)
-                                    gpu.state.line_width_set(1.0)
-                                    batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(
-                                        angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
-                                    batch.draw(shader)
-
-                # Draw Motion Path
-                if len(group.motion_path_points) > 0 and group.mass_object_collection is not None:
-                    point_positions = []
-
-                    # Get Points
-                    for path_point in group.motion_path_points:
-                        point_loc = path_point.point_location
-                        point_positions.append(
-                            Vector((point_loc[0], point_loc[1], point_loc[2])))
-
-                    # Draw lines
-                    for index, point_position in enumerate(
-                            point_positions):
-                        line_batch = []
-                        line_color = (1.0, 0.0, 0.0, 1.0) if index + \
-                            physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
-                        shader.uniform_float("color", line_color)
-                        point_coordinate = (
-                            point_position[0], point_position[1], point_position[2])
-
-                        if index > 0:
-                            previous_coordinate = point_positions[index - 1]
-                            line_batch += [(previous_coordinate[0],
-                                            previous_coordinate[1], previous_coordinate[2])]
-                            line_batch += [(point_coordinate[0],
-                                            point_coordinate[1], point_coordinate[2])]
-
-                        gpu.state.line_width_set(2.0)
-                        batch = batch_for_shader(
-                            shader, 'LINES', {"pos": line_batch})
-                        batch.draw(shader)
-
-                    # Draw Points
-                    for index, point_position in enumerate(
-                            point_positions):
-                        shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
-                        gpu.state.point_size_set(4.0)
-                        batch = batch_for_shader(
-                            shader, 'POINTS', {"pos": point_positions})
-                        batch.draw(shader)
-
+                            # Draw points
+                            for index, point_position in enumerate(
+                                    point_positions):
+                                shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
+                                gpu.state.point_size_set(4.0)
+                                batch = batch_for_shader(
+                                    shader, 'POINTS', {"pos": point_positions})
+                                batch.draw(shader)
 
 def rotate_points(points, angle_deg, axis):
     import numpy
