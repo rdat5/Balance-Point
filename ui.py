@@ -75,7 +75,7 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
 
 class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_PhysicsTools"
-    bl_label = "Physics Tools"
+    bl_label = "Physics Tools (EXPERIMENTAL)"
 
     def draw(self, context):
         layout = self.layout
