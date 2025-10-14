@@ -8,7 +8,7 @@ from .utils import (
 )
 from .shapes import SHAPE_FLOOR_MARKER
 
-shader = gpu.shader.from_builtin('UNIFORM_COLOR')
+shader = gpu.shader.from_builtin('POINT_UNIFORM_COLOR')
 
 
 def draw_bp(self, context):
@@ -120,7 +120,6 @@ def draw_bp(self, context):
                                     line_batch += [(point_coordinate[0],
                                                     point_coordinate[1], point_coordinate[2])]
 
-                                gpu.state.line_width_set(2.0)
                                 batch = batch_for_shader(
                                     shader, 'LINES', {"pos": line_batch})
                                 batch.draw(shader)
@@ -151,7 +150,6 @@ def draw_bp(self, context):
 
                                         moi_angle = group.calculated_mois[index].angle
                                         shader.uniform_float("color", angle_color)
-                                        gpu.state.line_width_set(1.0)
                                         batch = batch_for_shader(shader, 'LINES', {"pos": transform_indices(
                                             angle_batch, 0.2, point_position, moi_angle, (com_x, com_y, com_z))})
                                         batch.draw(shader)
@@ -183,7 +181,6 @@ def draw_bp(self, context):
                                 line_batch += [(point_coordinate[0],
                                                 point_coordinate[1], point_coordinate[2])]
 
-                            gpu.state.line_width_set(2.0)
                             batch = batch_for_shader(
                                 shader, 'LINES', {"pos": line_batch})
                             batch.draw(shader)
@@ -256,7 +253,6 @@ def draw_bp(self, context):
                                     line_batch += [(point_coordinate[0],
                                                     point_coordinate[1], point_coordinate[2])]
 
-                                gpu.state.line_width_set(2.0)
                                 batch = batch_for_shader(
                                     shader, 'LINES', {"pos": line_batch})
                                 batch.draw(shader)
