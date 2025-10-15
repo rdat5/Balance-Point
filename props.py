@@ -51,6 +51,10 @@ class BPComProperties(bpy.types.PropertyGroup):
         name="CoM Drawing Enabled", default=False)
     mass_density_set: bpy.props.FloatProperty(
         name="Set Density", default=1.0, soft_min=0)
+    com_point_size: bpy.props.IntProperty(name="Center of Mass Point Size", default=6, min=1)
+    reference_point_size: bpy.props.IntProperty(name="Reference Point Size", default=8, min=1)
+    ballistics_point_size: bpy.props.IntProperty(name="Ballistics Point Size", default=4, min=1)
+    motion_path_point_size: bpy.props.IntProperty(name="Motion Path Point Size", default=8, min=1)
 
 
 class BPPhysicsProperties(bpy.types.PropertyGroup):

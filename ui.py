@@ -73,6 +73,22 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog, "pinned_rig")
 
 
+class BP_PT_DrawSettings(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_MainMenu"
+    bl_label = "Draw Settings"
+
+    def draw(self, context):
+        layout = self.layout
+        com_props = context.scene.bp_com_properties
+
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+        col = layout.column(align=True)
+        col.prop(com_props, "com_point_size")
+        col.prop(com_props, "reference_point_size")
+        col.prop(com_props, "ballistics_point_size")
+        col.prop(com_props, "motion_path_point_size")
+
 class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_PhysicsTools"
     bl_label = "Physics Tools (EXPERIMENTAL)"
