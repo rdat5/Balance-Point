@@ -269,19 +269,15 @@ def draw_bp(self, context):
 def rotate_points(points, angle_deg, axis):
     import numpy
 
-    # Convert list of tuples to numpy array
     points_np = numpy.array(points)
 
-    # Convert angle to radians
     angle_rad = numpy.radians(angle_deg)
 
     if numpy.all(axis == 0):
         return points
 
-    # Normalize the rotation axis
     axis = axis / numpy.linalg.norm(axis)
 
-    # Create the rotation matrix using Rodrigues' rotation formula
     a = numpy.cos(angle_rad)
     b = 1 - numpy.cos(angle_rad)
     c = numpy.sin(angle_rad)
@@ -290,10 +286,8 @@ def rotate_points(points, angle_deg, axis):
                                ** 2 * b, axis[1] * axis[2] * b - axis[0] * c],
                            [axis[2] * axis[0] * b - axis[1] * c, axis[2] * axis[1] * b + axis[0] * c, a + axis[2]**2 * b]])
 
-    # Rotate points
     rotated_points_np = numpy.dot(points_np, rot_mat.T)
 
-    # Convert back to list of tuples
     rotated_points = [tuple(point) for point in rotated_points_np]
 
     return rotated_points

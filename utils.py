@@ -20,7 +20,7 @@ def get_triangle_normal(p1, p2, p3):
     v1 = np.array(p2) - np.array(p1)
     v2 = np.array(p3) - np.array(p1)
     normal = np.cross(v1, v2)
-    return normal / np.linalg.norm(normal)  # Normalize the normal vector
+    return normal / np.linalg.norm(normal)
 
 
 def get_total_mass(objects):
@@ -37,7 +37,7 @@ def get_total_mass(objects):
 
 def get_moment_of_inertia(objects, center_of_mass, axis_vector):
     import numpy as np
-    # Normalize
+    
     axis_vector = np.array(axis_vector)
     axis_unit = axis_vector / np.linalg.norm(axis_vector)
 
@@ -50,14 +50,12 @@ def get_moment_of_inertia(objects, center_of_mass, axis_vector):
                     (center_of_mass[0], center_of_mass[1], center_of_mass[2]))
             mass = obj.get("density") * obj.get("volume")
 
-            # Calculate perpendicular distance to the axis
             projection = np.dot(position, axis_unit) * axis_unit
             perpendicular_vector = position - \
                 Vector((projection[0], projection[1], projection[2]))
             perpendicular_distance_squared = np.dot(
                 perpendicular_vector, perpendicular_vector)
 
-            # Contribution to moment of inertia
             moment_of_inertia += mass * perpendicular_distance_squared
 
     return moment_of_inertia
