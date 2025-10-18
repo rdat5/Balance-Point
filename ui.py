@@ -237,6 +237,8 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.operator("balance_point.align_axis_cursor", icon='CURSOR')
             row.operator("balance_point.align_axis", icon='DOT')
+            row = layout.row()
+            row.operator("balance_point.align_axis_cursor_ref", icon='OUTLINER_DATA_MESH')
         else:
             row = layout.row()
             row.alignment = 'CENTER'
