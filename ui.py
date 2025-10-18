@@ -72,6 +72,10 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.prop(selected_mog, "pinned_rig")
 
+            # COM Floor
+            row = layout.row()
+            row.prop(selected_mog, "com_floor_level")
+
 
 class BP_PT_DrawSettings(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_MainMenu"
