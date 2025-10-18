@@ -17,8 +17,6 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     mass_object_collection: bpy.props.PointerProperty(
         name="Mass Object Collection", type=bpy.types.Collection)
     com_floor_level: bpy.props.FloatProperty(name="Floor Level", default=0.0)
-    line_to_floor: bpy.props.BoolProperty(
-        name="Draw Line to Floor", default=False)
     color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     com_location: bpy.props.FloatVectorProperty(name="CoM Location", subtype="XYZ", description="Location of the CoM", default=(
