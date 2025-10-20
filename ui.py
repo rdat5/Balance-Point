@@ -89,6 +89,7 @@ class BP_PT_DrawSettings(BalancePointPanel, bpy.types.Panel):
         layout.use_property_decorate = False
         col = layout.column(align=True)
         col.prop(com_props, "com_point_size")
+        col.prop(com_props, "floor_com_size")
         col.prop(com_props, "reference_point_size")
         col.prop(com_props, "ballistics_point_size")
         col.prop(com_props, "motion_path_point_size")

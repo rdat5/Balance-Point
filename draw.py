@@ -36,13 +36,14 @@ def draw_bp(self, context):
                     batch.draw(shader)
 
                     # Draw Floor COM
-                    floor_com_location = Vector(
-                        (group_com[0], group_com[1], group.com_floor_level))
-                    floor_com_verts = transform_indices(
-                        SHAPE_FLOOR_MARKER, 0.05, floor_com_location)
-                    batch = batch_for_shader(
-                        shader, 'LINES', {"pos": floor_com_verts})
-                    batch.draw(shader)
+                    if com_props.floor_com_size > 0.0:
+                        floor_com_location = Vector(
+                            (group_com[0], group_com[1], group.com_floor_level))
+                        floor_com_verts = transform_indices(
+                            SHAPE_FLOOR_MARKER, 0.05 * com_props.floor_com_size, floor_com_location)
+                        batch = batch_for_shader(
+                            shader, 'LINES', {"pos": floor_com_verts})
+                        batch.draw(shader)
 
                     # Draw Rotation Axis
                     if group.show_axis and group.pinned_rig is not None:
