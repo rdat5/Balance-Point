@@ -53,7 +53,7 @@ class BPComProperties(bpy.types.PropertyGroup):
     floor_com_size: bpy.props.FloatProperty(name="CoM Floor Marker Size", default=1.0, min=0.0)
     reference_point_size: bpy.props.IntProperty(name="Reference Point Size", default=8, min=1)
     ballistics_point_size: bpy.props.IntProperty(name="Ballistics Point Size", default=4, min=1)
-    motion_path_point_size: bpy.props.IntProperty(name="Motion Path Point Size", default=8, min=1)
+    motion_path_point_size: bpy.props.IntProperty(name="Motion Path Point Size", default=4, min=1)
 
 
 class BPPhysicsProperties(bpy.types.PropertyGroup):
