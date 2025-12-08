@@ -46,12 +46,12 @@ def draw_bp(self, context):
                         batch.draw(shader)
 
                     # Draw Rotation Axis
-                    if group.show_axis and group.pinned_rig is not None:
+                    if group.show_axis and group.pinned_rig is not None and group.root_bone != '':
                         axis_verts = []
 
-                        cx = group.pinned_rig.rotation_axis_angle[1]
-                        cy = group.pinned_rig.rotation_axis_angle[2]
-                        cz = group.pinned_rig.rotation_axis_angle[3]
+                        cx = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[1]
+                        cy = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[2]
+                        cz = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[3]
                         axis_vector = numpy.array([cx, cy, cz])
                         axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
                         axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
@@ -135,16 +135,16 @@ def draw_bp(self, context):
                                 batch.draw(shader)
 
                             # Draw Angle Preview
-                            if len(group.calculated_mois) > 0 and group.pinned_rig is not None:
+                            if len(group.calculated_mois) > 0 and group.pinned_rig is not None and group.root_bone != '':
                                 for index, point_position in enumerate(
                                         point_positions):
                                     if index <= len(group.calculated_mois):
                                         angle_batch = [(0.0, 0.0, 0.0), (0.0, 0.0, -1.0),
                                                     (-0.5, 0.0, 0.0), (0.5, 0.0, 0.0)]
 
-                                        com_x = group.pinned_rig.rotation_axis_angle[1]
-                                        com_y = group.pinned_rig.rotation_axis_angle[2]
-                                        com_z = group.pinned_rig.rotation_axis_angle[3]
+                                        com_x = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[1]
+                                        com_y = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[2]
+                                        com_z = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[3]
 
                                         angle_color = (1.0, 1.0, 0.0, 1.0) if index + \
                                             physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 1.0, 1.0)

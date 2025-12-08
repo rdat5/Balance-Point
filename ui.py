@@ -71,6 +71,9 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
             # MOG Info
             row = layout.row()
             row.prop(selected_mog, "pinned_rig")
+            if selected_mog.pinned_rig is not None and selected_mog.pinned_rig.type == 'ARMATURE':
+                row = layout.row()
+                row.prop_search(selected_mog, "root_bone", selected_mog.pinned_rig.data, "bones", text="Root Bone")
 
             # COM Floor
             row = layout.row()
@@ -106,7 +109,7 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
 
-        if selected_mog is not None and selected_mog.pinned_rig is not None:
+        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
             row = layout.row()
             row.alignment = 'CENTER'
             row.scale_y = 1.2
@@ -215,7 +218,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             mass_object_groups) else None
 
         # Axis
-        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.mass_object_collection is not None:
+        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.mass_object_collection is not None and selected_mog.root_bone != '':
             # Axis Header
             axis_header = layout.row()
             axis_header.alignment = 'CENTER'
@@ -226,13 +229,13 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
 
             row = layout.row()
             row.enabled = selected_mog.is_rig_pinned
-            row.prop(selected_mog.pinned_rig,
+            row.prop(selected_mog.pinned_rig.pose.bones[selected_mog.root_bone],
                      "rotation_axis_angle", text="")
             moment_of_inertia = 0.0
             center_of_mass = get_com(
                 selected_mog.mass_object_collection.all_objects)
             current_axis = Vector(
-                (selected_mog.pinned_rig.rotation_axis_angle[1], selected_mog.pinned_rig.rotation_axis_angle[2], selected_mog.pinned_rig.rotation_axis_angle[3]))
+                (selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_axis_angle[1], selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_axis_angle[2], selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_axis_angle[3]))
             moment_of_inertia = get_moment_of_inertia(
                 selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
             row = layout.row()
@@ -275,7 +278,7 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col = layout.column(align=True)
             col.prop(phys_props, "gravity")
             col.prop(phys_props, "time_of_flight")
-            if selected_mog.pinned_rig is not None:
+            if selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
                 row = layout.row()
                 col = row.column()
                 col.prop(phys_props, "initial_angular_velocity")
@@ -318,7 +321,7 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
         col.prop(phys_props, "frame_rate")
 
         row = layout.row()
-        if selected_mog is not None and selected_mog.pinned_rig is not None:
+        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
             row.operator("balance_point.bake_physics")
 
 

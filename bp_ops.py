@@ -163,9 +163,9 @@ class AlignAxisByPoints(bpy.types.Operator):
               sel_mog.reference_point[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
-        sel_mog.pinned_rig.rotation_axis_angle[2] = norm[1]
-        sel_mog.pinned_rig.rotation_axis_angle[3] = norm[2]
+        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[1] = norm[0]
+        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[2] = norm[1]
+        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[3] = norm[2]
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -195,9 +195,9 @@ class AlignAxisByCursor(bpy.types.Operator):
         p2 = [cursor[0], cursor[1], cursor[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
-        sel_mog.pinned_rig.rotation_axis_angle[2] = norm[1]
-        sel_mog.pinned_rig.rotation_axis_angle[3] = norm[2]
+        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[1] = norm[0]
+        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[2] = norm[1]
+        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[3] = norm[2]
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -263,9 +263,9 @@ class CalculateAnglePreview(bpy.types.Operator):
         bpy.context.scene.frame_set(physics_props.frame_start)
 
         # Get angle
-        angle = sel_mog.pinned_rig.rotation_axis_angle[0]
+        angle = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[0]
         current_axis = Vector(
-            (sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
+            (sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[1], sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[2], sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[3]))
 
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
@@ -348,9 +348,9 @@ class BakeBPPhysics(bpy.types.Operator):
         p0 = sel_mog.ballistics_starting_point
         p1 = sel_mog.reference_point
 
-        angle = sel_mog.pinned_rig.rotation_axis_angle[0]
+        angle = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[0]
         current_axis = Vector(
-            (sel_mog.pinned_rig.rotation_axis_angle[1], sel_mog.pinned_rig.rotation_axis_angle[2], sel_mog.pinned_rig.rotation_axis_angle[3]))
+            (sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[1], sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[2], sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[3]))
 
         initial_moment_of_inertia = get_moment_of_inertia(
             sel_mog.mass_object_collection.all_objects, group_com, current_axis)
@@ -360,8 +360,8 @@ class BakeBPPhysics(bpy.types.Operator):
 
             # Rotation
             if physics_props.initial_angular_velocity != 0:
-                sel_mog.pinned_rig.rotation_axis_angle[0] = radians(angle)
-                sel_mog.pinned_rig.keyframe_insert(
+                sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[0] = radians(angle)
+                sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].keyframe_insert(
                     data_path='rotation_axis_angle', index=0, keytype='GENERATED')
 
                 current_com = get_com(

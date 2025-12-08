@@ -40,6 +40,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
     is_ballistics_preview: bpy.props.BoolProperty(
         name="Preview Ballistics Curve", default=False)
+    root_bone: bpy.props.StringProperty(name="Root Bone", description="Root Bone of Rig")
     calculated_mois: bpy.props.CollectionProperty(type=BPCalculatedMOI)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
 
