@@ -74,6 +74,12 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
             if selected_mog.pinned_rig is not None and selected_mog.pinned_rig.type == 'ARMATURE':
                 row = layout.row()
                 row.prop_search(selected_mog, "root_bone", selected_mog.pinned_rig.data, "bones", text="Root Bone")
+                if selected_mog.root_bone != '':
+                    if selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_mode != 'AXIS_ANGLE':
+                        row = layout.row()
+                        row.label(text="Set bone to Axis Angle rotation mode to use angular velocity:")
+                    row = layout.row()
+                    row.prop(selected_mog.pinned_rig.pose.bones[selected_mog.root_bone], "rotation_mode")
 
             # COM Floor
             row = layout.row()
