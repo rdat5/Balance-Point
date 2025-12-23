@@ -237,17 +237,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row.enabled = selected_mog.is_rig_pinned
             row.prop(selected_mog.pinned_rig.pose.bones[selected_mog.root_bone],
                      "rotation_axis_angle", text="")
-            moment_of_inertia = 0.0
-            center_of_mass = get_com(
-                selected_mog.mass_object_collection.all_objects)
-            current_axis = Vector(
-                (selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_axis_angle[1], selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_axis_angle[2], selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_axis_angle[3]))
-            moment_of_inertia = get_moment_of_inertia(
-                selected_mog.mass_object_collection.all_objects, center_of_mass, current_axis)
             row = layout.row()
-            row.alignment = 'CENTER'
-            row.label(text="Moment of Inertia: {} kg·m2".format(
-                round(moment_of_inertia, 3)))
             row = layout.row()
             row.operator("balance_point.align_axis_cursor", icon='CURSOR')
             row.operator("balance_point.align_axis", icon='DOT')
