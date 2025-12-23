@@ -218,6 +218,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
@@ -238,6 +239,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog.pinned_rig.pose.bones[selected_mog.root_bone],
                      "rotation_axis_angle", text="")
             row = layout.row()
+            row.prop(phys_props, "initial_angular_velocity")
             row = layout.row()
             row.operator("balance_point.align_axis_cursor", icon='CURSOR')
             row.operator("balance_point.align_axis", icon='DOT')
