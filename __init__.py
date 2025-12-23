@@ -18,12 +18,10 @@ from .bp_ops import (
     SetReferencePoint,
     AlignAxisByPoints,
     BakeBPPhysics,
-    CalculateAnglePreview,
     AlignAxisByCursor,
     AlignAxisByCursorRef,
     SetStartingPoint,
     SetStartingPointToCOM,
-    ClearAnglePreview,
     SetReferencePointToCOM,
     CalculateBPMotionPath,
     ClearBPMotionPath,
@@ -51,7 +49,6 @@ from .ui import (
     BP_PT_MassSelected,
 )
 from .props import (
-    BPCalculatedMOI,
     BP_MotionPathPoint,
     BPMassObjectGroup,
     BPComProperties,
@@ -77,7 +74,6 @@ draw_handler = None
 
 
 classes = (
-    BPCalculatedMOI,
     BP_MotionPathPoint,
     BPMassObjectGroup,
     BPComProperties,
@@ -92,7 +88,6 @@ classes = (
     BP_PT_Motion_Path,
     BP_PT_MassPropertyEditor,
     BP_PT_MassSelected,
-    CalculateAnglePreview,
     BPPhysicsProperties,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
@@ -110,7 +105,6 @@ classes = (
     BakeBPPhysics,
     SetStartingPoint,
     SetStartingPointToCOM,
-    ClearAnglePreview,
     SetReferencePointToCOM,
     CalculateBPMotionPath,
     ClearBPMotionPath,

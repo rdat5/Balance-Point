@@ -284,23 +284,6 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col = layout.column(align=True)
             col.prop(phys_props, "gravity")
             col.prop(phys_props, "time_of_flight")
-            if selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
-                row = layout.row()
-                col = row.column()
-                col.prop(phys_props, "initial_angular_velocity")
-                row = col.row()
-                col_l = row.column()
-                col_l.operator(
-                    "balance_point.calculate_angle_preview", icon="CURVE_PATH")
-                col_r = row.column()
-                col_r.scale_x = 0.6
-                col_r.operator("balance_point.clear_angle_preview",
-                            text="Clear", icon="PANEL_CLOSE")
-            else:
-                row = layout.row()
-                row.alignment = 'CENTER'
-                row.label(
-                    text="Add a Pinned Rig to use the angular momentum features.")
         else:
             row.label(text="Add and select a mass object group to use the ballistics features.")
 

@@ -1,12 +1,6 @@
 import bpy
 
 
-class BPCalculatedMOI(bpy.types.PropertyGroup):
-    moment_of_inertia: bpy.props.FloatProperty(
-        name="Set Density", default=1.0, soft_min=0)
-    angle: bpy.props.FloatProperty(name="Angle")
-
-
 class BP_MotionPathPoint(bpy.types.PropertyGroup):
     point_location: bpy.props.FloatVectorProperty(name="Motion Path Point", description="Center of mass motion point.", default=(
         0, 0, 0))
@@ -41,7 +35,6 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     is_ballistics_preview: bpy.props.BoolProperty(
         name="Preview Ballistics Curve", default=False)
     root_bone: bpy.props.StringProperty(name="Root Bone", description="Root Bone of Rig")
-    calculated_mois: bpy.props.CollectionProperty(type=BPCalculatedMOI)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
 
 
