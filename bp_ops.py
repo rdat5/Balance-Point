@@ -400,7 +400,7 @@ class BakeBPPhysics(bpy.types.Operator):
 class CalculateBPMotionPath(bpy.types.Operator):
     """Calculate the motion path of the mass object group's center of mass for the given range."""
     bl_idname = "balance_point.calculate_com_motion_path"
-    bl_label = "Calulate Center of Mass Motion Path"
+    bl_label = "Calculate Center of Mass Motion Path"
 
     @classmethod
     def poll(cls, context):
