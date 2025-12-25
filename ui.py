@@ -241,9 +241,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             axis_header.label(text="Rotation Axis")
 
             row = layout.row()
-            row.enabled = selected_mog.is_rig_pinned
-            row.prop(selected_mog.pinned_rig.pose.bones[selected_mog.root_bone],
-                     "rotation_axis_angle", text="")
+            row.prop(selected_mog, "initial_axis", text="")
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects, get_com(selected_mog.mass_object_collection.all_objects)))}")

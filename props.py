@@ -22,6 +22,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     pinned_rig: bpy.props.PointerProperty(
         name="Pinned Rig", type=bpy.types.Object)
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)
+    initial_axis: bpy.props.FloatVectorProperty(name="Initial Rotation Axis", subtype='XYZ', default=(1, 0, 0, ))
     reference_point: bpy.props.FloatVectorProperty(name="Reference Point", description="Reference point for angle alignment and ballistics ruler.", default=(
         0, 0, 0))
     reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(

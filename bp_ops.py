@@ -163,9 +163,9 @@ class AlignAxisByPoints(bpy.types.Operator):
               sel_mog.reference_point[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[1] = norm[0]
-        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[2] = norm[1]
-        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[3] = norm[2]
+        sel_mog.initial_axis.x = norm[0]
+        sel_mog.initial_axis.y = norm[1]
+        sel_mog.initial_axis.z = norm[2]
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -195,9 +195,9 @@ class AlignAxisByCursor(bpy.types.Operator):
         p2 = [cursor[0], cursor[1], cursor[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[1] = norm[0]
-        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[2] = norm[1]
-        sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[3] = norm[2]
+        sel_mog.initial_axis.x = norm[0]
+        sel_mog.initial_axis.y = norm[1]
+        sel_mog.initial_axis.z = norm[2]
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 
@@ -228,9 +228,9 @@ class AlignAxisByCursorRef(bpy.types.Operator):
         p2 = sel_mog.reference_point
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
         norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.pinned_rig.rotation_axis_angle[1] = norm[0]
-        sel_mog.pinned_rig.rotation_axis_angle[2] = norm[1]
-        sel_mog.pinned_rig.rotation_axis_angle[3] = norm[2]
+        sel_mog.initial_axis.x = norm[0]
+        sel_mog.initial_axis.y = norm[1]
+        sel_mog.initial_axis.z = norm[2]
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
 

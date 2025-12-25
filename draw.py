@@ -46,12 +46,12 @@ def draw_bp(self, context):
                         batch.draw(shader)
 
                     # Draw Rotation Axis
-                    if group.show_axis and group.pinned_rig is not None and group.root_bone != '':
+                    if group.show_axis:
                         axis_verts = []
 
-                        cx = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[1]
-                        cy = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[2]
-                        cz = group.pinned_rig.pose.bones[group.root_bone].rotation_axis_angle[3]
+                        cx = group.initial_axis.x
+                        cy = group.initial_axis.y
+                        cz = group.initial_axis.z
                         axis_vector = numpy.array([cx, cy, cz])
                         axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
                         axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
