@@ -1,10 +1,10 @@
 import bpy
 from .utils import (
     get_total_mass,
-    get_moment_of_inertia,
     get_com,
+    get_inertia_tensor,
 )
-from mathutils import Vector
+from mathutils import Vector, Matrix
 
 
 class BalancePointPanel(bpy.types.Panel):
@@ -211,6 +211,12 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
         else:
             ref_header_row.label(text="Add and select a mass object group to use the reference point features.")
 
+def format_matrix(matrix):
+    vec1 = f"{round(matrix[0][0], 1), round(matrix[0][1], 1), round(matrix[0][2], 1)}"
+    vec2 = f"{round(matrix[1][0], 1), round(matrix[1][1], 1), round(matrix[1][2], 1)}"
+    vec3 = f"{round(matrix[2][0], 1), round(matrix[2][1], 1), round(matrix[2][2], 1)}"
+    return f"{vec1} | {vec2} | {vec3}"
+
 class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_PhysicsTools"
     bl_label = "Rotation Axis"
@@ -238,6 +244,9 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row.enabled = selected_mog.is_rig_pinned
             row.prop(selected_mog.pinned_rig.pose.bones[selected_mog.root_bone],
                      "rotation_axis_angle", text="")
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects, get_com(selected_mog.mass_object_collection.all_objects)))}")
             row = layout.row()
             row.prop(phys_props, "initial_angular_velocity")
             row = layout.row()

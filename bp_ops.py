@@ -3,7 +3,7 @@ from math import radians
 from .utils import (
     is_valid_triangle,
     get_triangle_normal,
-    get_moment_of_inertia,
+    get_inertia_tensor,
     projectile_position,
     get_com
 )
