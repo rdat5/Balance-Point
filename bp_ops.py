@@ -311,7 +311,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
             sel_mog.is_rig_pinned = True
             context.scene.keyframe_insert(
-                data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), keytype='GENERATED')
+                data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), keytype='GENERATED', options={'INSERTKEY_NEEDED'})
 
         # Return to original frame
         bpy.context.scene.frame_set(original_frame)
