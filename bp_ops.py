@@ -252,6 +252,9 @@ class BakeBPPhysics(bpy.types.Operator):
         if not (sel_mog.pin_xyz[0] == True and sel_mog.pin_xyz[1] == True and sel_mog.pin_xyz[2] == True):
             return False
 
+        if sel_mog.pinned_rig.pose.bones[sel_mog.root_bone] is None:
+            return False
+
         return True
 
     def execute(self, context):
