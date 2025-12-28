@@ -52,8 +52,6 @@ class BPComProperties(bpy.types.PropertyGroup):
 
 
 class BPPhysicsProperties(bpy.types.PropertyGroup):
-    selected_mog: bpy.props.StringProperty(
-        name="Mass Object Group", description="Selected Mass Object Group to use with Physics Tools")
     initial_angular_velocity: bpy.props.FloatProperty(name="Initial Angular Velocity",
                                                       description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per frame.")
     gravity: bpy.props.FloatProperty(name="Gravity", default=9.807)
