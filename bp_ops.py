@@ -7,7 +7,7 @@ from .utils import (
     projectile_position,
     get_com
 )
-from mathutils import Vector
+from mathutils import Vector, Matrix, Quaternion
 
 
 class AddMassObjectGroup(bpy.types.Operator):
@@ -261,6 +261,7 @@ class BakeBPPhysics(bpy.types.Operator):
         physics_props = context.scene.bp_physics_properties
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
+        root_bone = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone]
 
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
@@ -270,32 +271,49 @@ class BakeBPPhysics(bpy.types.Operator):
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
 
+        I_start = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, group_com)
+
+        initial_axis = Vector((sel_mog.initial_axis.x, sel_mog.initial_axis.y, sel_mog.initial_axis.z))
+
+        omega_start = initial_axis * physics_props.initial_angular_velocity
+
+        L_vector = I_start @ omega_start
+
         p0 = sel_mog.ballistics_starting_point
         p1 = sel_mog.reference_point
 
-        angle = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[0]
-        current_axis = Vector(
-            (sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[1], sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[2], sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[3]))
-
-        initial_moment_of_inertia = get_moment_of_inertia(
-            sel_mog.mass_object_collection.all_objects, group_com, current_axis)
+        dt = 1.0 / context.scene.render.fps
 
         for f in range(physics_props.frame_start, physics_props.frame_end + 1):
             bpy.context.scene.frame_set(f)
-
+            
             # Rotation
-            if physics_props.initial_angular_velocity != 0:
-                sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].rotation_axis_angle[0] = radians(angle)
-                sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].keyframe_insert(
-                    data_path='rotation_axis_angle', index=0, keytype='GENERATED')
+            current_quat = root_bone.rotation_quaternion.copy()
+            if f > physics_props.frame_start:
+                current_com = get_com(sel_mog.mass_object_collection.all_objects)
+                
+                I_current = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, current_com)
+                
+                try:
+                    I_inv = I_current.inverted()
+                except ValueError:
+                    I_inv = Matrix.Identity(3)
+                    
+                omega_new = I_inv @ L_vector
 
-                current_com = get_com(
-                    sel_mog.mass_object_collection.all_objects)
+                rotation_speed = omega_new.length
+                
+                if rotation_speed > 1e-6:
+                    rotation_axis = omega_new.normalized()
+                    theta_step = rotation_speed * dt
+                    
+                    delta_quat = Quaternion(rotation_axis, theta_step)
+                    
+                    current_quat = delta_quat @ current_quat
+                    current_quat.normalize()
 
-                current_moment_of_inertia = get_moment_of_inertia(
-                    sel_mog.mass_object_collection.all_objects, current_com, current_axis)
-                angle += physics_props.initial_angular_velocity * \
-                    (initial_moment_of_inertia / current_moment_of_inertia)
+            root_bone.rotation_quaternion = current_quat
+            root_bone.keyframe_insert(data_path='rotation_quaternion', frame=f)
 
             # Ballistics
             start_pos = (p0[0], p0[1], p0[2])
@@ -315,6 +333,8 @@ class BakeBPPhysics(bpy.types.Operator):
             sel_mog.is_rig_pinned = True
             context.scene.keyframe_insert(
                 data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), keytype='GENERATED', options={'INSERTKEY_NEEDED'})
+            
+            context.view_layer.update()
 
         # Return to original frame
         bpy.context.scene.frame_set(original_frame)
