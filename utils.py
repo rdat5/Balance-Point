@@ -38,22 +38,22 @@ def get_total_mass(objects):
 def get_inertia_tensor(objects, center_of_mass):
     import numpy as np
     I_xx = I_yy = I_zz = I_xy = I_xz = I_yz = 0.0
-    
+
     com_np = np.array(center_of_mass)
 
     for obj in objects:
         if obj.get("active"):
             pos_world = np.array(obj.matrix_world.translation)
             r = pos_world - com_np
-            
+
             x, y, z = r[0], r[1], r[2]
-            
+
             mass = obj.get("density") * obj.get("volume")
-            
-            I_xx += mass * (y*y + z*z)
-            I_yy += mass * (x*x + z*z)
-            I_zz += mass * (x*x + y*y)
-            
+
+            I_xx += mass * (y * y + z * z)
+            I_yy += mass * (x * x + z * z)
+            I_zz += mass * (x * x + y * y)
+
             I_xy -= mass * (x * y)
             I_xz -= mass * (x * z)
             I_yz -= mass * (y * z)
@@ -63,7 +63,7 @@ def get_inertia_tensor(objects, center_of_mass):
         [I_xy, I_yy, I_yz],
         [I_xz, I_yz, I_zz]
     ])
-    
+
     return tensor
 
 
@@ -86,7 +86,8 @@ def get_com(objects):
     return center_of_mass
 
 
-def projectile_position(start_pos, second_pos, gravity, time_of_flight, elapsed_time):
+def projectile_position(start_pos, second_pos, gravity,
+                        time_of_flight, elapsed_time):
     x0, y0, z0 = start_pos
     x1, y1, z1 = second_pos
 

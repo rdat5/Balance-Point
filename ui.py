@@ -14,7 +14,8 @@ class BalancePointPanel(bpy.types.Panel):
 
 
 class BP_UL_List(bpy.types.UIList):
-    def draw_item(self, context, layout, data, item, icon, active_data, active_property, index):
+    def draw_item(self, context, layout, data, item, icon,
+                  active_data, active_property, index):
         row = layout.row(align=True)
         row.prop(item, "visible", text="", emboss=True)
         row.prop(item, "name", text="", emboss=False)
@@ -66,20 +67,27 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.scale_y = 1.5
             row.prop(selected_mog, "mass_object_collection",
-                    text="Mass Collection")
+                     text="Mass Collection")
 
             # MOG Info
             row = layout.row()
             row.prop(selected_mog, "pinned_rig")
             if selected_mog.pinned_rig is not None and selected_mog.pinned_rig.type == 'ARMATURE':
                 row = layout.row()
-                row.prop_search(selected_mog, "root_bone", selected_mog.pinned_rig.data, "bones", text="Root Bone")
+                row.prop_search(
+                    selected_mog,
+                    "root_bone",
+                    selected_mog.pinned_rig.data,
+                    "bones",
+                    text="Root Bone")
                 if selected_mog.root_bone != '':
                     if selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_mode != 'AXIS_ANGLE':
                         row = layout.row()
-                        row.label(text="Set bone to Axis Angle rotation mode to use angular velocity:")
+                        row.label(
+                            text="Set bone to Axis Angle rotation mode to use angular velocity:")
                     row = layout.row()
-                    row.prop(selected_mog.pinned_rig.pose.bones[selected_mog.root_bone], "rotation_mode")
+                    row.prop(
+                        selected_mog.pinned_rig.pose.bones[selected_mog.root_bone], "rotation_mode")
 
             # COM Floor
             row = layout.row()
@@ -102,6 +110,7 @@ class BP_PT_DrawSettings(BalancePointPanel, bpy.types.Panel):
         col.prop(com_props, "reference_point_size")
         col.prop(com_props, "ballistics_point_size")
         col.prop(com_props, "motion_path_point_size")
+
 
 class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_PhysicsTools"
@@ -147,7 +156,7 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
             col1 = ref_header_row.column()
             preview_on = selected_mog.show_reference_point
             col1.prop(selected_mog, "show_reference_point", text="",
-                    icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+                      icon='HIDE_OFF' if preview_on else 'HIDE_ON')
             col2 = ref_header_row.column()
             t_row = col2.row()
             t_row.alignment = 'CENTER'
@@ -177,10 +186,10 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
             row = starting_box.row()
             col = row.column(align=True)
             col.operator("balance_point.startingpoint_set",
-                        icon='CURSOR', text="3D Cursor")
+                         icon='CURSOR', text="3D Cursor")
             if selected_mog.mass_object_collection is not None:
                 col.operator("balance_point.startingpointcom_set",
-                            icon='DOT', text="Center of Mass")
+                             icon='DOT', text="Center of Mass")
 
             # Right Reference Point Column
             right_col = points_split.column()
@@ -204,18 +213,21 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
             row = ref_box.row()
             col = row.column(align=True)
             col.operator("balance_point.referencepoint_set",
-                        icon='CURSOR', text="3D Cursor")
+                         icon='CURSOR', text="3D Cursor")
             if selected_mog.mass_object_collection is not None:
                 col.operator("balance_point.referencepointcom_set",
-                            icon='DOT', text="Center of Mass")
+                             icon='DOT', text="Center of Mass")
         else:
-            ref_header_row.label(text="Add and select a mass object group to use the reference point features.")
+            ref_header_row.label(
+                text="Add and select a mass object group to use the reference point features.")
+
 
 def format_matrix(matrix):
     vec1 = f"{round(matrix[0][0], 1), round(matrix[0][1], 1), round(matrix[0][2], 1)}"
     vec2 = f"{round(matrix[1][0], 1), round(matrix[1][1], 1), round(matrix[1][2], 1)}"
     vec3 = f"{round(matrix[2][0], 1), round(matrix[2][1], 1), round(matrix[2][2], 1)}"
     return f"{vec1} | {vec2} | {vec3}"
+
 
 class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_PhysicsTools"
@@ -243,18 +255,22 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog, "initial_axis", text="")
             row = layout.row()
             row.alignment = 'CENTER'
-            row.label(text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects, get_com(selected_mog.mass_object_collection.all_objects)))}")
+            row.label(
+                text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects,get_com(selected_mog.mass_object_collection.all_objects)))}")
             row = layout.row()
             row.prop(selected_mog, "initial_angular_velocity")
             row = layout.row()
             row.operator("balance_point.align_axis_cursor", icon='CURSOR')
             row.operator("balance_point.align_axis", icon='DOT')
             row = layout.row()
-            row.operator("balance_point.align_axis_cursor_ref", icon='OUTLINER_DATA_MESH')
+            row.operator(
+                "balance_point.align_axis_cursor_ref",
+                icon='OUTLINER_DATA_MESH')
         else:
             row = layout.row()
             row.alignment = 'CENTER'
-            row.label(text="Add a Pinned Rig to use the rotation axis features.")
+            row.label(
+                text="Add a Pinned Rig to use the rotation axis features.")
 
 
 class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
@@ -276,13 +292,14 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
         if selected_mog is not None:
             preview_on = selected_mog.is_ballistics_preview
             row.prop(selected_mog, "is_ballistics_preview", text="",
-                    icon='HIDE_OFF' if preview_on else 'HIDE_ON')
+                     icon='HIDE_OFF' if preview_on else 'HIDE_ON')
             row.label(text="Ballistics")
             col = layout.column(align=True)
             col.prop(selected_mog, "gravity")
             col.prop(selected_mog, "time_of_flight")
         else:
-            row.label(text="Add and select a mass object group to use the ballistics features.")
+            row.label(
+                text="Add and select a mass object group to use the ballistics features.")
 
 
 class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):

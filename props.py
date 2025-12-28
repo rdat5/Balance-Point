@@ -22,7 +22,8 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     pinned_rig: bpy.props.PointerProperty(
         name="Pinned Rig", type=bpy.types.Object)
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)
-    initial_axis: bpy.props.FloatVectorProperty(name="Initial Rotation Axis", subtype='XYZ', default=(1, 0, 0, ))
+    initial_axis: bpy.props.FloatVectorProperty(
+        name="Initial Rotation Axis", subtype='XYZ', default=(1, 0, 0, ))
     reference_point: bpy.props.FloatVectorProperty(name="Reference Point", description="Reference point for angle alignment and ballistics ruler.", default=(
         0, 0, 0))
     reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
@@ -35,7 +36,8 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
     is_ballistics_preview: bpy.props.BoolProperty(
         name="Preview Ballistics Curve", default=False)
-    root_bone: bpy.props.StringProperty(name="Root Bone", description="Root Bone of Rig")
+    root_bone: bpy.props.StringProperty(
+        name="Root Bone", description="Root Bone of Rig")
     initial_angular_velocity: bpy.props.FloatProperty(name="Initial Angular Velocity",
                                                       description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per frame.")
     gravity: bpy.props.FloatProperty(name="Gravity", default=9.807)
@@ -58,8 +60,13 @@ class BPComProperties(bpy.types.PropertyGroup):
         name="CoM Drawing Enabled", default=False)
     mass_density_set: bpy.props.FloatProperty(
         name="Set Density", default=1.0, soft_min=0)
-    com_point_size: bpy.props.IntProperty(name="Center of Mass Point Size", default=6, min=1)
-    floor_com_size: bpy.props.FloatProperty(name="CoM Floor Marker Size", default=1.0, min=0.0)
-    reference_point_size: bpy.props.IntProperty(name="Reference Point Size", default=8, min=1)
-    ballistics_point_size: bpy.props.IntProperty(name="Ballistics Point Size", default=4, min=1)
-    motion_path_point_size: bpy.props.IntProperty(name="Motion Path Point Size", default=4, min=1)
+    com_point_size: bpy.props.IntProperty(
+        name="Center of Mass Point Size", default=6, min=1)
+    floor_com_size: bpy.props.FloatProperty(
+        name="CoM Floor Marker Size", default=1.0, min=0.0)
+    reference_point_size: bpy.props.IntProperty(
+        name="Reference Point Size", default=8, min=1)
+    ballistics_point_size: bpy.props.IntProperty(
+        name="Ballistics Point Size", default=4, min=1)
+    motion_path_point_size: bpy.props.IntProperty(
+        name="Motion Path Point Size", default=4, min=1)

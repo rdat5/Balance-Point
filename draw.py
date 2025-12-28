@@ -27,7 +27,8 @@ def draw_bp(self, context):
                         "color", (group.color.r, group.color.g, group.color.b, 1.0))
 
                     # Draw COM Shape
-                    group_com = get_com(group.mass_object_collection.all_objects)
+                    group_com = get_com(
+                        group.mass_object_collection.all_objects)
 
                     gpu.state.point_size_set(com_props.com_point_size)
                     batch = batch_for_shader(
@@ -52,7 +53,8 @@ def draw_bp(self, context):
                         cy = group.initial_axis.y
                         cz = group.initial_axis.z
                         axis_vector = numpy.array([cx, cy, cz])
-                        axis_unit = axis_vector / numpy.linalg.norm(axis_vector)
+                        axis_unit = axis_vector / \
+                            numpy.linalg.norm(axis_vector)
                         axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
                             axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com)
                         batch = batch_for_shader(
@@ -65,7 +67,8 @@ def draw_bp(self, context):
                     # Draw Reference Points
                     if group.show_reference_point:
                         # Reference Point
-                        gpu.state.point_size_set(com_props.reference_point_size)
+                        gpu.state.point_size_set(
+                            com_props.reference_point_size)
                         shader.uniform_float(
                             "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
                         batch = batch_for_shader(
@@ -127,14 +130,17 @@ def draw_bp(self, context):
                             # Draw points
                             for index, point_position in enumerate(
                                     point_positions):
-                                shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
-                                gpu.state.point_size_set(com_props.ballistics_point_size)
+                                shader.uniform_float(
+                                    "color", (0.0, 0.0, 0.0, 1.0))
+                                gpu.state.point_size_set(
+                                    com_props.ballistics_point_size)
                                 batch = batch_for_shader(
                                     shader, 'POINTS', {"pos": point_positions})
                                 batch.draw(shader)
 
                     # Draw Motion Path
-                    if len(group.motion_path_points) > 0 and group.mass_object_collection is not None:
+                    if len(
+                            group.motion_path_points) > 0 and group.mass_object_collection is not None:
                         point_positions = []
 
                         # Get Points
@@ -168,7 +174,8 @@ def draw_bp(self, context):
                         for index, point_position in enumerate(
                                 point_positions):
                             shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
-                            gpu.state.point_size_set(com_props.motion_path_point_size)
+                            gpu.state.point_size_set(
+                                com_props.motion_path_point_size)
                             batch = batch_for_shader(
                                 shader, 'POINTS', {"pos": point_positions})
                             batch.draw(shader)
@@ -177,7 +184,8 @@ def draw_bp(self, context):
                     # Draw Reference Points
                     if group.show_reference_point:
                         # Reference Point
-                        gpu.state.point_size_set(com_props.reference_point_size)
+                        gpu.state.point_size_set(
+                            com_props.reference_point_size)
                         shader.uniform_float(
                             "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
                         batch = batch_for_shader(
@@ -239,11 +247,14 @@ def draw_bp(self, context):
                             # Draw points
                             for index, point_position in enumerate(
                                     point_positions):
-                                shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
-                                gpu.state.point_size_set(com_props.ballistics_point_size)
+                                shader.uniform_float(
+                                    "color", (0.0, 0.0, 0.0, 1.0))
+                                gpu.state.point_size_set(
+                                    com_props.ballistics_point_size)
                                 batch = batch_for_shader(
                                     shader, 'POINTS', {"pos": point_positions})
                                 batch.draw(shader)
+
 
 def rotate_points(points, angle_deg, axis):
     import numpy

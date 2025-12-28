@@ -248,7 +248,8 @@ class BakeBPPhysics(bpy.types.Operator):
         if sel_mog.frame_end <= sel_mog.frame_start:
             return False
 
-        if not (sel_mog.pin_xyz[0] == True and sel_mog.pin_xyz[1] == True and sel_mog.pin_xyz[2] == True):
+        if not (sel_mog.pin_xyz[0] == True and sel_mog.pin_xyz[1]
+                == True and sel_mog.pin_xyz[2] == True):
             return False
 
         if sel_mog.pinned_rig.pose.bones[sel_mog.root_bone] is None:
@@ -269,9 +270,13 @@ class BakeBPPhysics(bpy.types.Operator):
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
 
-        I_start = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, group_com)
+        I_start = get_inertia_tensor(
+            sel_mog.mass_object_collection.all_objects, group_com)
 
-        initial_axis = Vector((sel_mog.initial_axis.x, sel_mog.initial_axis.y, sel_mog.initial_axis.z))
+        initial_axis = Vector(
+            (sel_mog.initial_axis.x,
+             sel_mog.initial_axis.y,
+             sel_mog.initial_axis.z))
 
         omega_start = initial_axis * sel_mog.initial_angular_velocity
 
@@ -284,29 +289,31 @@ class BakeBPPhysics(bpy.types.Operator):
 
         for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):
             bpy.context.scene.frame_set(f)
-            
+
             # Rotation
             current_quat = root_bone.rotation_quaternion.copy()
             if f > sel_mog.frame_start:
-                current_com = get_com(sel_mog.mass_object_collection.all_objects)
-                
-                I_current = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, current_com)
-                
+                current_com = get_com(
+                    sel_mog.mass_object_collection.all_objects)
+
+                I_current = get_inertia_tensor(
+                    sel_mog.mass_object_collection.all_objects, current_com)
+
                 try:
                     I_inv = I_current.inverted()
                 except ValueError:
                     I_inv = Matrix.Identity(3)
-                    
+
                 omega_new = I_inv @ L_vector
 
                 rotation_speed = omega_new.length
-                
+
                 if rotation_speed > 1e-6:
                     rotation_axis = omega_new.normalized()
                     theta_step = rotation_speed * dt
-                    
+
                     delta_quat = Quaternion(rotation_axis, theta_step)
-                    
+
                     current_quat = delta_quat @ current_quat
                     current_quat.normalize()
 
@@ -331,7 +338,7 @@ class BakeBPPhysics(bpy.types.Operator):
             sel_mog.is_rig_pinned = True
             context.scene.keyframe_insert(
                 data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), keytype='GENERATED', options={'INSERTKEY_NEEDED'})
-            
+
             context.view_layer.update()
 
         # Return to original frame
