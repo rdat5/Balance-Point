@@ -52,7 +52,6 @@ from .props import (
     BP_MotionPathPoint,
     BPMassObjectGroup,
     BPComProperties,
-    BPPhysicsProperties,
 )
 from .center_of_mass import update_mass_group_com
 import bpy
@@ -88,7 +87,6 @@ classes = (
     BP_PT_Motion_Path,
     BP_PT_MassPropertyEditor,
     BP_PT_MassSelected,
-    BPPhysicsProperties,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
     AddMassProps,
@@ -119,8 +117,6 @@ def register():
         type=BPComProperties)
     bpy.types.Scene.bp_mass_object_groups = bpy.props.CollectionProperty(
         type=BPMassObjectGroup)
-    bpy.types.Scene.bp_physics_properties = bpy.props.PointerProperty(
-        type=BPPhysicsProperties)
     bpy.types.Scene.bp_group_index = bpy.props.IntProperty(
         name="Active Index")
 
@@ -138,7 +134,6 @@ def unregister():
 
     del bpy.types.Scene.bp_com_properties
     del bpy.types.Scene.bp_mass_object_groups
-    del bpy.types.Scene.bp_physics_properties
     del bpy.types.Scene.bp_group_index
 
     global draw_handler

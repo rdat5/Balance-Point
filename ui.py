@@ -224,7 +224,6 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
@@ -246,7 +245,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row.alignment = 'CENTER'
             row.label(text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects, get_com(selected_mog.mass_object_collection.all_objects)))}")
             row = layout.row()
-            row.prop(phys_props, "initial_angular_velocity")
+            row.prop(selected_mog, "initial_angular_velocity")
             row = layout.row()
             row.operator("balance_point.align_axis_cursor", icon='CURSOR')
             row.operator("balance_point.align_axis", icon='DOT')
@@ -266,7 +265,6 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         mass_object_groups = scene.bp_mass_object_groups
-        phys_props = scene.bp_physics_properties
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
@@ -281,8 +279,8 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
                     icon='HIDE_OFF' if preview_on else 'HIDE_ON')
             row.label(text="Ballistics")
             col = layout.column(align=True)
-            col.prop(phys_props, "gravity")
-            col.prop(phys_props, "time_of_flight")
+            col.prop(selected_mog, "gravity")
+            col.prop(selected_mog, "time_of_flight")
         else:
             row.label(text="Add and select a mass object group to use the ballistics features.")
 
@@ -294,7 +292,6 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
@@ -304,9 +301,9 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
         layout.use_property_split = True
         layout.use_property_decorate = False
         col = layout.column(align=True)
-        col.prop(phys_props, "frame_start")
-        col.prop(phys_props, "frame_end")
-        col.prop(phys_props, "frame_rate")
+        col.prop(selected_mog, "frame_start")
+        col.prop(selected_mog, "frame_end")
+        col.prop(selected_mog, "frame_rate")
 
         row = layout.row()
         if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
@@ -320,7 +317,6 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        phys_props = scene.bp_physics_properties
         mass_object_groups = scene.bp_mass_object_groups
         selected_index = scene.bp_group_index
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
@@ -330,8 +326,8 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
             layout.use_property_split = True
             layout.use_property_decorate = False
             col = layout.column(align=True)
-            col.prop(phys_props, "motion_path_frame_start")
-            col.prop(phys_props, "motion_path_frame_end", text="End")
+            col.prop(selected_mog, "motion_path_frame_start")
+            col.prop(selected_mog, "motion_path_frame_end", text="End")
             row = layout.row()
             col_l = row.column()
             col_l.operator(

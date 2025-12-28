@@ -242,11 +242,10 @@ class BakeBPPhysics(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        physics_props = context.scene.bp_physics_properties
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
-        if physics_props.frame_end <= physics_props.frame_start:
+        if sel_mog.frame_end <= sel_mog.frame_start:
             return False
 
         if not (sel_mog.pin_xyz[0] == True and sel_mog.pin_xyz[1] == True and sel_mog.pin_xyz[2] == True):
@@ -258,7 +257,6 @@ class BakeBPPhysics(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        physics_props = context.scene.bp_physics_properties
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
         root_bone = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone]
@@ -266,7 +264,7 @@ class BakeBPPhysics(bpy.types.Operator):
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
 
-        bpy.context.scene.frame_set(physics_props.frame_start)
+        bpy.context.scene.frame_set(sel_mog.frame_start)
 
         # Get Center of Mass
         group_com = get_com(sel_mog.mass_object_collection.all_objects)
@@ -275,7 +273,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
         initial_axis = Vector((sel_mog.initial_axis.x, sel_mog.initial_axis.y, sel_mog.initial_axis.z))
 
-        omega_start = initial_axis * physics_props.initial_angular_velocity
+        omega_start = initial_axis * sel_mog.initial_angular_velocity
 
         L_vector = I_start @ omega_start
 
@@ -284,12 +282,12 @@ class BakeBPPhysics(bpy.types.Operator):
 
         dt = 1.0 / context.scene.render.fps
 
-        for f in range(physics_props.frame_start, physics_props.frame_end + 1):
+        for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):
             bpy.context.scene.frame_set(f)
             
             # Rotation
             current_quat = root_bone.rotation_quaternion.copy()
-            if f > physics_props.frame_start:
+            if f > sel_mog.frame_start:
                 current_com = get_com(sel_mog.mass_object_collection.all_objects)
                 
                 I_current = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, current_com)
@@ -318,10 +316,10 @@ class BakeBPPhysics(bpy.types.Operator):
             # Ballistics
             start_pos = (p0[0], p0[1], p0[2])
             ref_pos = (p1[0], p1[1], p1[2])
-            gravity = physics_props.gravity
-            time_of_flight = float(physics_props.time_of_flight)
+            gravity = sel_mog.gravity
+            time_of_flight = float(sel_mog.time_of_flight)
             elapsed_time = float(
-                f - physics_props.frame_start) / physics_props.frame_rate
+                f - sel_mog.frame_start) / sel_mog.frame_rate
 
             point_position = projectile_position(
                 start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
@@ -349,15 +347,15 @@ class CalculateBPMotionPath(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        physics_props = context.scene.bp_physics_properties
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
-        if physics_props.motion_path_frame_end <= physics_props.motion_path_frame_start:
+        if sel_mog.motion_path_frame_end <= sel_mog.motion_path_frame_start:
             return False
 
         return True
 
     def execute(self, context):
-        physics_props = context.scene.bp_physics_properties
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
         motion_path_points = sel_mog.motion_path_points
@@ -369,9 +367,9 @@ class CalculateBPMotionPath(bpy.types.Operator):
         original_frame = bpy.context.scene.frame_current
 
         # Go to start of range
-        bpy.context.scene.frame_set(physics_props.motion_path_frame_start)
+        bpy.context.scene.frame_set(sel_mog.motion_path_frame_start)
 
-        for f in range(physics_props.frame_start, physics_props.motion_path_frame_end + 1):
+        for f in range(sel_mog.frame_start, sel_mog.motion_path_frame_end + 1):
             # Add motion path point
             motion_path_points.add()
 

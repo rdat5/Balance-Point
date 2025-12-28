@@ -16,7 +16,6 @@ def draw_bp(self, context):
 
     com_props = bpy.context.scene.bp_com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
-    physics_props = bpy.context.scene.bp_physics_properties
 
     # Go through each collection, create a batch, render it
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
@@ -83,10 +82,10 @@ def draw_bp(self, context):
                     # Draw ballistics curve
                     if group.is_ballistics_preview:
 
-                        if physics_props.frame_end > physics_props.frame_start and physics_props.time_of_flight > 0:
+                        if group.frame_end > group.frame_start and group.time_of_flight > 0:
                             point_positions = []
 
-                            total_frames = physics_props.frame_end - physics_props.frame_start
+                            total_frames = group.frame_end - group.frame_start
 
                             # Get points
                             p0 = Vector(group.ballistics_starting_point)
@@ -95,11 +94,11 @@ def draw_bp(self, context):
                             for frame in range(total_frames + 1):
                                 start_pos = (p0[0], p0[1], p0[2])
                                 ref_pos = (p1[0], p1[1], p1[2])
-                                gravity = physics_props.gravity
+                                gravity = group.gravity
                                 time_of_flight = float(
-                                    physics_props.time_of_flight)
+                                    group.time_of_flight)
                                 elapsed_time = float(
-                                    frame) / physics_props.frame_rate
+                                    frame) / group.frame_rate
 
                                 point_positions.append(projectile_position(
                                     start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
@@ -109,7 +108,7 @@ def draw_bp(self, context):
                                     point_positions):
                                 line_batch = []
                                 line_color = (1.0, 0.0, 0.0, 1.0) if index + \
-                                    physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                                    group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
                                 shader.uniform_float("color", line_color)
                                 point_coordinate = (
                                     point_position[0], point_position[1], point_position[2])
@@ -149,7 +148,7 @@ def draw_bp(self, context):
                                 point_positions):
                             line_batch = []
                             line_color = (1.0, 0.0, 0.0, 1.0) if index + \
-                                physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                                group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
                             shader.uniform_float("color", line_color)
                             point_coordinate = (
                                 point_position[0], point_position[1], point_position[2])
@@ -195,10 +194,10 @@ def draw_bp(self, context):
                     # Draw ballistics curve
                     if group.is_ballistics_preview:
 
-                        if physics_props.frame_end > physics_props.frame_start and physics_props.time_of_flight > 0:
+                        if group.frame_end > group.frame_start and group.time_of_flight > 0:
                             point_positions = []
 
-                            total_frames = physics_props.frame_end - physics_props.frame_start
+                            total_frames = group.frame_end - group.frame_start
 
                             # Get points
                             p0 = Vector(group.ballistics_starting_point)
@@ -207,11 +206,11 @@ def draw_bp(self, context):
                             for frame in range(total_frames + 1):
                                 start_pos = (p0[0], p0[1], p0[2])
                                 ref_pos = (p1[0], p1[1], p1[2])
-                                gravity = physics_props.gravity
+                                gravity = group.gravity
                                 time_of_flight = float(
-                                    physics_props.time_of_flight)
+                                    group.time_of_flight)
                                 elapsed_time = float(
-                                    frame) / physics_props.frame_rate
+                                    frame) / group.frame_rate
 
                                 point_positions.append(projectile_position(
                                     start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
@@ -221,7 +220,7 @@ def draw_bp(self, context):
                                     point_positions):
                                 line_batch = []
                                 line_color = (1.0, 0.0, 0.0, 1.0) if index + \
-                                    physics_props.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                                    group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
                                 shader.uniform_float("color", line_color)
                                 point_coordinate = (
                                     point_position[0], point_position[1], point_position[2])
