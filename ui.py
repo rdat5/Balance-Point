@@ -328,8 +328,8 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
 
 
 class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
-    bl_parent_id = "BP_PT_PhysicsTools"
-    bl_label = "Motion Path"
+    bl_parent_id = "BP_PT_MainMenu"
+    bl_label = "Center of Mass Motion Path"
 
     def draw(self, context):
         layout = self.layout
