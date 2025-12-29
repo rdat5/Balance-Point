@@ -81,13 +81,13 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                     "bones",
                     text="Root Bone")
                 if selected_mog.root_bone != '':
-                    if selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_mode != 'AXIS_ANGLE':
+                    if selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_mode != 'QUATERNION':
                         row = layout.row()
                         row.label(
-                            text="Set bone to Axis Angle rotation mode to use angular velocity:")
-                    row = layout.row()
-                    row.prop(
-                        selected_mog.pinned_rig.pose.bones[selected_mog.root_bone], "rotation_mode")
+                            text="Set root bone rotation to Quaternion to use Angular Momentum Features.")
+                        row = layout.row()
+                        row.prop(
+                            selected_mog.pinned_rig.pose.bones[selected_mog.root_bone], "rotation_mode")
 
             # COM Floor
             row = layout.row()
