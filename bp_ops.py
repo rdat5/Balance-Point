@@ -3,7 +3,6 @@ from math import radians
 from .utils import (
     is_valid_triangle,
     get_triangle_normal,
-    get_inertia_tensor,
     projectile_position,
     get_com
 )
@@ -267,58 +266,11 @@ class BakeBPPhysics(bpy.types.Operator):
 
         bpy.context.scene.frame_set(sel_mog.frame_start)
 
-        # Get Center of Mass
-        group_com = get_com(sel_mog.mass_object_collection.all_objects)
-
-        I_start = get_inertia_tensor(
-            sel_mog.mass_object_collection.all_objects, group_com)
-
-        initial_axis = Vector(
-            (sel_mog.initial_axis.x,
-             sel_mog.initial_axis.y,
-             sel_mog.initial_axis.z))
-
-        omega_start = initial_axis * sel_mog.initial_angular_velocity
-
-        L_vector = I_start @ omega_start
-
         p0 = sel_mog.ballistics_starting_point
         p1 = sel_mog.reference_point
 
-        dt = 1.0 / context.scene.render.fps
-
         for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):
             bpy.context.scene.frame_set(f)
-
-            # Rotation
-            current_quat = root_bone.rotation_quaternion.copy()
-            if f > sel_mog.frame_start:
-                current_com = get_com(
-                    sel_mog.mass_object_collection.all_objects)
-
-                I_current = get_inertia_tensor(
-                    sel_mog.mass_object_collection.all_objects, current_com)
-
-                try:
-                    I_inv = I_current.inverted()
-                except ValueError:
-                    I_inv = Matrix.Identity(3)
-
-                omega_new = I_inv @ L_vector
-
-                rotation_speed = omega_new.length
-
-                if rotation_speed > 1e-6:
-                    rotation_axis = omega_new.normalized()
-                    theta_step = rotation_speed * dt
-
-                    delta_quat = Quaternion(rotation_axis, theta_step)
-
-                    current_quat = delta_quat @ current_quat
-                    current_quat.normalize()
-
-            root_bone.rotation_quaternion = current_quat
-            root_bone.keyframe_insert(data_path='rotation_quaternion', frame=f)
 
             # Ballistics
             start_pos = (p0[0], p0[1], p0[2])
