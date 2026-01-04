@@ -35,36 +35,31 @@ def get_total_mass(objects):
     return total_mass
 
 
-# def get_inertia_tensor(objects, center_of_mass):
-#     import numpy as np
-#     I_xx = I_yy = I_zz = I_xy = I_xz = I_yz = 0.0
+def get_inertia_tensor(objects, com_vector):
+    I_xx, I_yy, I_zz = 0.0, 0.0, 0.0
+    I_xy, I_xz, I_yz = 0.0, 0.0, 0.0
 
-#     com_np = np.array(center_of_mass)
+    for obj in objects:
+        if obj.get("active"):
+            m = obj.get("density") * obj.get("volume")
+            
+            r = obj.matrix_world.translation - com_vector
+            
+            x, y, z = r.x, r.y, r.z
+            
+            I_xx += m * (y**2 + z**2)
+            I_yy += m * (x**2 + z**2)
+            I_zz += m * (x**2 + y**2)
+            
+            I_xy -= m * (x * y)
+            I_xz -= m * (x * z)
+            I_yz -= m * (y * z)
 
-#     for obj in objects:
-#         if obj.get("active"):
-#             pos_world = np.array(obj.matrix_world.translation)
-#             r = pos_world - com_np
-
-#             x, y, z = r[0], r[1], r[2]
-
-#             mass = obj.get("density") * obj.get("volume")
-
-#             I_xx += mass * (y * y + z * z)
-#             I_yy += mass * (x * x + z * z)
-#             I_zz += mass * (x * x + y * y)
-
-#             I_xy -= mass * (x * y)
-#             I_xz -= mass * (x * z)
-#             I_yz -= mass * (y * z)
-
-#     tensor = Matrix([
-#         [I_xx, I_xy, I_xz],
-#         [I_xy, I_yy, I_yz],
-#         [I_xz, I_yz, I_zz]
-#     ])
-
-#     return tensor
+    return Matrix((
+        (I_xx, I_xy, I_xz),
+        (I_xy, I_yy, I_yz),
+        (I_xz, I_yz, I_zz)
+    ))
 
 
 def get_com(objects):

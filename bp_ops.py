@@ -3,6 +3,7 @@ from math import radians
 from .utils import (
     is_valid_triangle,
     get_triangle_normal,
+    get_inertia_tensor,
     projectile_position,
     get_com
 )
@@ -257,46 +258,85 @@ class BakeBPPhysics(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        selected_index = context.scene.bp_group_index
-        sel_mog = context.scene.bp_mass_object_groups[selected_index]
-        root_bone = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone]
+            selected_index = context.scene.bp_group_index
+            sel_mog = context.scene.bp_mass_object_groups[selected_index]
+            root_bone = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone]
 
-        # For returning to original frame after operation
-        original_frame = bpy.context.scene.frame_current
+            mass_objects = sel_mog.mass_object_collection.all_objects
 
-        bpy.context.scene.frame_set(sel_mog.frame_start)
+            # For returning to original frame after operation
+            original_frame = bpy.context.scene.frame_current
 
-        p0 = sel_mog.ballistics_starting_point
-        p1 = sel_mog.reference_point
-
-        for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):
-            bpy.context.scene.frame_set(f)
-
-            # Ballistics
-            start_pos = (p0[0], p0[1], p0[2])
-            ref_pos = (p1[0], p1[1], p1[2])
-            gravity = sel_mog.gravity
-            time_of_flight = float(sel_mog.time_of_flight)
-            elapsed_time = float(
-                f - sel_mog.frame_start) / sel_mog.frame_rate
-
-            point_position = projectile_position(
-                start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
-
-            sel_mog.com_location = point_position
-            context.scene.keyframe_insert(
-                data_path="bp_mass_object_groups[{}].com_location".format(selected_index), keytype='GENERATED')
-
-            sel_mog.is_rig_pinned = True
-            context.scene.keyframe_insert(
-                data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), keytype='GENERATED', options={'INSERTKEY_NEEDED'})
-
+            bpy.context.scene.frame_set(sel_mog.frame_start)
             context.view_layer.update()
 
-        # Return to original frame
-        bpy.context.scene.frame_set(original_frame)
+            com_start = get_com(mass_objects)
+            starting_inertia = get_inertia_tensor(mass_objects, com_start)
 
-        return {'FINISHED'}
+            initial_angular_velocity = Vector(sel_mog.initial_axis).normalized() * radians(sel_mog.initial_angular_velocity)
+
+            momentum_vector = starting_inertia @ initial_angular_velocity
+
+            accumulated_rotation = root_bone.matrix.to_quaternion()
+
+            p0 = sel_mog.ballistics_starting_point
+            p1 = sel_mog.reference_point
+
+            for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):
+                bpy.context.scene.frame_set(f)
+
+                # Rotation
+                root_bone.rotation_quaternion = accumulated_rotation
+                
+                root_bone.keyframe_insert(data_path="rotation_quaternion")
+                context.view_layer.update()
+
+                current_com = get_com(mass_objects)
+                current_inertia = get_inertia_tensor(mass_objects, current_com)
+
+                current_ang_vel = current_inertia.inverted_safe() @ momentum_vector
+
+                angle_step = current_ang_vel.length
+                
+                if angle_step > 0.000001:
+                    axis_step = current_ang_vel.normalized()
+                    rot_step = Quaternion(axis_step, angle_step)
+                    accumulated_rotation = rot_step @ accumulated_rotation
+                    
+                    root_bone.rotation_quaternion = accumulated_rotation
+                    context.view_layer.update()
+
+                # Ballistics
+                start_pos = (p0[0], p0[1], p0[2])
+                ref_pos = (p1[0], p1[1], p1[2])
+                gravity = sel_mog.gravity
+                time_of_flight = float(sel_mog.time_of_flight)
+
+                if f == sel_mog.frame_start:
+                    elapsed_time = 0.0
+                else:
+                    elapsed_time = float(f - sel_mog.frame_start) / sel_mog.frame_rate
+
+                point_position = projectile_position(
+                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
+
+                # Pin center of mass
+                sel_mog.com_location = point_position
+                context.scene.keyframe_insert(
+                    data_path="bp_mass_object_groups[{}].com_location".format(selected_index), 
+                    keytype='GENERATED'
+                )
+
+                sel_mog.is_rig_pinned = True
+                context.scene.keyframe_insert(
+                    data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), 
+                    keytype='GENERATED', 
+                    options={'INSERTKEY_NEEDED'}
+                )
+
+            # Return to original frame
+            bpy.context.scene.frame_set(original_frame)
+            return {'FINISHED'}
 
 
 class CalculateBPMotionPath(bpy.types.Operator):
