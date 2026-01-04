@@ -7,7 +7,7 @@ from .utils import (
     projectile_position,
     get_com
 )
-from mathutils import Vector, Matrix, Quaternion
+from mathutils import Vector, Quaternion
 
 
 class AddMassObjectGroup(bpy.types.Operator):

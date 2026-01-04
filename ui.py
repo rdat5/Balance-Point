@@ -4,7 +4,6 @@ from .utils import (
     get_com,
     get_total_mass,
 )
-from mathutils import Vector, Matrix
 
 
 class BalancePointPanel(bpy.types.Panel):
