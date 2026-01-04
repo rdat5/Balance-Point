@@ -327,12 +327,12 @@ class BakeBPPhysics(bpy.types.Operator):
                     keytype='GENERATED'
                 )
 
-                sel_mog.is_rig_pinned = True
-                context.scene.keyframe_insert(
-                    data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), 
-                    keytype='GENERATED', 
-                    options={'INSERTKEY_NEEDED'}
-                )
+                if f == sel_mog.frame_start or f == sel_mog.frame_end:
+                    sel_mog.is_rig_pinned = True
+                    context.scene.keyframe_insert(
+                        data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), 
+                        keytype='GENERATED', 
+                    )
 
             # Return to original frame
             bpy.context.scene.frame_set(original_frame)
