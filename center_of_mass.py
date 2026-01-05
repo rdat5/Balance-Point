@@ -16,7 +16,7 @@ def update_mass_group_com(scene):
                 if group.com_object_enabled:
                     group.com_object.matrix_world.translation = get_com(group.mass_object_collection.all_objects)
             else:
-                if group.pinned_rig is not None and group.root_bone != '':
+                if group.pinned_rig is not None and group.root_bone in group.pinned_rig.pose.bones:
                     group_com = get_com(
                         group.mass_object_collection.all_objects)
                     difference = group_com - Vector(group.com_location)
