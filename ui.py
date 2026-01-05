@@ -87,6 +87,10 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                         row = layout.row()
                         row.prop(
                             selected_mog.pinned_rig.pose.bones[selected_mog.root_bone], "rotation_mode")
+            row = layout.row()
+            row.prop(selected_mog, "com_object_enabled")
+            row = layout.row()
+            row.prop(selected_mog, "com_object")
 
             # COM Floor
             row = layout.row()

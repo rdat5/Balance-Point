@@ -17,6 +17,10 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         0, 0, 0))
     is_rig_pinned: bpy.props.BoolProperty(
         name="Pin Center of Mass", default=False)
+    com_object_enabled: bpy.props.BoolProperty(
+        name="Enable COM Object Tracking", default=False)
+    com_object: bpy.props.PointerProperty(
+        name="COM Object", type=bpy.types.Object)
     pin_xyz: bpy.props.BoolVectorProperty(
         name="Pin Lock", subtype="XYZ", description="Lock/Unlock XYZ Translation of CoM Pin", default=(True, True, True))
     pinned_rig: bpy.props.PointerProperty(
