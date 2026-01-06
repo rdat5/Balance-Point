@@ -318,12 +318,13 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             mass_object_groups) else None
 
         # Baking
-        layout.use_property_split = True
-        layout.use_property_decorate = False
-        col = layout.column(align=True)
-        col.prop(selected_mog, "frame_start")
-        col.prop(selected_mog, "frame_end")
-        col.prop(selected_mog, "frame_rate")
+        if selected_mog is not None:
+            layout.use_property_split = True
+            layout.use_property_decorate = False
+            col = layout.column(align=True)
+            col.prop(selected_mog, "frame_start")
+            col.prop(selected_mog, "frame_end")
+            col.prop(selected_mog, "frame_rate")
 
         row = layout.row()
         if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
