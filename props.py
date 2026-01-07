@@ -6,6 +6,12 @@ class BP_MotionPathPoint(bpy.types.PropertyGroup):
         0, 0, 0))
 
 
+class BP_Mass_Collections(bpy.types.PropertyGroup):
+    mass_object_collection: bpy.props.PointerProperty(
+        name="Mass Object Collection", type=bpy.types.Collection)
+    influence: bpy.props.FloatProperty(name="Mass Collection Influece", default=1.0, min=0.0, max=1.0)
+
+
 class BPMassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
     mass_object_collection: bpy.props.PointerProperty(
@@ -57,6 +63,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     motion_path_frame_end: bpy.props.IntProperty(
         name="Motion Path Range End", description="Last frame of the calculated motion path range.", default=10)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
+    mass_collections: bpy.props.CollectionProperty(type=BP_Mass_Collections)
 
 
 class BPComProperties(bpy.types.PropertyGroup):

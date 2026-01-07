@@ -10,6 +10,41 @@ from .utils import (
 from mathutils import Vector, Quaternion
 
 
+class BP_AddMassCollection(bpy.types.Operator):
+    """Add new Mass Collection to Current Mass Object Group"""
+    bl_idname = "balance_point.masscollection_add"
+    bl_label = "Add New Mass Collection"
+
+    @classmethod
+    def poll(cls, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        if sel_mog.mass_object_collection is None:
+            False
+
+        return True
+
+    def execute(self, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        sel_mog.mass_collections.add()
+        return {'FINISHED'}    
+
+
+class BP_RemoveMassCollection(bpy.types.Operator):
+    """Remove last Mass Collection to Current Mass Object Group"""
+    bl_idname = "balance_point.masscollection_remove"
+    bl_label = "Remove Last Mass Collection"
+
+    @classmethod
+    def poll(cls, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        return len(sel_mog.mass_collections) > 0
+
+    def execute(self, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        sel_mog.mass_collections.remove(len(sel_mog.mass_collections) - 1)
+        return {'FINISHED'}
+
+
 class AddMassObjectGroup(bpy.types.Operator):
     """Adds a new Mass Object Group"""
     bl_idname = "balance_point.massgroup_add"

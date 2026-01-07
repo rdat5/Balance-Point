@@ -13,6 +13,8 @@
 
 from .draw import draw_bp
 from .bp_ops import (
+    BP_AddMassCollection,
+    BP_RemoveMassCollection,
     AddMassObjectGroup,
     RemoveMassObjectGroup,
     SetReferencePoint,
@@ -50,6 +52,7 @@ from .ui import (
 )
 from .props import (
     BP_MotionPathPoint,
+    BP_Mass_Collections,
     BPMassObjectGroup,
     BPComProperties,
 )
@@ -73,7 +76,10 @@ draw_handler = None
 
 
 classes = (
+    BP_AddMassCollection,
+    BP_RemoveMassCollection,
     BP_MotionPathPoint,
+    BP_Mass_Collections,
     BPMassObjectGroup,
     BPComProperties,
     BP_UL_List,

@@ -62,11 +62,28 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(text=selected_mog.name + " Settings")
-            # Collection
-            row = layout.row()
-            row.scale_y = 1.5
-            row.prop(selected_mog, "mass_object_collection",
-                     text="Mass Collection")
+            # # Collection
+            # row = layout.row()
+            # row.scale_y = 1.5
+            # row.prop(selected_mog, "mass_object_collection",
+            #          text="Mass Collection")
+            box = layout.box()
+            row = box.row()
+            row.alignment = 'CENTER'
+            row.label(text=f"{selected_mog.name} Mass Collections")
+            for mc in selected_mog.mass_collections:
+                row = box.row(align=True)
+                col = row.column()
+                col.scale_x = 1.5
+                col.prop(mc, "mass_object_collection", text="")
+                col = row.column()
+                row.prop(mc, "influence", text="")
+            row = box.row()
+            row.scale_y = 2.0 if len(selected_mog.mass_collections) == 0 else 1.0
+            row.operator("balance_point.masscollection_add", icon='ADD')
+            if len(selected_mog.mass_collections) > 0:
+                row = box.row()
+                row.operator("balance_point.masscollection_remove", text="Remove Last", icon='REMOVE')
 
             # MOG Info
             row = layout.row()
