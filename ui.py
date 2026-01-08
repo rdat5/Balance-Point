@@ -271,7 +271,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(
-                text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects, get_com(selected_mog)))}")
+                text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog, get_com(selected_mog)))}")
             row = layout.row()
             row.prop(selected_mog, "initial_angular_velocity")
             row = layout.row()

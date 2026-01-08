@@ -35,25 +35,27 @@ def get_total_mass(objects):
     return total_mass
 
 
-def get_inertia_tensor(objects, com_vector):
+def get_inertia_tensor(group, com_vector):
     I_xx, I_yy, I_zz = 0.0, 0.0, 0.0
     I_xy, I_xz, I_yz = 0.0, 0.0, 0.0
 
-    for obj in objects:
-        if obj.get("active"):
-            m = obj.get("density") * obj.get("volume")
-            
-            r = obj.matrix_world.translation - com_vector
-            
-            x, y, z = r.x, r.y, r.z
-            
-            I_xx += m * (y**2 + z**2)
-            I_yy += m * (x**2 + z**2)
-            I_zz += m * (x**2 + y**2)
-            
-            I_xy -= m * (x * y)
-            I_xz -= m * (x * z)
-            I_yz -= m * (y * z)
+    for mass_collection in group.mass_collections:
+        if mass_collection.mass_object_collection is not None:
+            for obj in mass_collection.mass_object_collection.all_objects:
+                if obj.get("active"):
+                    m = obj.get("density") * obj.get("volume") * mass_collection.influence
+                    
+                    r = obj.matrix_world.translation - com_vector
+                    
+                    x, y, z = r.x, r.y, r.z
+                    
+                    I_xx += m * (y**2 + z**2)
+                    I_yy += m * (x**2 + z**2)
+                    I_zz += m * (x**2 + y**2)
+                    
+                    I_xy -= m * (x * y)
+                    I_xz -= m * (x * z)
+                    I_yz -= m * (y * z)
 
     return Matrix((
         (I_xx, I_xy, I_xz),

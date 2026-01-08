@@ -295,7 +295,7 @@ class BakeBPPhysics(bpy.types.Operator):
             context.view_layer.update()
 
             com_start = get_com(sel_mog)
-            starting_inertia = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, com_start)
+            starting_inertia = get_inertia_tensor(sel_mog, com_start)
 
             initial_angular_velocity = Vector(sel_mog.initial_axis).normalized() * radians(sel_mog.initial_angular_velocity)
 
@@ -316,7 +316,7 @@ class BakeBPPhysics(bpy.types.Operator):
                 context.view_layer.update()
 
                 current_com = get_com(sel_mog)
-                current_inertia = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, current_com)
+                current_inertia = get_inertia_tensor(sel_mog, current_com)
 
                 current_ang_vel = current_inertia.inverted_safe() @ momentum_vector
 
