@@ -15,13 +15,6 @@ class BP_AddMassCollection(bpy.types.Operator):
     bl_idname = "balance_point.masscollection_add"
     bl_label = "Add New Mass Collection"
 
-    @classmethod
-    def poll(cls, context):
-        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        if sel_mog.mass_object_collection is None:
-            False
-
-        return True
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
