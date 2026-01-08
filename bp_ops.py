@@ -124,8 +124,7 @@ class SetReferencePointToCOM(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
-        sel_mog.reference_point = get_com(
-            sel_mog.mass_object_collection.all_objects)
+        sel_mog.reference_point = get_com(sel_mog)
 
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
@@ -166,8 +165,7 @@ class SetStartingPointToCOM(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
 
-        sel_mog.ballistics_starting_point = get_com(
-            sel_mog.mass_object_collection.all_objects)
+        sel_mog.ballistics_starting_point = get_com(sel_mog)
 
         bpy.context.region.tag_redraw()
         return {'FINISHED'}
@@ -181,7 +179,7 @@ class AlignAxisByPoints(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        rig_com = get_com(sel_mog)
 
         p1 = sel_mog.reference_point
         p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1],
@@ -191,7 +189,7 @@ class AlignAxisByPoints(bpy.types.Operator):
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        rig_com = get_com(sel_mog)
 
         p1 = sel_mog.reference_point
         p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1],
@@ -213,7 +211,7 @@ class AlignAxisByCursor(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        rig_com = get_com(sel_mog)
         cursor = context.scene.cursor.location
 
         p1 = cursor
@@ -223,7 +221,7 @@ class AlignAxisByCursor(bpy.types.Operator):
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        rig_com = get_com(sel_mog)
         cursor = context.scene.cursor.location
 
         p1 = cursor
@@ -245,7 +243,7 @@ class AlignAxisByCursorRef(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        rig_com = get_com(sel_mog)
         cursor = context.scene.cursor.location
 
         p1 = cursor
@@ -256,7 +254,7 @@ class AlignAxisByCursorRef(bpy.types.Operator):
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog.mass_object_collection.all_objects)
+        rig_com = get_com(sel_mog)
         cursor = context.scene.cursor.location
 
         p1 = cursor
@@ -297,16 +295,14 @@ class BakeBPPhysics(bpy.types.Operator):
             sel_mog = context.scene.bp_mass_object_groups[selected_index]
             root_bone = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone]
 
-            mass_objects = sel_mog.mass_object_collection.all_objects
-
             # For returning to original frame after operation
             original_frame = bpy.context.scene.frame_current
 
             bpy.context.scene.frame_set(sel_mog.frame_start)
             context.view_layer.update()
 
-            com_start = get_com(mass_objects)
-            starting_inertia = get_inertia_tensor(mass_objects, com_start)
+            com_start = get_com(sel_mog)
+            starting_inertia = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, com_start)
 
             initial_angular_velocity = Vector(sel_mog.initial_axis).normalized() * radians(sel_mog.initial_angular_velocity)
 
@@ -326,8 +322,8 @@ class BakeBPPhysics(bpy.types.Operator):
                 root_bone.keyframe_insert(data_path="rotation_quaternion")
                 context.view_layer.update()
 
-                current_com = get_com(mass_objects)
-                current_inertia = get_inertia_tensor(mass_objects, current_com)
+                current_com = get_com(sel_mog)
+                current_inertia = get_inertia_tensor(sel_mog.mass_object_collection.all_objects, current_com)
 
                 current_ang_vel = current_inertia.inverted_safe() @ momentum_vector
 
@@ -411,7 +407,7 @@ class CalculateBPMotionPath(bpy.types.Operator):
             bpy.context.scene.frame_set(f)
 
             # Get center of mass
-            group_com = get_com(sel_mog.mass_object_collection.all_objects)
+            group_com = get_com(sel_mog)
 
             # Set created point as center of mass
             motion_path_points[-1].point_location = group_com

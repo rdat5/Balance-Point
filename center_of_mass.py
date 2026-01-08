@@ -12,13 +12,13 @@ def update_mass_group_com(scene):
         if group.mass_object_collection is not None:
             if not group.is_rig_pinned:
                 group.com_location = get_com(
-                    group.mass_object_collection.all_objects)
+                    group)
                 if group.com_object_enabled:
-                    group.com_object.matrix_world.translation = get_com(group.mass_object_collection.all_objects)
+                    group.com_object.matrix_world.translation = get_com(group)
             else:
                 if group.pinned_rig is not None and group.root_bone in group.pinned_rig.pose.bones:
                     group_com = get_com(
-                        group.mass_object_collection.all_objects)
+                        group)
                     difference = group_com - Vector(group.com_location)
                     if difference.length > 0.0001:
                         group.pinned_rig.pose.bones[group.root_bone].location -= Vector(

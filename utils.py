@@ -62,18 +62,20 @@ def get_inertia_tensor(objects, com_vector):
     ))
 
 
-def get_com(objects):
+def get_com(group):
     center_of_mass = Vector((0, 0, 0))
 
     total_mass = 0
     weighted_sum = Vector((0, 0, 0))
 
-    for obj in objects:
-        if obj.get("active"):
-            obj_mass = obj.get("density") * obj.get("volume")
+    for mass_collection in group.mass_collections:
+        if mass_collection.mass_object_collection is not None:
+            for obj in mass_collection.mass_object_collection.all_objects:
+                if obj.get("active"):
+                    obj_mass = obj.get("density") * obj.get("volume") * mass_collection.influence
 
-            total_mass += obj_mass
-            weighted_sum += (obj_mass * obj.matrix_world.translation)
+                    total_mass += obj_mass
+                    weighted_sum += (obj_mass * obj.matrix_world.translation)                
 
     if total_mass > 0:
         center_of_mass = weighted_sum / total_mass

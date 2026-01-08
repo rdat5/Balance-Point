@@ -27,8 +27,7 @@ def draw_bp(self, context):
                         "color", (group.color.r, group.color.g, group.color.b, 1.0))
 
                     # Draw COM Shape
-                    group_com = get_com(
-                        group.mass_object_collection.all_objects)
+                    group_com = get_com(group)
 
                     gpu.state.point_size_set(com_props.com_point_size)
                     batch = batch_for_shader(

@@ -62,11 +62,6 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(text=selected_mog.name + " Settings")
-            # # Collection
-            # row = layout.row()
-            # row.scale_y = 1.5
-            # row.prop(selected_mog, "mass_object_collection",
-            #          text="Mass Collection")
             box = layout.box()
             row = box.row()
             row.alignment = 'CENTER'
@@ -276,7 +271,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(
-                text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects,get_com(selected_mog.mass_object_collection.all_objects)))}")
+                text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog.mass_object_collection.all_objects, get_com(selected_mog)))}")
             row = layout.row()
             row.prop(selected_mog, "initial_angular_velocity")
             row = layout.row()
