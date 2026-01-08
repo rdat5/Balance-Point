@@ -23,6 +23,20 @@ def get_triangle_normal(p1, p2, p3):
     return normal / np.linalg.norm(normal)
 
 
+def get_total_mog_mass(group):
+    total_mass = 0
+
+    for mass_collection in group.mass_collections:
+        if mass_collection.mass_object_collection is not None:
+            for obj in mass_collection.mass_object_collection.all_objects:
+                if obj.get("active"):
+                    obj_mass = obj.get("density") * obj.get("volume")
+
+                    total_mass += obj_mass
+
+    return total_mass
+
+
 def get_total_mass(objects):
     total_mass = 0
 

@@ -3,6 +3,7 @@ from .utils import (
     get_inertia_tensor,
     get_com,
     get_total_mass,
+    get_total_mog_mass,
 )
 
 
@@ -21,9 +22,8 @@ class BP_UL_List(bpy.types.UIList):
         weight_col = row.column()
         weight_col.scale_x = 0.6
         total_mass = 0
-        if item.mass_object_collection is not None:
-            total_mass = get_total_mass(
-                item.mass_object_collection.all_objects)
+        if any(mass_collection is not None for mass_collection in item.mass_collections):
+            total_mass = get_total_mog_mass(item)
         weight_col.label(text="{} kg".format(round(total_mass, 2)))
         color_col = row.column()
         color_col.scale_x = 0.35
