@@ -146,7 +146,7 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog, "is_rig_pinned")
             row = layout.row(align=True)
             row.prop(selected_mog, "pin_xyz")
-        if selected_mog is not None and selected_mog.mass_object_collection is not None:
+        if selected_mog is not None and any(mass_collection is not None for mass_collection in selected_mog.mass_collections):
             row = layout.row()
             row.enabled = selected_mog.is_rig_pinned
             row.prop(selected_mog, "com_location")
@@ -202,7 +202,7 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
             col = row.column(align=True)
             col.operator("balance_point.startingpoint_set",
                          icon='CURSOR', text="3D Cursor")
-            if selected_mog.mass_object_collection is not None:
+            if any(mass_collection is not None for mass_collection in selected_mog.mass_collections):
                 col.operator("balance_point.startingpointcom_set",
                              icon='DOT', text="Center of Mass")
 
@@ -229,7 +229,7 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
             col = row.column(align=True)
             col.operator("balance_point.referencepoint_set",
                          icon='CURSOR', text="3D Cursor")
-            if selected_mog.mass_object_collection is not None:
+            if any(mass_collection is not None for mass_collection in selected_mog.mass_collections):
                 col.operator("balance_point.referencepointcom_set",
                              icon='DOT', text="Center of Mass")
         else:
@@ -257,7 +257,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             mass_object_groups) else None
 
         # Axis
-        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.mass_object_collection is not None and selected_mog.root_bone != '':
+        if selected_mog is not None and selected_mog.pinned_rig is not None and any(mass_collection is not None for mass_collection in selected_mog.mass_collections) and selected_mog.root_bone != '':
             # Axis Header
             axis_header = layout.row()
             axis_header.alignment = 'CENTER'
@@ -355,7 +355,7 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
         selected_mog = mass_object_groups[selected_index] if selected_index < len(
             mass_object_groups) else None
 
-        if selected_mog is not None and selected_mog.mass_object_collection is not None:
+        if selected_mog is not None and any(mass_collection is not None for mass_collection in selected_mog.mass_collections):
             layout.use_property_split = True
             layout.use_property_decorate = False
             col = layout.column(align=True)

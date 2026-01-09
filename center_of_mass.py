@@ -9,7 +9,7 @@ def update_mass_group_com(scene):
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
     for group in bp_mass_groups:
-        if group.mass_object_collection is not None:
+        if any(mass_collection is not None for mass_collection in group.mass_collections):
             if not group.is_rig_pinned:
                 group.com_location = get_com(
                     group)

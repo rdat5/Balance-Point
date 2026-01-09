@@ -21,7 +21,7 @@ def draw_bp(self, context):
     if com_props.com_drawing_on and len(bp_mass_groups) > 0:
         for group in bp_mass_groups:
             if group.visible:
-                if group.mass_object_collection is not None:
+                if any(mass_collection is not None for mass_collection in group.mass_collections):
                     # Get color
                     shader.uniform_float(
                         "color", (group.color.r, group.color.g, group.color.b, 1.0))
@@ -139,7 +139,7 @@ def draw_bp(self, context):
 
                     # Draw Motion Path
                     if len(
-                            group.motion_path_points) > 0 and group.mass_object_collection is not None:
+                            group.motion_path_points) > 0 and any(mass_collection is not None for mass_collection in group.mass_collections):
                         point_positions = []
 
                         # Get Points
