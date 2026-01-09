@@ -17,9 +17,8 @@ def update_mass_group_com(scene):
                     group.com_object.matrix_world.translation = get_com(group)
             else:
                 if group.pinned_rig is not None and group.root_bone in group.pinned_rig.pose.bones:
-                    group_com = get_com(
-                        group)
+                    group_com = get_com(group)
                     difference = group_com - Vector(group.com_location)
                     if difference.length > 0.0001:
-                        group.pinned_rig.pose.bones[group.root_bone].location -= Vector(
-                            (difference.x * group.pin_xyz[0], difference.y * group.pin_xyz[1], difference.z * group.pin_xyz[2]))
+                        world_space_diff = group.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * group.pin_xyz[0], difference.y * group.pin_xyz[1], difference.z * group.pin_xyz[2]))
+                        group.pinned_rig.pose.bones[group.root_bone].location -= world_space_diff
