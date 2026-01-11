@@ -52,7 +52,7 @@ from .ui import (
 )
 from .props import (
     BP_MotionPathPoint,
-    BP_Mass_Collections,
+    BP_MassCollections,
     BPMassObjectGroup,
     BPComProperties,
 )
@@ -79,7 +79,7 @@ classes = (
     BP_AddMassCollection,
     BP_RemoveMassCollection,
     BP_MotionPathPoint,
-    BP_Mass_Collections,
+    BP_MassCollections,
     BPMassObjectGroup,
     BPComProperties,
     BP_UL_List,
