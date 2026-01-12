@@ -52,6 +52,7 @@ from .ui import (
 )
 from .props import (
     BP_MotionPathPoint,
+    BP_RootMotionBones,
     BP_MassCollections,
     BPMassObjectGroup,
     BPComProperties,
@@ -80,6 +81,7 @@ classes = (
     BP_RemoveMassCollection,
     BP_MotionPathPoint,
     BP_MassCollections,
+    BP_RootMotionBones,
     BPMassObjectGroup,
     BPComProperties,
     BP_UL_List,

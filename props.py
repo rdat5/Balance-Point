@@ -12,6 +12,11 @@ class BP_MassCollections(bpy.types.PropertyGroup):
     influence: bpy.props.FloatProperty(name="Mass Collection Influece", default=1.0, min=0.0, max=1.0)
 
 
+class BP_RootMotionBones(bpy.types.PropertyGroup):
+    motion_bone: bpy.props.StringProperty(
+        name="Motion Bone", description="Non-root bone that drives character movement.")
+
+
 class BPMassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
     com_floor_level: bpy.props.FloatProperty(name="Floor Level", default=0.0)
@@ -60,6 +65,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Motion Path Range Start", description="First frame of the calculated motion path range.", default=0)
     motion_path_frame_end: bpy.props.IntProperty(
         name="Motion Path Range End", description="Last frame of the calculated motion path range.", default=10)
+    root_motion_bones: bpy.props.CollectionProperty(type=BP_RootMotionBones)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
     mass_collections: bpy.props.CollectionProperty(type=BP_MassCollections)
 
