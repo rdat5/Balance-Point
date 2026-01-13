@@ -20,6 +20,8 @@ from .bp_ops import (
     SetReferencePoint,
     AlignAxisByPoints,
     BakeBPPhysics,
+    BP_AddMotionBones,
+    BP_DeleteMotionBone,
     AlignAxisByCursor,
     AlignAxisByCursorRef,
     SetStartingPoint,
@@ -48,6 +50,7 @@ from .ui import (
     BP_PT_BallisticsRuler,
     BP_PT_Baking,
     BP_PT_Motion_Path,
+    BP_PT_Root_Motion,
     BP_PT_MassSelected,
 )
 from .props import (
@@ -87,6 +90,7 @@ classes = (
     BP_UL_List,
     BP_PT_MainMenu,
     BP_PT_Motion_Path,
+    BP_PT_Root_Motion,
     BP_PT_DrawSettings,
     BP_PT_PhysicsTools,
     BP_PT_ReferencePoints,
@@ -109,6 +113,8 @@ classes = (
     AlignAxisByPoints,
     AlignAxisByCursorRef,
     BakeBPPhysics,
+    BP_AddMotionBones,
+    BP_DeleteMotionBone,
     SetStartingPoint,
     SetStartingPointToCOM,
     SetReferencePointToCOM,

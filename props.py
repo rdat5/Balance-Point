@@ -65,6 +65,12 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Motion Path Range Start", description="First frame of the calculated motion path range.", default=0)
     motion_path_frame_end: bpy.props.IntProperty(
         name="Motion Path Range End", description="Last frame of the calculated motion path range.", default=10)
+    root_motion_frame_start: bpy.props.IntProperty(
+        name="Root Motion Range Start", description="First frame of the root motion baking path range.", default=0)
+    root_motion_frame_end: bpy.props.IntProperty(
+        name="Root Motion Range End", description="Last frame of the root motion baking path range.", default=10)
+    track_com_xyz: bpy.props.BoolVectorProperty(
+        name="Root Motion Axes", subtype="XYZ", description="Lock/Unlock XYZ Translation of Root Motion Baking", default=(True, False, True))
     root_motion_bones: bpy.props.CollectionProperty(type=BP_RootMotionBones)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
     mass_collections: bpy.props.CollectionProperty(type=BP_MassCollections)

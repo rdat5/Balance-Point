@@ -377,6 +377,49 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
                 text="Add a Mass Object Collection to use the motion path features.")
 
 
+class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
+    bl_parent_id = "BP_PT_MainMenu"
+    bl_label = "Root Motion Baking"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        mass_object_groups = scene.bp_mass_object_groups
+        selected_index = scene.bp_group_index
+        selected_mog = mass_object_groups[selected_index] if selected_index < len(
+            mass_object_groups) else None
+
+        if selected_mog is not None and any(mass_collection is not None for mass_collection in selected_mog.mass_collections):
+            col = layout.column(align=True)
+            col.use_property_split = True
+            col.use_property_decorate = False
+            col.prop(selected_mog, "root_motion_frame_start")
+            col.prop(selected_mog, "root_motion_frame_end", text="End")
+            row = layout.row(align=True)
+            row.prop(selected_mog, "track_com_xyz")
+            # Motion Bones
+            box = layout.box()
+            row = box.row()
+            row.alignment = 'CENTER'
+            row.label(text="Motion Bones")
+            if selected_mog.pinned_rig is not None:
+                row = box.row()
+                row.operator("balance_point.add_motion_bones", icon="ADD")
+                for i, mb in enumerate(selected_mog.root_motion_bones):
+                    row = box.row()
+                    row.prop_search(
+                        mb,
+                        "motion_bone",
+                        selected_mog.pinned_rig.data,
+                        "bones",
+                        text="")
+                    op = row.operator("balance_point.delete_motion_bones", icon='X', text="")
+                    op.index = i
+            else:
+                row = box.row()
+                row.label(text="Add a rig to use Root Motion Baking")
+            
+
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
     """Mass properties panel"""
     bl_label = "Mass Property Editing"

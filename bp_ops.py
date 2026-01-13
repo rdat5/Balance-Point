@@ -357,6 +357,57 @@ class BakeBPPhysics(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class BP_AddMotionBones(bpy.types.Operator):
+    """Adds selected pose bones as motion bones for center of mass root motion baking."""
+    bl_idname = "balance_point.add_motion_bones"
+    bl_label = "Add Selected Motion Bones"
+
+    @classmethod
+    def poll(cls, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+        selected_bones = context.selected_pose_bones_from_active_object
+        
+        return sel_mog.pinned_rig is not None and sel_mog.root_bone != "" and len(selected_bones) > 0
+
+    def execute(self, context):
+        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
+        selected_bones = context.selected_pose_bones_from_active_object
+        
+        if len(selected_bones) > 0:
+            for bone in selected_bones:
+                if not any(mb.motion_bone == bone.name for mb in sel_mog.root_motion_bones):
+                    new_bone_prop = sel_mog.root_motion_bones.add()
+                    new_bone_prop.motion_bone = bone.name
+
+        return {'FINISHED'}
+
+
+class BP_DeleteMotionBone(bpy.types.Operator):
+    """Clears set motion bones for center of mass root motion bakings."""
+    bl_idname = "balance_point.delete_motion_bones"
+    bl_label = "Delete Motion Bone"
+
+    index: bpy.props.IntProperty()
+
+    @classmethod
+    def poll(cls, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+
+        return len(sel_mog.root_motion_bones) > 0
+
+    def execute(self, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+        motion_bones = sel_mog.root_motion_bones
+
+        if 0 <= self.index < len(motion_bones):
+            motion_bones.remove(self.index)
+
+        return {'FINISHED'}
+
+
 class CalculateBPMotionPath(bpy.types.Operator):
     """Calculate the motion path of the mass object group's center of mass for the given range."""
     bl_idname = "balance_point.calculate_com_motion_path"
