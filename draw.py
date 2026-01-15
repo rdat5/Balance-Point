@@ -1,5 +1,6 @@
 import bpy
 import gpu
+import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
 from .utils import (
@@ -12,8 +13,6 @@ shader = gpu.shader.from_builtin('POINT_UNIFORM_COLOR')
 
 
 def draw_bp(self, context):
-    import numpy
-
     com_props = bpy.context.scene.bp_com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
