@@ -379,7 +379,7 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
 
 class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_MainMenu"
-    bl_label = "Root Motion Baking"
+    bl_label = "Root Motion Baking (EXPERIMENTAL)"
 
     def draw(self, context):
         layout = self.layout
