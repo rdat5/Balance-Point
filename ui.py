@@ -397,6 +397,8 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             col.prop(selected_mog, "root_motion_frame_end", text="End")
             row = layout.row(align=True)
             row.prop(selected_mog, "track_com_xyz")
+            row = layout.row()
+            row.operator("balance_point.bake_root_motion")
             # Motion Bones
             box = layout.box()
             row = box.row()

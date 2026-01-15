@@ -357,6 +357,88 @@ class BakeBPPhysics(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class BakeBPRootMotion(bpy.types.Operator):
+    """Bakes Root Motion."""
+    bl_idname = "balance_point.bake_root_motion"
+    bl_label = "Bake Root Motion"
+
+    @classmethod
+    def poll(cls, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+
+        if sel_mog.pinned_rig is None:
+            return False
+
+        if sel_mog.root_bone == "":
+            return False
+        
+        if len(sel_mog.root_motion_bones) < 1:
+            return False
+
+        return True
+
+    def execute(self, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+        pinned_rig = sel_mog.pinned_rig
+        root_bone = pinned_rig.pose.bones[sel_mog.root_bone]
+
+        animation_cache = []
+
+        for f in range(sel_mog.root_motion_frame_start, sel_mog.root_motion_frame_end + 1):
+            context.scene.frame_set(f)
+
+            current_com = get_com(sel_mog)
+            if not sel_mog.track_com_xyz[0]:
+                current_com.x = root_bone.matrix.translation.x
+                pass
+            if not sel_mog.track_com_xyz[1]:
+                current_com.y = root_bone.matrix.translation.y
+                pass
+            if not sel_mog.track_com_xyz[2]:
+                current_com.z = root_bone.matrix.translation.z
+                pass
+
+            motion_bone_matrices = {mb.motion_bone: pinned_rig.pose.bones[mb.motion_bone].matrix.copy() for mb in sel_mog.root_motion_bones}
+
+            animation_cache.append(
+                {
+                    "frame": f,
+                    "root_com": current_com,
+                    "motion_bone_matrices": motion_bone_matrices
+                }
+            )
+        
+        for data in animation_cache:
+            f = data["frame"]
+            context.scene.frame_set(f)
+
+            root_bone.matrix.translation = data["root_com"]
+
+            context.view_layer.update()
+
+            for motion_bone_name, saved_matrix in data["motion_bone_matrices"].items():
+                mb = pinned_rig.pose.bones.get(motion_bone_name)
+
+                if mb:
+                    mb.matrix = saved_matrix
+
+                    mb.keyframe_insert(data_path="location", index=-1)
+                    mb.keyframe_insert(data_path="scale", index=-1)
+
+                    if mb.rotation_mode == 'QUATERNION':
+                        mb.keyframe_insert(data_path="rotation_quaternion", index=-1)
+                    elif mb.rotation_mode == 'AXIS_ANGLE':
+                        mb.keyframe_insert(data_path="rotation_axis_angle", index=-1)
+                    else:
+                        mb.keyframe_insert(data_path="rotation_euler", index=-1)
+            
+            root_bone.keyframe_insert(data_path="location", index=-1)
+
+        return {'FINISHED'}
+
+
 class BP_AddMotionBones(bpy.types.Operator):
     """Adds selected pose bones as motion bones for center of mass root motion baking."""
     bl_idname = "balance_point.add_motion_bones"
