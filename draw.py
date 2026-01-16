@@ -135,7 +135,6 @@ def draw_com_markers(group, group_com, com_props):
 
 def draw_ballistics_ruler(group, com_props):
     if group.is_ballistics_preview:
-
         if group.frame_end > group.frame_start and group.time_of_flight > 0:
             point_positions = []
 
@@ -191,8 +190,6 @@ def draw_ballistics_ruler(group, com_props):
 
 
 def rotate_points(points, angle_deg, axis):
-    import numpy
-
     points_np = numpy.array(points)
 
     angle_rad = numpy.radians(angle_deg)
