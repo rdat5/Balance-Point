@@ -29,9 +29,52 @@ def draw_bp(self, context):
 
             draw_com_markers(group, group_com, com_props)
             draw_rotation_axis(group, group_com)
+            draw_motion_path(group, com_props)
 
         draw_reference_points(group, com_props)
         draw_ballistics_ruler(group, com_props)
+
+def draw_motion_path(group, com_props):
+    if len(
+            group.motion_path_points) > 0 and any(mass_collection is not None for mass_collection in group.mass_collections):
+        point_positions = []
+
+        # Get Points
+        for path_point in group.motion_path_points:
+            point_loc = path_point.point_location
+            point_positions.append(
+                Vector((point_loc[0], point_loc[1], point_loc[2])))
+
+        # Draw lines
+        for index, point_position in enumerate(
+                point_positions):
+            line_batch = []
+            line_color = (1.0, 0.0, 0.0, 1.0) if index + \
+                group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+            shader.uniform_float("color", line_color)
+            point_coordinate = (
+                point_position[0], point_position[1], point_position[2])
+
+            if index > 0:
+                previous_coordinate = point_positions[index - 1]
+                line_batch += [(previous_coordinate[0],
+                                previous_coordinate[1], previous_coordinate[2])]
+                line_batch += [(point_coordinate[0],
+                                point_coordinate[1], point_coordinate[2])]
+
+            batch = batch_for_shader(
+                shader, 'LINES', {"pos": line_batch})
+            batch.draw(shader)
+
+        # Draw Points
+        for index, point_position in enumerate(
+                point_positions):
+            shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
+            gpu.state.point_size_set(
+                com_props.motion_path_point_size)
+            batch = batch_for_shader(
+                shader, 'POINTS', {"pos": point_positions})
+            batch.draw(shader)
 
 def draw_reference_points(group, com_props):
     if group.show_reference_point:
