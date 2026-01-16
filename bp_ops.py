@@ -108,7 +108,7 @@ class SetReferencePointToCOM(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        return not all(group.mass_object_collection is not None for group in sel_mog.mass_collections)
+        return any(group.mass_object_collection is not None for group in sel_mog.mass_collections)
 
     def execute(self, context):
         selected_index = context.scene.bp_group_index
@@ -146,7 +146,7 @@ class SetStartingPointToCOM(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        return not all(group.mass_object_collection is not None for group in sel_mog.mass_collections)
+        return any(group.mass_object_collection is not None for group in sel_mog.mass_collections)
 
     def execute(self, context):
         selected_index = context.scene.bp_group_index
