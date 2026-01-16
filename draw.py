@@ -31,6 +31,7 @@ def draw_bp(self, context):
             draw_rotation_axis(group, group_com)
 
         draw_reference_points(group, com_props)
+        draw_ballistics_ruler(group, com_props)
 
 def draw_reference_points(group, com_props):
     if group.show_reference_point:
@@ -88,6 +89,62 @@ def draw_com_markers(group, group_com, com_props):
         batch = batch_for_shader(
             shader, 'LINES', {"pos": floor_com_verts})
         batch.draw(shader)
+
+def draw_ballistics_ruler(group, com_props):
+    if group.is_ballistics_preview:
+
+        if group.frame_end > group.frame_start and group.time_of_flight > 0:
+            point_positions = []
+
+            total_frames = group.frame_end - group.frame_start
+
+            # Get points
+            p0 = Vector(group.ballistics_starting_point)
+            p1 = Vector(group.reference_point)
+
+            for frame in range(total_frames + 1):
+                start_pos = (p0[0], p0[1], p0[2])
+                ref_pos = (p1[0], p1[1], p1[2])
+                gravity = group.gravity
+                time_of_flight = float(
+                    group.time_of_flight)
+                elapsed_time = float(
+                    frame) / group.frame_rate
+
+                point_positions.append(projectile_position(
+                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
+
+            # Draw lines
+            for index, point_position in enumerate(
+                    point_positions):
+                line_batch = []
+                line_color = (1.0, 0.0, 0.0, 1.0) if index + \
+                    group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                shader.uniform_float("color", line_color)
+                point_coordinate = (
+                    point_position[0], point_position[1], point_position[2])
+
+                if index > 0:
+                    previous_coordinate = point_positions[index - 1]
+                    line_batch += [(previous_coordinate[0],
+                                    previous_coordinate[1], previous_coordinate[2])]
+                    line_batch += [(point_coordinate[0],
+                                    point_coordinate[1], point_coordinate[2])]
+
+                batch = batch_for_shader(
+                    shader, 'LINES', {"pos": line_batch})
+                batch.draw(shader)
+
+            # Draw points
+            for index, point_position in enumerate(
+                    point_positions):
+                shader.uniform_float(
+                    "color", (0.0, 0.0, 0.0, 1.0))
+                gpu.state.point_size_set(
+                    com_props.ballistics_point_size)
+                batch = batch_for_shader(
+                    shader, 'POINTS', {"pos": point_positions})
+                batch.draw(shader)
 
 # def draw_bp(self, context):
 #     com_props = bpy.context.scene.bp_com_properties
