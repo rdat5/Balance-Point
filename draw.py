@@ -30,6 +30,26 @@ def draw_bp(self, context):
             draw_com_markers(group, group_com, com_props)
             draw_rotation_axis(group, group_com)
 
+        draw_reference_points(group, com_props)
+
+def draw_reference_points(group, com_props):
+    if group.show_reference_point:
+        # Reference Point
+        gpu.state.point_size_set(
+            com_props.reference_point_size)
+        shader.uniform_float(
+            "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
+        batch = batch_for_shader(
+            shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
+        batch.draw(shader)
+
+        # Ballistics Starting Point
+        shader.uniform_float(
+            "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, 1.0))
+        batch = batch_for_shader(
+            shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
+        batch.draw(shader)
+
 def draw_rotation_axis(group, group_com):
     if group.show_axis:
         axis_verts = []
