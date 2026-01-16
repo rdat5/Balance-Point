@@ -11,13 +11,14 @@ from .shapes import SHAPE_FLOOR_MARKER
 
 shader = gpu.shader.from_builtin('POINT_UNIFORM_COLOR')
 
+
 def draw_bp(self, context):
     com_props = bpy.context.scene.bp_com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
     if not com_props.com_drawing_on or len(bp_mass_groups) == 0:
         return
-    
+
     for group in bp_mass_groups:
         if not group.visible:
             continue
@@ -33,6 +34,7 @@ def draw_bp(self, context):
 
         draw_reference_points(group, com_props)
         draw_ballistics_ruler(group, com_props)
+
 
 def draw_motion_path(group, com_props):
     if len(
@@ -76,6 +78,7 @@ def draw_motion_path(group, com_props):
                 shader, 'POINTS', {"pos": point_positions})
             batch.draw(shader)
 
+
 def draw_reference_points(group, com_props):
     if group.show_reference_point:
         # Reference Point
@@ -94,6 +97,7 @@ def draw_reference_points(group, com_props):
             shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
         batch.draw(shader)
 
+
 def draw_rotation_axis(group, group_com):
     if group.show_axis:
         axis_verts = []
@@ -111,6 +115,7 @@ def draw_rotation_axis(group, group_com):
         batch = batch_for_shader(
             shader, 'LINES', {"pos": axis_verts})
         batch.draw(shader)
+
 
 def draw_com_markers(group, group_com, com_props):
     # Get color
@@ -132,6 +137,7 @@ def draw_com_markers(group, group_com, com_props):
         batch = batch_for_shader(
             shader, 'LINES', {"pos": floor_com_verts})
         batch.draw(shader)
+
 
 def draw_ballistics_ruler(group, com_props):
     if group.is_ballistics_preview:

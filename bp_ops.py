@@ -15,11 +15,10 @@ class BP_AddMassCollection(bpy.types.Operator):
     bl_idname = "balance_point.masscollection_add"
     bl_label = "Add New Mass Collection"
 
-
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
         sel_mog.mass_collections.add()
-        return {'FINISHED'}    
+        return {'FINISHED'}
 
 
 class BP_RemoveMassCollection(bpy.types.Operator):
@@ -268,8 +267,8 @@ class BakeBPPhysics(bpy.types.Operator):
         if sel_mog.frame_end <= sel_mog.frame_start:
             return False
 
-        if not (sel_mog.pin_xyz[0] == True and sel_mog.pin_xyz[1]
-                == True and sel_mog.pin_xyz[2] == True):
+        if not (sel_mog.pin_xyz[0] and sel_mog.pin_xyz[1]
+                and sel_mog.pin_xyz[2]):
             return False
 
         if sel_mog.root_bone not in sel_mog.pinned_rig.pose.bones:
@@ -305,7 +304,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
             # Rotation
             root_bone.rotation_quaternion = accumulated_rotation
-            
+
             root_bone.keyframe_insert(data_path="rotation_quaternion")
             context.view_layer.update()
 
@@ -315,12 +314,12 @@ class BakeBPPhysics(bpy.types.Operator):
             current_ang_vel = current_inertia.inverted_safe() @ momentum_vector
 
             angle_step = current_ang_vel.length
-            
+
             if angle_step > 0.000001:
                 axis_step = current_ang_vel.normalized()
                 rot_step = Quaternion(axis_step, angle_step)
                 accumulated_rotation = rot_step @ accumulated_rotation
-                
+
                 root_bone.rotation_quaternion = accumulated_rotation
                 context.view_layer.update()
 
@@ -372,7 +371,7 @@ class BakeBPRootMotion(bpy.types.Operator):
 
         if sel_mog.root_bone == "":
             return False
-        
+
         if len(sel_mog.root_motion_bones) < 1:
             return False
 
@@ -409,7 +408,7 @@ class BakeBPRootMotion(bpy.types.Operator):
                     "motion_bone_matrices": motion_bone_matrices
                 }
             )
-        
+
         for data in animation_cache:
             f = data["frame"]
             context.scene.frame_set(f)
@@ -434,6 +433,7 @@ class BakeBPRootMotion(bpy.types.Operator):
                     else:
                         mb.keyframe_insert(data_path="rotation_euler", index=-1)
             
+
             root_bone.keyframe_insert(data_path="location", index=-1)
 
         return {'FINISHED'}
@@ -455,7 +455,7 @@ class BP_AddMotionBones(bpy.types.Operator):
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
         selected_bones = context.selected_pose_bones_from_active_object
-        
+
         if len(selected_bones) > 0:
             for bone in selected_bones:
                 if not any(mb.motion_bone == bone.name for mb in sel_mog.root_motion_bones):

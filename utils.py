@@ -59,14 +59,15 @@ def get_inertia_tensor(group, com_vector):
                 if obj.get("active"):
                     m = obj.get("density") * obj.get("volume") * mass_collection.influence
                     
+
                     r = obj.matrix_world.translation - com_vector
-                    
+
                     x, y, z = r.x, r.y, r.z
-                    
+
                     I_xx += m * (y**2 + z**2)
                     I_yy += m * (x**2 + z**2)
                     I_zz += m * (x**2 + y**2)
-                    
+
                     I_xy -= m * (x * y)
                     I_xz -= m * (x * z)
                     I_yz -= m * (y * z)
@@ -91,7 +92,7 @@ def get_com(group):
                     obj_mass = obj.get("density") * obj.get("volume") * mass_collection.influence
 
                     total_mass += obj_mass
-                    weighted_sum += (obj_mass * obj.matrix_world.translation)                
+                    weighted_sum += (obj_mass * obj.matrix_world.translation)
 
     if total_mass > 0:
         center_of_mass = weighted_sum / total_mass

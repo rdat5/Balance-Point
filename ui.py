@@ -420,7 +420,7 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             else:
                 row = box.row()
                 row.label(text="Add a rig to use Root Motion Baking")
-            
+
 
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
     """Mass properties panel"""

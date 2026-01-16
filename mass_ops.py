@@ -168,7 +168,7 @@ class SetDensity(bpy.types.Operator):
 
 def set_active(obj, act):
     obj["active"] = act
-    if act == True:
+    if act:
         obj.display_type = 'SOLID'
     elif act == False:
         obj.display_type = 'WIRE'
