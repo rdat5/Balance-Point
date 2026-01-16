@@ -28,6 +28,25 @@ def draw_bp(self, context):
             group_com = get_com(group)
 
             draw_com_markers(group, group_com, com_props)
+            draw_rotation_axis(group, group_com)
+
+def draw_rotation_axis(group, group_com):
+    if group.show_axis:
+        axis_verts = []
+
+        cx = group.initial_axis.x
+        cy = group.initial_axis.y
+        cz = group.initial_axis.z
+        axis_vector = numpy.array([cx, cy, cz])
+        axis_unit = axis_vector / \
+            numpy.linalg.norm(axis_vector)
+        axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
+            axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com)
+        batch = batch_for_shader(
+            shader, 'LINES', {"pos": axis_verts})
+        batch = batch_for_shader(
+            shader, 'LINES', {"pos": axis_verts})
+        batch.draw(shader)
 
 def draw_com_markers(group, group_com, com_props):
     # Get color
