@@ -411,19 +411,19 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             box = layout.box()
             row = box.row()
             row.alignment = 'CENTER'
-            row.label(text="Motion Bones")
+            row.label(text="Control Bones")
             if selected_mog.pinned_rig is not None:
                 row = box.row()
-                row.operator("balance_point.add_motion_bones", icon="ADD")
-                for i, mb in enumerate(selected_mog.root_motion_bones):
+                row.operator("balance_point.add_control_bones", icon="ADD")
+                for i, mb in enumerate(selected_mog.root_control_bones):
                     row = box.row()
                     row.prop_search(
                         mb,
-                        "motion_bone",
+                        "control_bone",
                         selected_mog.pinned_rig.data,
                         "bones",
                         text="")
-                    op = row.operator("balance_point.delete_motion_bones", icon='X', text="")
+                    op = row.operator("balance_point.delete_control_bone", icon='X', text="")
                     op.index = i
             else:
                 row = box.row()

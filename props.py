@@ -12,8 +12,8 @@ class BP_MassCollections(bpy.types.PropertyGroup):
     influence: bpy.props.FloatProperty(name="Mass Collection Influece", default=1.0, min=0.0, max=1.0)
 
 
-class BP_RootMotionBones(bpy.types.PropertyGroup):
-    motion_bone: bpy.props.StringProperty(
+class BP_RootControlBones(bpy.types.PropertyGroup):
+    control_bone: bpy.props.StringProperty(
         name="Motion Bone", description="Non-root bone that drives character movement.")
 
 
@@ -73,7 +73,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     root_limit_xyz: bpy.props.FloatVectorProperty(name="Root Bake Limits", description="Used to determine location of Root Bone during Root Motion Baking", subtype="XYZ", default=(0, 0, 0), precision=3)
     root_bake_relative: bpy.props.BoolProperty(name="Bake Root Relative to COM", description="Sets Root Bone a set distance to COM during baking.", default=False)
     root_bake_clear_rotation: bpy.props.BoolProperty(name="Clear Root Bone Rotation", description="Clears root bone rotation during root motion baking.", default=False)
-    root_motion_bones: bpy.props.CollectionProperty(type=BP_RootMotionBones)
+    root_control_bones: bpy.props.CollectionProperty(type=BP_RootControlBones)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
     mass_collections: bpy.props.CollectionProperty(type=BP_MassCollections)
 
