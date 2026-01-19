@@ -404,9 +404,6 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             row.prop(selected_mog, "root_limit_xyz", text="Limit Location")
             row = layout.row()
             row.prop(selected_mog, "root_bake_clear_rotation")
-            row = layout.row()
-            row.scale_y = 2.0
-            row.operator("balance_point.bake_root_motion")
             # Motion Bones
             box = layout.box()
             row = box.row()
@@ -425,6 +422,9 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
                         text="")
                     op = row.operator("balance_point.delete_control_bone", icon='X', text="")
                     op.index = i
+                row = layout.row()
+                row.scale_y = 2.0
+                row.operator("balance_point.bake_root_motion")
             else:
                 row = box.row()
                 row.label(text="Add a rig to use Root Motion Baking")
