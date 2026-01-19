@@ -382,29 +382,33 @@ class BakeBPRootMotion(bpy.types.Operator):
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
         pinned_rig = sel_mog.pinned_rig
         root_bone = pinned_rig.pose.bones[sel_mog.root_bone]
+        root_limit = sel_mog.root_limit_xyz
 
         animation_cache = []
 
         for f in range(sel_mog.root_motion_frame_start, sel_mog.root_motion_frame_end + 1):
             context.scene.frame_set(f)
-
+            
+            new_root_location = Vector((root_limit[0], root_limit[1], root_limit[2]))
             current_com = get_com(sel_mog)
-            if not sel_mog.track_com_xyz[0]:
-                current_com.x = root_bone.matrix.translation.x
-                pass
-            if not sel_mog.track_com_xyz[1]:
-                current_com.y = root_bone.matrix.translation.y
-                pass
-            if not sel_mog.track_com_xyz[2]:
-                current_com.z = root_bone.matrix.translation.z
-                pass
+            if sel_mog.root_bake_relative:
+                new_root_location.x = current_com[0] + root_limit[0]
+                new_root_location.y = current_com[1] + root_limit[1]
+                new_root_location.z = current_com[2] + root_limit[2]
+            else:
+                if sel_mog.root_track_xyz[0]:
+                    new_root_location.x = current_com[0]
+                if sel_mog.root_track_xyz[1]:
+                    new_root_location.y = current_com[1]
+                if sel_mog.root_track_xyz[2]:
+                    new_root_location.z = current_com[2]
 
             motion_bone_matrices = {mb.motion_bone: pinned_rig.pose.bones[mb.motion_bone].matrix.copy() for mb in sel_mog.root_motion_bones}
 
             animation_cache.append(
                 {
                     "frame": f,
-                    "root_com": current_com,
+                    "root_com": new_root_location,
                     "motion_bone_matrices": motion_bone_matrices
                 }
             )

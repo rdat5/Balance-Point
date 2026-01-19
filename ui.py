@@ -395,9 +395,17 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             col.use_property_decorate = False
             col.prop(selected_mog, "root_motion_frame_start")
             col.prop(selected_mog, "root_motion_frame_end", text="End")
-            row = layout.row(align=True)
-            row.prop(selected_mog, "track_com_xyz")
             row = layout.row()
+            row.prop(selected_mog, "root_bake_relative", text="Relative to COM")
+            if not selected_mog.root_bake_relative:
+                row = layout.row()
+                row.prop(selected_mog, "root_track_xyz", text="Track COM")
+            row = layout.row()
+            row.prop(selected_mog, "root_limit_xyz", text="Limit Location")
+            row = layout.row()
+            row.prop(selected_mog, "root_bake_clear_rotation")
+            row = layout.row()
+            row.scale_y = 2.0
             row.operator("balance_point.bake_root_motion")
             # Motion Bones
             box = layout.box()

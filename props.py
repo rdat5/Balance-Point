@@ -69,8 +69,10 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Root Motion Range Start", description="First frame of the root motion baking path range.", default=0)
     root_motion_frame_end: bpy.props.IntProperty(
         name="Root Motion Range End", description="Last frame of the root motion baking path range.", default=10)
-    track_com_xyz: bpy.props.BoolVectorProperty(
-        name="Root Motion Axes", subtype="XYZ", description="Lock/Unlock XYZ Translation of Root Motion Baking", default=(True, False, True))
+    root_track_xyz: bpy.props.BoolVectorProperty(name="Root COM Tracking", description="", subtype="XYZ", default=(True, True, False))
+    root_limit_xyz: bpy.props.FloatVectorProperty(name="Root Bake Limits", description="Used to determine location of Root Bone during Root Motion Baking", subtype="XYZ", default=(0, 0, 0), precision=3)
+    root_bake_relative: bpy.props.BoolProperty(name="Bake Root Relative to COM", description="Sets Root Bone a set distance to COM during baking.", default=False)
+    root_bake_clear_rotation: bpy.props.BoolProperty(name="Clear Root Bone Rotation", description="Clears root bone rotation during root motion baking.", default=False)
     root_motion_bones: bpy.props.CollectionProperty(type=BP_RootMotionBones)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
     mass_collections: bpy.props.CollectionProperty(type=BP_MassCollections)
