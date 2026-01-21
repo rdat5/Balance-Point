@@ -329,10 +329,7 @@ class BakeBPPhysics(bpy.types.Operator):
             gravity = sel_mog.gravity
             time_of_flight = float(sel_mog.time_of_flight)
 
-            if f == sel_mog.frame_start:
-                elapsed_time = 0.0
-            else:
-                elapsed_time = float(f - sel_mog.frame_start) / sel_mog.frame_rate
+            elapsed_time = float(f - sel_mog.frame_start) / sel_mog.frame_rate
 
             point_position = projectile_position(
                 start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
