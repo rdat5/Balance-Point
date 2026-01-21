@@ -403,12 +403,12 @@ class BakeBPRootMotion(bpy.types.Operator):
                 if sel_mog.root_track_xyz[2]:
                     new_root_location.z = current_com[2]
 
-            control_bone_matrices = {mb.control_bone: pinned_rig.pose.bones[mb.control_bone].matrix.copy() for mb in sel_mog.root_control_bones}
+            control_bone_matrices = {mb.control_bone: pinned_rig.matrix_world.inverted() @ pinned_rig.pose.bones[mb.control_bone].matrix.copy() for mb in sel_mog.root_control_bones}
 
             animation_cache.append(
                 {
                     "frame": f,
-                    "root_com": new_root_location,
+                    "root_com": pinned_rig.matrix_world.inverted().to_3x3() @ new_root_location,
                     "control_bone_matrices": control_bone_matrices
                 }
             )
