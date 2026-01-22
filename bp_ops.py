@@ -413,6 +413,8 @@ class BakeBPRootMotion(bpy.types.Operator):
             context.scene.frame_set(f)
 
             root_bone.matrix.translation = data["root_com"]
+            if sel_mog.root_bake_clear_rotation:
+                root_bone.rotation_quaternion = Quaternion((1.0, 0.0, 0.0, 0.0))
 
             context.view_layer.update()
 
@@ -433,6 +435,8 @@ class BakeBPRootMotion(bpy.types.Operator):
                         cb.keyframe_insert(data_path="rotation_euler", index=-1)
             
 
+            if sel_mog.root_bake_clear_rotation:
+                root_bone.keyframe_insert(data_path="rotation_quaternion", index=-1)
             root_bone.keyframe_insert(data_path="location", index=-1)
 
         return {'FINISHED'}
