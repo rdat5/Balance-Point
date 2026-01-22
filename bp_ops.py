@@ -398,7 +398,7 @@ class BakeBPRootMotion(bpy.types.Operator):
                 if sel_mog.root_track_xyz[2]:
                     new_root_location.z = current_com[2]
 
-            control_bone_matrices = {mb.control_bone: pinned_rig.matrix_world.inverted() @ pinned_rig.pose.bones[mb.control_bone].matrix.copy() for mb in sel_mog.root_control_bones}
+            control_bone_matrices = {cb.control_bone: pinned_rig.matrix_world.inverted() @ pinned_rig.pose.bones[cb.control_bone].matrix.copy() for cb in sel_mog.root_control_bones}
 
             animation_cache.append(
                 {
@@ -417,20 +417,20 @@ class BakeBPRootMotion(bpy.types.Operator):
             context.view_layer.update()
 
             for control_bone_name, saved_matrix in data["control_bone_matrices"].items():
-                mb = pinned_rig.pose.bones.get(control_bone_name)
+                cb = pinned_rig.pose.bones.get(control_bone_name)
 
-                if mb:
-                    mb.matrix = saved_matrix
+                if cb:
+                    cb.matrix = saved_matrix
 
-                    mb.keyframe_insert(data_path="location", index=-1)
-                    mb.keyframe_insert(data_path="scale", index=-1)
+                    cb.keyframe_insert(data_path="location", index=-1)
+                    cb.keyframe_insert(data_path="scale", index=-1)
 
-                    if mb.rotation_mode == 'QUATERNION':
-                        mb.keyframe_insert(data_path="rotation_quaternion", index=-1)
-                    elif mb.rotation_mode == 'AXIS_ANGLE':
-                        mb.keyframe_insert(data_path="rotation_axis_angle", index=-1)
+                    if cb.rotation_mode == 'QUATERNION':
+                        cb.keyframe_insert(data_path="rotation_quaternion", index=-1)
+                    elif cb.rotation_mode == 'AXIS_ANGLE':
+                        cb.keyframe_insert(data_path="rotation_axis_angle", index=-1)
                     else:
-                        mb.keyframe_insert(data_path="rotation_euler", index=-1)
+                        cb.keyframe_insert(data_path="rotation_euler", index=-1)
             
 
             root_bone.keyframe_insert(data_path="location", index=-1)
@@ -457,7 +457,7 @@ class BP_AddControlBones(bpy.types.Operator):
 
         if len(selected_bones) > 0:
             for bone in selected_bones:
-                if not any(mb.control_bone == bone.name for mb in sel_mog.root_control_bones):
+                if not any(cb.control_bone == bone.name for cb in sel_mog.root_control_bones):
                     new_bone_prop = sel_mog.root_control_bones.add()
                     new_bone_prop.control_bone = bone.name
 
