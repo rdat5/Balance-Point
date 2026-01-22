@@ -283,6 +283,8 @@ class BakeBPPhysics(bpy.types.Operator):
 
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
+ 
+        original_pin_state = sel_mog.is_rig_pinned
 
         bpy.context.scene.frame_set(sel_mog.frame_start)
         context.view_layer.update()
@@ -299,14 +301,13 @@ class BakeBPPhysics(bpy.types.Operator):
         p0 = sel_mog.ballistics_starting_point
         p1 = sel_mog.reference_point
 
+        sel_mog.is_rig_pinned = False
+
         for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):
             bpy.context.scene.frame_set(f)
 
             # Rotation
             root_bone.rotation_quaternion = accumulated_rotation
-
-            root_bone.keyframe_insert(data_path="rotation_quaternion")
-            context.view_layer.update()
 
             current_com = get_com(sel_mog)
             current_inertia = get_inertia_tensor(sel_mog, current_com)
@@ -315,13 +316,15 @@ class BakeBPPhysics(bpy.types.Operator):
 
             angle_step = current_ang_vel.length
 
-            if angle_step > 0.000001:
+            if f > sel_mog.frame_start:
                 axis_step = current_ang_vel.normalized()
                 rot_step = Quaternion(axis_step, angle_step)
                 accumulated_rotation = rot_step @ accumulated_rotation
 
                 root_bone.rotation_quaternion = accumulated_rotation
-                context.view_layer.update()
+
+            root_bone.keyframe_insert(data_path="rotation_quaternion")
+            context.view_layer.update()
 
             # Ballistics
             start_pos = (p0[0], p0[1], p0[2])
@@ -335,21 +338,16 @@ class BakeBPPhysics(bpy.types.Operator):
                 start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
 
             # Pin center of mass
-            sel_mog.com_location = point_position
-            context.scene.keyframe_insert(
-                data_path="bp_mass_object_groups[{}].com_location".format(selected_index), 
-                keytype='GENERATED'
-            )
+            difference = get_com(sel_mog) - point_position
+            if difference.length > 0.00001:
+                world_space_diff = sel_mog.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * sel_mog.pin_xyz[0], difference.y * sel_mog.pin_xyz[1], difference.z * sel_mog.pin_xyz[2]))
+                sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].location -= world_space_diff
+            
+            root_bone.keyframe_insert(data_path="location")
 
-            if f == sel_mog.frame_start or f == sel_mog.frame_end:
-                sel_mog.is_rig_pinned = True
-                context.scene.keyframe_insert(
-                    data_path="bp_mass_object_groups[{}].is_rig_pinned".format(selected_index), 
-                    keytype='GENERATED', 
-                )
-
-        # Return to original frame
+        # Return to original state
         bpy.context.scene.frame_set(original_frame)
+        sel_mog.is_rig_pinned = original_pin_state
         return {'FINISHED'}
 
 
