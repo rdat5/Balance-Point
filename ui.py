@@ -339,8 +339,9 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             col.prop(selected_mog, "frame_end")
             col.prop(selected_mog, "frame_rate")
 
-        row = layout.row()
         if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
+            row = layout.row()
+            row.scale_y = 1.5
             row.operator("balance_point.bake_physics")
 
 
@@ -423,7 +424,7 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
                     op = row.operator("balance_point.delete_control_bone", icon='X', text="")
                     op.index = i
                 row = layout.row()
-                row.scale_y = 2.0
+                row.scale_y = 1.5
                 row.operator("balance_point.bake_root_motion")
             else:
                 row = box.row()
