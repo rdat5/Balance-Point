@@ -9,7 +9,8 @@ class BP_MotionPathPoint(bpy.types.PropertyGroup):
 class BP_MassCollections(bpy.types.PropertyGroup):
     mass_object_collection: bpy.props.PointerProperty(
         name="Mass Object Collection", type=bpy.types.Collection)
-    influence: bpy.props.FloatProperty(name="Mass Collection Influece", default=1.0, min=0.0, max=1.0)
+    influence: bpy.props.FloatProperty(
+        name="Mass Collection Influece", default=1.0, min=0.0, max=1.0)
 
 
 class BP_RootControlBones(bpy.types.PropertyGroup):
@@ -69,10 +70,14 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Root Motion Range Start", description="First frame of the root motion baking path range.", default=0)
     root_motion_frame_end: bpy.props.IntProperty(
         name="Root Motion Range End", description="Last frame of the root motion baking path range.", default=10)
-    root_track_xyz: bpy.props.BoolVectorProperty(name="Root COM Tracking", description="", subtype="XYZ", default=(True, True, False))
-    root_limit_xyz: bpy.props.FloatVectorProperty(name="Root Bake Limits", description="Used to determine location of Root Bone during Root Motion Baking", subtype="XYZ", default=(0, 0, 0), precision=3)
-    root_bake_relative: bpy.props.BoolProperty(name="Bake Root Relative to COM", description="Sets Root Bone a set distance to COM during baking.", default=False)
-    root_bake_clear_rotation: bpy.props.BoolProperty(name="Clear Root Bone Rotation", description="Clears root bone rotation during root motion baking.", default=True)
+    root_track_xyz: bpy.props.BoolVectorProperty(
+        name="Root COM Tracking", description="", subtype="XYZ", default=(True, True, False))
+    root_limit_xyz: bpy.props.FloatVectorProperty(
+        name="Root Bake Limits", description="Used to determine location of Root Bone during Root Motion Baking", subtype="XYZ", default=(0, 0, 0), precision=3)
+    root_bake_relative: bpy.props.BoolProperty(
+        name="Bake Root Relative to COM", description="Sets Root Bone a set distance to COM during baking.", default=False)
+    root_bake_clear_rotation: bpy.props.BoolProperty(
+        name="Clear Root Bone Rotation", description="Clears root bone rotation during root motion baking.", default=True)
     root_control_bones: bpy.props.CollectionProperty(type=BP_RootControlBones)
     motion_path_points: bpy.props.CollectionProperty(type=BP_MotionPathPoint)
     mass_collections: bpy.props.CollectionProperty(type=BP_MassCollections)

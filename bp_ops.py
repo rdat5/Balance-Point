@@ -283,7 +283,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
- 
+
         original_pin_state = sel_mog.is_rig_pinned
 
         bpy.context.scene.frame_set(sel_mog.frame_start)
@@ -342,7 +342,7 @@ class BakeBPPhysics(bpy.types.Operator):
             if difference.length > 0.00001:
                 world_space_diff = sel_mog.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * sel_mog.pin_xyz[0], difference.y * sel_mog.pin_xyz[1], difference.z * sel_mog.pin_xyz[2]))
                 sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].location -= world_space_diff
-            
+
             root_bone.keyframe_insert(data_path="location")
 
         # Return to original state
@@ -383,7 +383,7 @@ class BakeBPRootMotion(bpy.types.Operator):
 
         for f in range(sel_mog.root_motion_frame_start, sel_mog.root_motion_frame_end + 1):
             context.scene.frame_set(f)
-            
+
             new_root_location = Vector((root_limit[0], root_limit[1], root_limit[2]))
             current_com = get_com(sel_mog)
             if sel_mog.root_bake_relative:
@@ -433,7 +433,6 @@ class BakeBPRootMotion(bpy.types.Operator):
                         cb.keyframe_insert(data_path="rotation_axis_angle", index=-1)
                     else:
                         cb.keyframe_insert(data_path="rotation_euler", index=-1)
-            
 
             if sel_mog.root_bake_clear_rotation:
                 root_bone.keyframe_insert(data_path="rotation_quaternion", index=-1)
@@ -452,7 +451,7 @@ class BP_AddControlBones(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
         selected_bones = context.selected_pose_bones_from_active_object
-        
+
         return sel_mog.pinned_rig is not None and sel_mog.root_bone != "" and len(selected_bones) > 0
 
     def execute(self, context):

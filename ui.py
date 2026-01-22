@@ -67,8 +67,10 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                 row = box.row(align=True)
                 row.alignment = 'CENTER'
                 row.label(text="Mass Collections")
-                row.operator("balance_point.masscollection_add", icon='ADD', text="Add New")
-                row.operator("balance_point.masscollection_remove", text="", icon='REMOVE')
+                row.operator("balance_point.masscollection_add",
+                             icon='ADD', text="Add New")
+                row.operator("balance_point.masscollection_remove",
+                             text="", icon='REMOVE')
             for mc in selected_mog.mass_collections:
                 row = box.row(align=True)
                 col = row.column()
@@ -78,7 +80,8 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                 row.prop(mc, "influence", text="")
             if len(selected_mog.mass_collections) < 1:
                 row = box.row()
-                row.scale_y = 2.0 if len(selected_mog.mass_collections) == 0 else 1.0
+                row.scale_y = 2.0 if len(
+                    selected_mog.mass_collections) == 0 else 1.0
                 row.operator("balance_point.masscollection_add", icon='ADD')
 
             # MOG Info
@@ -397,7 +400,8 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             col.prop(selected_mog, "root_motion_frame_start")
             col.prop(selected_mog, "root_motion_frame_end", text="End")
             row = layout.row()
-            row.prop(selected_mog, "root_bake_relative", text="Relative to COM")
+            row.prop(selected_mog, "root_bake_relative",
+                     text="Relative to COM")
             if not selected_mog.root_bake_relative:
                 row = layout.row()
                 row.prop(selected_mog, "root_track_xyz", text="Track COM")
@@ -421,7 +425,8 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
                         selected_mog.pinned_rig.data,
                         "bones",
                         text="")
-                    op = row.operator("balance_point.delete_control_bone", icon='X', text="")
+                    op = row.operator(
+                        "balance_point.delete_control_bone", icon='X', text="")
                     op.index = i
                 row = layout.row()
                 row.scale_y = 1.5
