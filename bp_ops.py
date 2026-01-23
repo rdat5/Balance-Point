@@ -398,12 +398,12 @@ class BakeBPRootMotion(bpy.types.Operator):
                 if sel_mog.root_track_xyz[2]:
                     new_root_location.z = current_com[2]
 
-            control_bone_matrices = {cb.control_bone: pinned_rig.matrix_world.inverted() @ pinned_rig.pose.bones[cb.control_bone].matrix.copy() for cb in sel_mog.root_control_bones}
+            control_bone_matrices = {cb.control_bone: pinned_rig.matrix_world @ pinned_rig.pose.bones[cb.control_bone].matrix.copy() for cb in sel_mog.root_control_bones}
 
             animation_cache.append(
                 {
                     "frame": f,
-                    "root_com": pinned_rig.matrix_world.inverted().to_3x3() @ new_root_location,
+                    "root_com": pinned_rig.matrix_world.inverted() @ new_root_location,
                     "control_bone_matrices": control_bone_matrices
                 }
             )
@@ -422,7 +422,7 @@ class BakeBPRootMotion(bpy.types.Operator):
                 cb = pinned_rig.pose.bones.get(control_bone_name)
 
                 if cb:
-                    cb.matrix = saved_matrix
+                    cb.matrix = pinned_rig.matrix_world.inverted() @ saved_matrix
 
                     cb.keyframe_insert(data_path="location", index=-1, keytype='GENERATED')
                     cb.keyframe_insert(data_path="scale", index=-1, keytype='GENERATED')
@@ -485,7 +485,7 @@ class BP_AddControlBones(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
         selected_bones = context.selected_pose_bones_from_active_object
-        
+
         if sel_mog.pinned_rig is None:
             return False
 
