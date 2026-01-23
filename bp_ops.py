@@ -485,8 +485,17 @@ class BP_AddControlBones(bpy.types.Operator):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
         selected_bones = context.selected_pose_bones_from_active_object
+        
+        if sel_mog.pinned_rig is None:
+            return False
 
-        return sel_mog.pinned_rig is not None and sel_mog.root_bone != "" and len(selected_bones) > 0
+        if sel_mog.root_bone == "":
+            return False
+
+        if selected_bones is not None:
+            return False
+
+        return True
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
