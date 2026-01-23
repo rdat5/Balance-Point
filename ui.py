@@ -405,6 +405,9 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             if not selected_mog.root_bake_relative:
                 row = layout.row()
                 row.prop(selected_mog, "root_track_xyz", text="Track COM")
+            else:
+                row = layout.row()
+                row.operator("balance_point.root_set_z_relative")
             row = layout.row()
             row.prop(selected_mog, "root_limit_xyz", text="Limit Location")
             row = layout.row()

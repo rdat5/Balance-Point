@@ -441,6 +441,40 @@ class BakeBPRootMotion(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class BP_RootSetRelativeZ(bpy.types.Operator):
+    """Set Relative Root Motion Z Offset to current distance from Center of Mass to Root Bone."""
+    bl_idname = "balance_point.root_set_z_relative"
+    bl_label = "Set Current COM Height to Z Distance"
+
+    @classmethod
+    def poll(cls, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+
+        if all(group.mass_object_collection is None for group in sel_mog.mass_collections):
+            return False
+
+        if sel_mog.pinned_rig is None:
+            return False
+
+        if sel_mog.root_bone == "":
+            return False
+
+        return True
+
+    def execute(self, context):
+        selected_index = context.scene.bp_group_index
+        sel_mog = context.scene.bp_mass_object_groups[selected_index]
+        root_bone = sel_mog.pinned_rig.pose.bones[sel_mog.root_bone]
+        current_com_height = get_com(sel_mog).z
+
+        root_world_matrix = sel_mog.pinned_rig.matrix_world @ root_bone.matrix
+
+        sel_mog.root_limit_xyz.z = root_world_matrix.to_translation().z - current_com_height
+
+        return {'FINISHED'}
+
+
 class BP_AddControlBones(bpy.types.Operator):
     """Adds selected control bones to counter-animate for root motion baking."""
     bl_idname = "balance_point.add_control_bones"
