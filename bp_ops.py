@@ -323,7 +323,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
                 root_bone.rotation_quaternion = accumulated_rotation
 
-            root_bone.keyframe_insert(data_path="rotation_quaternion")
+            root_bone.keyframe_insert(data_path="rotation_quaternion", keytype='GENERATED')
             context.view_layer.update()
 
             # Ballistics
@@ -343,7 +343,7 @@ class BakeBPPhysics(bpy.types.Operator):
                 world_space_diff = sel_mog.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * sel_mog.pin_xyz[0], difference.y * sel_mog.pin_xyz[1], difference.z * sel_mog.pin_xyz[2]))
                 sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].location -= world_space_diff
 
-            root_bone.keyframe_insert(data_path="location")
+            root_bone.keyframe_insert(data_path="location", keytype='GENERATED')
 
         # Return to original state
         bpy.context.scene.frame_set(original_frame)
@@ -424,19 +424,19 @@ class BakeBPRootMotion(bpy.types.Operator):
                 if cb:
                     cb.matrix = saved_matrix
 
-                    cb.keyframe_insert(data_path="location", index=-1)
-                    cb.keyframe_insert(data_path="scale", index=-1)
+                    cb.keyframe_insert(data_path="location", index=-1, keytype='GENERATED')
+                    cb.keyframe_insert(data_path="scale", index=-1, keytype='GENERATED')
 
                     if cb.rotation_mode == 'QUATERNION':
-                        cb.keyframe_insert(data_path="rotation_quaternion", index=-1)
+                        cb.keyframe_insert(data_path="rotation_quaternion", index=-1, keytype='GENERATED')
                     elif cb.rotation_mode == 'AXIS_ANGLE':
-                        cb.keyframe_insert(data_path="rotation_axis_angle", index=-1)
+                        cb.keyframe_insert(data_path="rotation_axis_angle", index=-1, keytype='GENERATED')
                     else:
-                        cb.keyframe_insert(data_path="rotation_euler", index=-1)
+                        cb.keyframe_insert(data_path="rotation_euler", index=-1, keytype='GENERATED')
 
             if sel_mog.root_bake_clear_rotation:
-                root_bone.keyframe_insert(data_path="rotation_quaternion", index=-1)
-            root_bone.keyframe_insert(data_path="location", index=-1)
+                root_bone.keyframe_insert(data_path="rotation_quaternion", index=-1, keytype='GENERATED')
+            root_bone.keyframe_insert(data_path="location", index=-1, keytype='GENERATED')
 
         return {'FINISHED'}
 
