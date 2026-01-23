@@ -470,7 +470,7 @@ class BP_RootSetRelativeZ(bpy.types.Operator):
 
         root_world_matrix = sel_mog.pinned_rig.matrix_world @ root_bone.matrix
 
-        sel_mog.root_limit_xyz.z = root_world_matrix.to_translation().z - current_com_height
+        sel_mog.root_limit_xyz.z = root_world_matrix.translation.z - current_com_height
 
         return {'FINISHED'}
 
