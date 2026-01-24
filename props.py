@@ -10,7 +10,7 @@ class BP_MassCollections(bpy.types.PropertyGroup):
     mass_object_collection: bpy.props.PointerProperty(
         name="Mass Object Collection", type=bpy.types.Collection)
     influence: bpy.props.FloatProperty(
-        name="Mass Collection Influece", default=1.0, min=0.0, max=1.0)
+        name="Mass Collection Influence", default=1.0, min=0.0, max=1.0)
 
 
 class BP_RootControlBones(bpy.types.PropertyGroup):
