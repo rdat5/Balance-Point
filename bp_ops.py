@@ -131,6 +131,13 @@ class SetStartingPoint(bpy.types.Operator):
     bl_idname = "balance_point.startingpoint_set"
     bl_label = "Set Starting Point From 3D Cursor"
 
+    @classmethod
+    def poll(cls, context):
+        selected_index = context.scene.bp_group_index
+        mass_object_groups = context.scene.bp_mass_object_groups
+        
+        return selected_index < len(mass_object_groups)
+
     def execute(self, context):
         selected_index = context.scene.bp_group_index
         sel_mog = context.scene.bp_mass_object_groups[selected_index]
