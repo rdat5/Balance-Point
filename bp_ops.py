@@ -178,14 +178,10 @@ class AlignAxisByPoints(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog)
-
-        p1 = sel_mog.reference_point
-        p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1],
-              sel_mog.reference_point[2] + 1]
-        p3 = [rig_com[0], rig_com[1], rig_com[2]]
-        return is_valid_triangle(p1, p2, p3)
+        selected_index = context.scene.bp_group_index
+        mass_object_groups = context.scene.bp_mass_object_groups
+        
+        return selected_index < len(mass_object_groups)
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
@@ -195,11 +191,14 @@ class AlignAxisByPoints(bpy.types.Operator):
         p2 = [sel_mog.reference_point[0], sel_mog.reference_point[1],
               sel_mog.reference_point[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
-        norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.initial_axis.x = norm[0]
-        sel_mog.initial_axis.y = norm[1]
-        sel_mog.initial_axis.z = norm[2]
-        bpy.context.region.tag_redraw()
+        if is_valid_triangle(p1, p2, p3):
+            norm = get_triangle_normal(p3, p2, p1)
+            sel_mog.initial_axis.x = norm[0]
+            sel_mog.initial_axis.y = norm[1]
+            sel_mog.initial_axis.z = norm[2]
+            bpy.context.region.tag_redraw()
+        else:
+            print("Not a valid triangle.")
         return {'FINISHED'}
 
 
@@ -210,14 +209,10 @@ class AlignAxisByCursor(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog)
-        cursor = context.scene.cursor.location
-
-        p1 = cursor
-        p2 = [cursor[0], cursor[1], cursor[2] + 1]
-        p3 = [rig_com[0], rig_com[1], rig_com[2]]
-        return is_valid_triangle(p1, p2, p3)
+        selected_index = context.scene.bp_group_index
+        mass_object_groups = context.scene.bp_mass_object_groups
+        
+        return selected_index < len(mass_object_groups)
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
@@ -227,11 +222,14 @@ class AlignAxisByCursor(bpy.types.Operator):
         p1 = cursor
         p2 = [cursor[0], cursor[1], cursor[2] + 1]
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
-        norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.initial_axis.x = norm[0]
-        sel_mog.initial_axis.y = norm[1]
-        sel_mog.initial_axis.z = norm[2]
-        bpy.context.region.tag_redraw()
+        if is_valid_triangle(p1, p2, p3):
+            norm = get_triangle_normal(p3, p2, p1)
+            sel_mog.initial_axis.x = norm[0]
+            sel_mog.initial_axis.y = norm[1]
+            sel_mog.initial_axis.z = norm[2]
+            bpy.context.region.tag_redraw()
+        else:
+            print("Not a valid triangle.")
         return {'FINISHED'}
 
 
@@ -242,15 +240,10 @@ class AlignAxisByCursorRef(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
-        rig_com = get_com(sel_mog)
-        cursor = context.scene.cursor.location
-
-        p1 = cursor
-        p2 = sel_mog.reference_point
-        p3 = [rig_com[0], rig_com[1], rig_com[2]]
-
-        return is_valid_triangle(p1, p2, p3)
+        selected_index = context.scene.bp_group_index
+        mass_object_groups = context.scene.bp_mass_object_groups
+        
+        return selected_index < len(mass_object_groups)
 
     def execute(self, context):
         sel_mog = context.scene.bp_mass_object_groups[context.scene.bp_group_index]
@@ -260,11 +253,14 @@ class AlignAxisByCursorRef(bpy.types.Operator):
         p1 = cursor
         p2 = sel_mog.reference_point
         p3 = [rig_com[0], rig_com[1], rig_com[2]]
-        norm = get_triangle_normal(p3, p2, p1)
-        sel_mog.initial_axis.x = norm[0]
-        sel_mog.initial_axis.y = norm[1]
-        sel_mog.initial_axis.z = norm[2]
-        bpy.context.region.tag_redraw()
+        if is_valid_triangle(p1, p2, p3):
+            norm = get_triangle_normal(p3, p2, p1)
+            sel_mog.initial_axis.x = norm[0]
+            sel_mog.initial_axis.y = norm[1]
+            sel_mog.initial_axis.z = norm[2]
+            bpy.context.region.tag_redraw()
+        else:
+            print("Not a valid triangle.")
         return {'FINISHED'}
 
 
