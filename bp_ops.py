@@ -392,6 +392,9 @@ class BakeBPRootMotion(bpy.types.Operator):
 
         animation_cache = []
 
+        original_pinned_state = sel_mog.is_rig_pinned
+        sel_mog.is_rig_pinned = False
+
         for f in range(sel_mog.root_motion_frame_start, sel_mog.root_motion_frame_end + 1):
             context.scene.frame_set(f)
 
@@ -448,6 +451,8 @@ class BakeBPRootMotion(bpy.types.Operator):
             if sel_mog.root_bake_clear_rotation:
                 root_bone.keyframe_insert(data_path="rotation_quaternion", index=-1, keytype='GENERATED')
             root_bone.keyframe_insert(data_path="location", index=-1, keytype='GENERATED')
+
+        sel_mog.is_rig_pinned = original_pinned_state
 
         return {'FINISHED'}
 
