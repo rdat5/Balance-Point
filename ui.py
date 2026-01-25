@@ -272,7 +272,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(
-                text="Add a Pinned Rig to use the rotation axis features.")
+                text="Add an Armature and Root Bone to use the rotation axis features.")
 
 
 class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):

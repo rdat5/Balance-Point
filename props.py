@@ -34,7 +34,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     pin_xyz: bpy.props.BoolVectorProperty(
         name="Pin Lock", subtype="XYZ", description="Lock/Unlock XYZ Translation of CoM Pin", default=(True, True, True))
     pinned_rig: bpy.props.PointerProperty(
-        name="Pinned Rig", type=bpy.types.Object)
+        name="Armature", type=bpy.types.Object)
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)
     initial_axis: bpy.props.FloatVectorProperty(
         name="Initial Rotation Axis", subtype='XYZ', default=(1, 0, 0, ))

@@ -107,9 +107,9 @@ class SetReferencePoint(bpy.types.Operator):
 
 
 class SetReferencePointToCOM(bpy.types.Operator):
-    """Sets the coordinate of ballistics reference point to Pinned Rig's center of mass."""
+    """Sets the coordinate of ballistics reference point to the center of mass."""
     bl_idname = "balance_point.referencepointcom_set"
-    bl_label = "Set Reference Point To Pinned Rig's Center of Mass"
+    bl_label = "Set Reference Point To Center of Mass"
 
     @classmethod
     def poll(cls, context):
@@ -152,9 +152,9 @@ class SetStartingPoint(bpy.types.Operator):
 
 
 class SetStartingPointToCOM(bpy.types.Operator):
-    """Sets the coordinate of the ballistics starting point to Pinned Rig's center of mass."""
+    """Sets the coordinate of the ballistics starting point to the center of mass."""
     bl_idname = "balance_point.startingpointcom_set"
-    bl_label = "Set Starting Point From Pinned Rig's Center of Mass"
+    bl_label = "Set Starting Point From Center of Mass"
 
     @classmethod
     def poll(cls, context):
@@ -172,7 +172,7 @@ class SetStartingPointToCOM(bpy.types.Operator):
 
 
 class AlignAxisByPoints(bpy.types.Operator):
-    """Aligns pinned rig's rotation axis to face the reference point."""
+    """Aligns rotation axis to face the reference point."""
     bl_idname = "balance_point.align_axis"
     bl_label = "Align Axis to Reference Point"
 
@@ -203,7 +203,7 @@ class AlignAxisByPoints(bpy.types.Operator):
 
 
 class AlignAxisByCursor(bpy.types.Operator):
-    """Aligns pinned rig's rotation axis to face the 3D Cursor."""
+    """Aligns rotation axis to face the 3D Cursor."""
     bl_idname = "balance_point.align_axis_cursor"
     bl_label = "Align Axis to 3D Cursor"
 
@@ -234,7 +234,7 @@ class AlignAxisByCursor(bpy.types.Operator):
 
 
 class AlignAxisByCursorRef(bpy.types.Operator):
-    """Aligns pinned rig's rotation axis according to 3D Cursor and Reference Point."""
+    """Aligns rotation axis according to 3D Cursor and Reference Point."""
     bl_idname = "balance_point.align_axis_cursor_ref"
     bl_label = "Align Axis to 3D Cursor and Reference Point"
 
