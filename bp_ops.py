@@ -11,7 +11,7 @@ from mathutils import Vector, Quaternion
 
 
 class BP_AddMassCollection(bpy.types.Operator):
-    """Add new Mass Collection to Current Mass Object Group"""
+    """Add new Mass Collection to Current Mass Object Group."""
     bl_idname = "balance_point.masscollection_add"
     bl_label = "Add New Mass Collection"
 
@@ -22,7 +22,7 @@ class BP_AddMassCollection(bpy.types.Operator):
 
 
 class BP_RemoveMassCollection(bpy.types.Operator):
-    """Remove last Mass Collection to Current Mass Object Group"""
+    """Remove last Mass Collection to Current Mass Object Group."""
     bl_idname = "balance_point.masscollection_remove"
     bl_label = "Remove Last Mass Collection"
 
@@ -38,7 +38,7 @@ class BP_RemoveMassCollection(bpy.types.Operator):
 
 
 class AddMassObjectGroup(bpy.types.Operator):
-    """Adds a new Mass Object Group"""
+    """Adds a new Mass Object Group."""
     bl_idname = "balance_point.massgroup_add"
     bl_label = "Add new Mass Object Group"
 
@@ -62,7 +62,7 @@ class AddMassObjectGroup(bpy.types.Operator):
 
 
 class RemoveMassObjectGroup(bpy.types.Operator):
-    """Removes a new Mass Object Group"""
+    """Removes a new Mass Object Group."""
     bl_idname = "balance_point.massgroup_remove"
     bl_label = "Remove selected Mass Object Group"
 
@@ -127,7 +127,7 @@ class SetReferencePointToCOM(bpy.types.Operator):
 
 
 class SetStartingPoint(bpy.types.Operator):
-    """Sets the coordinate of the ballistics starting point."""
+    """Sets the coordinate of the ballistics starting point to the 3D cursor."""
     bl_idname = "balance_point.startingpoint_set"
     bl_label = "Set Starting Point From 3D Cursor"
 
@@ -363,7 +363,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
 
 class BakeBPRootMotion(bpy.types.Operator):
-    """Bakes Root Motion."""
+    """Bakes Root Motion for the given frame range."""
     bl_idname = "balance_point.bake_root_motion"
     bl_label = "Bake Root Motion"
 
