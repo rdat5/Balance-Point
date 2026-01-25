@@ -352,6 +352,8 @@ class BakeBPPhysics(bpy.types.Operator):
                 world_space_diff = sel_mog.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * sel_mog.pin_xyz[0], difference.y * sel_mog.pin_xyz[1], difference.z * sel_mog.pin_xyz[2]))
                 sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].location -= world_space_diff
 
+            sel_mog.com_location = point_position
+            context.scene.keyframe_insert(data_path="bp_mass_object_groups[{}].com_location".format(selected_index), keytype='GENERATED')
             root_bone.keyframe_insert(data_path="location", keytype='GENERATED')
 
         # Return to original state
