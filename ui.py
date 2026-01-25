@@ -136,24 +136,7 @@ class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
     bl_label = "Physics Tools (EXPERIMENTAL)"
 
     def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-        mass_object_groups = scene.bp_mass_object_groups
-        selected_index = scene.bp_group_index
-        selected_mog = mass_object_groups[selected_index] if selected_index < len(
-            mass_object_groups) else None
-
-        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
-            row = layout.row()
-            row.alignment = 'CENTER'
-            row.scale_y = 1.2
-            row.prop(selected_mog, "is_rig_pinned")
-            row = layout.row(align=True)
-            row.prop(selected_mog, "pin_xyz")
-        if selected_mog is not None and any(mass_collection is not None for mass_collection in selected_mog.mass_collections):
-            row = layout.row()
-            row.enabled = selected_mog.is_rig_pinned
-            row.prop(selected_mog, "com_location")
+        pass
 
 
 class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
@@ -334,6 +317,19 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             mass_object_groups) else None
 
         # Baking
+        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.scale_y = 1.2
+            row.prop(selected_mog, "is_rig_pinned")
+            row = layout.row(align=True)
+            row.prop(selected_mog, "pin_xyz")
+        if selected_mog is not None and any(mass_collection is not None for mass_collection in selected_mog.mass_collections):
+            row = layout.row()
+            row.enabled = selected_mog.is_rig_pinned
+            row.prop(selected_mog, "com_location")
+
+
         if selected_mog is not None:
             layout.use_property_split = True
             layout.use_property_decorate = False
