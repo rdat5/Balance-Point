@@ -347,7 +347,6 @@ class BakeBPPhysics(bpy.types.Operator):
             point_position = projectile_position(
                 start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
 
-            # Pin center of mass
             difference = get_com(sel_mog) - point_position
             if difference.length > 0.00001:
                 world_space_diff = sel_mog.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * sel_mog.pin_xyz[0], difference.y * sel_mog.pin_xyz[1], difference.z * sel_mog.pin_xyz[2]))
