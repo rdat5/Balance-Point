@@ -389,6 +389,7 @@ class BakeBPRootMotion(bpy.types.Operator):
         pinned_rig = sel_mog.pinned_rig
         root_bone = pinned_rig.pose.bones[sel_mog.root_bone]
         root_limit = sel_mog.root_limit_xyz
+        root_fixed = sel_mog.root_bake_relative_xyz
 
         animation_cache = []
 
@@ -401,9 +402,9 @@ class BakeBPRootMotion(bpy.types.Operator):
             new_root_location = Vector((root_limit[0], root_limit[1], root_limit[2]))
             current_com = get_com(sel_mog)
             if sel_mog.root_bake_relative:
-                new_root_location.x = current_com[0] + root_limit[0]
-                new_root_location.y = current_com[1] + root_limit[1]
-                new_root_location.z = current_com[2] + root_limit[2]
+                new_root_location.x = current_com[0] + root_fixed[0]
+                new_root_location.y = current_com[1] + root_fixed[1]
+                new_root_location.z = current_com[2] + root_fixed[2]
             else:
                 if sel_mog.root_track_xyz[0]:
                     new_root_location.x = current_com[0]
@@ -486,7 +487,7 @@ class BP_RootSetRelativeZ(bpy.types.Operator):
 
         root_world_matrix = sel_mog.pinned_rig.matrix_world @ root_bone.matrix
 
-        sel_mog.root_limit_xyz.z = root_world_matrix.translation.z - current_com_height
+        sel_mog.root_bake_relative_xyz.z = root_world_matrix.translation.z - current_com_height
 
         return {'FINISHED'}
 

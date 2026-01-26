@@ -73,9 +73,11 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     root_track_xyz: bpy.props.BoolVectorProperty(
         name="Root COM Tracking", description="", subtype="XYZ", default=(True, True, False))
     root_limit_xyz: bpy.props.FloatVectorProperty(
-        name="Root Bake Limits", description="Used to determine location of Root Bone during Root Motion Baking", subtype="XYZ", default=(0, 0, 0), precision=3)
+        name="Root Bake Limits", description="Locked Translation Axes of Root Bone when not tracking the Center of Mass during Baking.", subtype="XYZ", default=(0, 0, 0), precision=3)
     root_bake_relative: bpy.props.BoolProperty(
         name="Bake Root Relative to COM", description="Sets Root Bone a set distance to COM during baking.", default=False)
+    root_bake_relative_xyz: bpy.props.FloatVectorProperty(
+        name="Root Bake Relative Distance", description="Fixed distance of Root Bone from Center of Mass", subtype="XYZ", default=(0, 0, 0), precision=3)
     root_bake_clear_rotation: bpy.props.BoolProperty(
         name="Clear Root Bone Rotation", description="Clears root bone rotation during root motion baking.", default=True)
     root_control_bones: bpy.props.CollectionProperty(type=BP_RootControlBones)

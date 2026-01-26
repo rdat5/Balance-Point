@@ -395,19 +395,20 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             col.use_property_decorate = False
             col.prop(selected_mog, "root_motion_frame_start")
             col.prop(selected_mog, "root_motion_frame_end", text="End")
-            row = layout.row()
-            row.prop(selected_mog, "root_bake_relative",
-                     text="Relative to COM")
-            if not selected_mog.root_bake_relative:
-                row = layout.row()
-                row.prop(selected_mog, "root_track_xyz", text="Track COM")
-            else:
-                row = layout.row()
-                row.operator("balance_point.root_set_z_relative")
-            row = layout.row()
+            box = layout.box()
+            box.enabled = not selected_mog.root_bake_relative
+            row = box.row()
+            row.prop(selected_mog, "root_track_xyz", text="Track COM")
+            row = box.row()
             row.prop(selected_mog, "root_limit_xyz", text="Limit Location")
             row = layout.row()
-            row.prop(selected_mog, "root_bake_clear_rotation")
+            row.prop(selected_mog, "root_bake_relative")
+            box = layout.box()
+            box.enabled = selected_mog.root_bake_relative
+            row = box.row()
+            row.prop(selected_mog, "root_bake_relative_xyz", text="")
+            row = box.row()
+            row.operator("balance_point.root_set_z_relative")
             # Motion Bones
             box = layout.box()
             row = box.row()
@@ -427,6 +428,8 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
                     op = row.operator(
                         "balance_point.delete_control_bone", icon='X', text="")
                     op.index = i
+                row = layout.row()
+                row.prop(selected_mog, "root_bake_clear_rotation")
                 row = layout.row()
                 row.scale_y = 1.5
                 row.operator("balance_point.bake_root_motion")
