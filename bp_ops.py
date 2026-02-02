@@ -509,7 +509,7 @@ class BP_AddControlBones(bpy.types.Operator):
         if sel_mog.root_bone == "":
             return False
 
-        if selected_bones is not None:
+        if selected_bones is None:
             return False
 
         return True
