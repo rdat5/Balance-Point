@@ -297,6 +297,10 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
                      icon='HIDE_OFF' if preview_on else 'HIDE_ON')
             row.label(text="Ballistics")
             col = layout.column(align=True)
+            col.prop(selected_mog, "frame_start")
+            col.prop(selected_mog, "frame_end")
+            col.prop(selected_mog, "frame_rate")
+            col.separator()
             col.prop(selected_mog, "gravity")
             col.prop(selected_mog, "time_of_flight")
         else:
