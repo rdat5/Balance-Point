@@ -29,7 +29,7 @@ def draw_bp(self, context):
             group_com = get_com(group)
 
             draw_com_markers(group, group_com, com_props)
-            draw_rotation_axis(group, group_com)
+            draw_rotation_axis(group, group_com, com_props)
             draw_motion_path(group, com_props)
 
         draw_reference_points(group, com_props)
@@ -98,8 +98,8 @@ def draw_reference_points(group, com_props):
         batch.draw(shader)
 
 
-def draw_rotation_axis(group, group_com):
-    if group.show_axis:
+def draw_rotation_axis(group, group_com, com_props):
+    if group.show_axis and com_props.rotation_axis_line_size > 0:
         axis_verts = []
 
         cx = group.initial_axis.x
@@ -109,7 +109,7 @@ def draw_rotation_axis(group, group_com):
         axis_unit = axis_vector / \
             numpy.linalg.norm(axis_vector)
         axis_verts += transform_indices([(-axis_unit[0], -axis_unit[1], -axis_unit[2]), (
-            axis_unit[0], axis_unit[1], axis_unit[2])], 2.0, group_com)
+            axis_unit[0], axis_unit[1], axis_unit[2])], com_props.rotation_axis_line_size / 2, group_com)
         batch = batch_for_shader(
             shader, 'LINES', {"pos": axis_verts})
         batch = batch_for_shader(

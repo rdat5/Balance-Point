@@ -100,3 +100,5 @@ class BPComProperties(bpy.types.PropertyGroup):
         name="Ballistics Point Size", default=4, min=1)
     motion_path_point_size: bpy.props.IntProperty(
         name="Motion Path Point Size", default=4, min=1)
+    rotation_axis_line_size : bpy.props.FloatProperty(
+        name="Rotation Axis Line Size", default=2.0, min=0.0)
