@@ -261,8 +261,6 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row.label(
                 text=f"Inertia Tensor: {format_matrix(get_inertia_tensor(selected_mog, get_com(selected_mog)))}")
             row = layout.row()
-            row.prop(selected_mog, "initial_angular_velocity")
-            row = layout.row()
             row.operator("balance_point.align_axis_cursor", icon='CURSOR')
             row.operator("balance_point.align_axis", icon='DOT')
             row = layout.row()
@@ -342,6 +340,8 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             col.prop(selected_mog, "frame_start")
             col.prop(selected_mog, "frame_end")
             col.prop(selected_mog, "frame_rate")
+            col.separator()
+            col.prop(selected_mog, "initial_angular_velocity")
 
         if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
             row = layout.row()
