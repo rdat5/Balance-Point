@@ -311,25 +311,39 @@ class BakeBPPhysics(bpy.types.Operator):
 
         sel_mog.is_rig_pinned = False
 
+        fps = float(sel_mog.frame_rate)
+        dt_frame = 1.0 / fps
+        substeps = 20
+        dt_sub = dt_frame / substeps
+
         for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):
             bpy.context.scene.frame_set(f)
 
             # Rotation
+            current_inertia_world = get_inertia_tensor(sel_mog, get_com(sel_mog))
+
+            R_start = accumulated_rotation.to_matrix()
+            I_body = R_start.transposed() @ current_inertia_world @ R_start
+
+            # Rotation substeps
+            for _ in range(substeps):
+                R_curr = accumulated_rotation.to_matrix()
+                I_curr_world = R_curr @ I_body @ R_curr.transposed()
+
+                current_ang_vel = I_curr_world.inverted_safe() @ momentum_vector
+
+                rotation_angle = current_ang_vel.length * dt_sub
+                
+                if rotation_angle > 1e-6 and f > sel_mog.frame_start:
+                    rotation_axis = current_ang_vel.normalized()
+                    
+                    rot_step = Quaternion(rotation_axis, rotation_angle)
+                    
+                    accumulated_rotation = rot_step @ accumulated_rotation
+                    
+                    accumulated_rotation.normalize()
+
             root_bone.rotation_quaternion = accumulated_rotation
-
-            current_com = get_com(sel_mog)
-            current_inertia = get_inertia_tensor(sel_mog, current_com)
-
-            current_ang_vel = current_inertia.inverted_safe() @ momentum_vector
-
-            angle_step = current_ang_vel.length
-
-            if f > sel_mog.frame_start:
-                axis_step = current_ang_vel.normalized()
-                rot_step = Quaternion(axis_step, angle_step)
-                accumulated_rotation = rot_step @ accumulated_rotation
-
-                root_bone.rotation_quaternion = accumulated_rotation
 
             root_bone.keyframe_insert(data_path="rotation_quaternion", keytype='GENERATED')
             context.view_layer.update()
