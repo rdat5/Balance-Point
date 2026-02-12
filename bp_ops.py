@@ -294,8 +294,6 @@ class BakeBPPhysics(bpy.types.Operator):
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
 
-        original_pin_state = sel_mog.is_rig_pinned
-
         bpy.context.scene.frame_set(sel_mog.frame_start)
         context.view_layer.update()
 
@@ -353,12 +351,10 @@ class BakeBPPhysics(bpy.types.Operator):
                 sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].location -= world_space_diff
 
             sel_mog.com_location = point_position
-            context.scene.keyframe_insert(data_path="bp_mass_object_groups[{}].com_location".format(selected_index), keytype='GENERATED')
             root_bone.keyframe_insert(data_path="location", keytype='GENERATED')
 
         # Return to original state
         bpy.context.scene.frame_set(original_frame)
-        sel_mog.is_rig_pinned = original_pin_state
         return {'FINISHED'}
 
 
@@ -393,7 +389,6 @@ class BakeBPRootMotion(bpy.types.Operator):
 
         animation_cache = []
 
-        original_pinned_state = sel_mog.is_rig_pinned
         sel_mog.is_rig_pinned = False
 
         for f in range(sel_mog.root_motion_frame_start, sel_mog.root_motion_frame_end + 1):
@@ -452,8 +447,6 @@ class BakeBPRootMotion(bpy.types.Operator):
             if sel_mog.root_bake_clear_rotation:
                 root_bone.keyframe_insert(data_path="rotation_quaternion", index=-1, keytype='GENERATED')
             root_bone.keyframe_insert(data_path="location", index=-1, keytype='GENERATED')
-
-        sel_mog.is_rig_pinned = original_pinned_state
 
         return {'FINISHED'}
 
