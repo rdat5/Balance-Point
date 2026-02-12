@@ -62,6 +62,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     frame_end: bpy.props.IntProperty(
         name="End", description="First frame of the physics baking range.")
     frame_rate: bpy.props.IntProperty(name="Frame Rate", default=24, min=1)
+    substeps: bpy.props.IntProperty(name="Substeps", description="Substeps for physics baking. More substeps leads to more accuracy.", default=20, min=1)
     motion_path_frame_start: bpy.props.IntProperty(
         name="Motion Path Range Start", description="First frame of the calculated motion path range.", default=0)
     motion_path_frame_end: bpy.props.IntProperty(

@@ -313,7 +313,7 @@ class BakeBPPhysics(bpy.types.Operator):
 
         fps = float(sel_mog.frame_rate)
         dt_frame = 1.0 / fps
-        substeps = 20
+        substeps = sel_mog.substeps
         dt_sub = dt_frame / substeps
 
         for f in range(sel_mog.frame_start, sel_mog.frame_end + 1):

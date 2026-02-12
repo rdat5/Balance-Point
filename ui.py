@@ -342,6 +342,8 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             col.prop(selected_mog, "frame_rate")
             col.separator()
             col.prop(selected_mog, "initial_angular_velocity")
+            col.separator()
+            col.prop(selected_mog, "substeps")
 
         if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
             row = layout.row()
