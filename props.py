@@ -53,7 +53,7 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     root_bone: bpy.props.StringProperty(
         name="Root Bone", description="Root Bone of Rig")
     initial_angular_velocity: bpy.props.FloatProperty(name="Initial Angular Velocity",
-                                                      description="The initial angular velocity used as reference for the duration of the baked frames. Measured in radians per second.")
+                                                      description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per second.")
     gravity: bpy.props.FloatProperty(name="Gravity", default=9.807)
     time_of_flight: bpy.props.FloatProperty(
         name="Time of Flight", description="Elapsed time in seconds until center of mass reaches the ballistics reference point from the starting point.", default=1, min=0.00001)
