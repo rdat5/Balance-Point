@@ -52,6 +52,8 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Preview Ballistics Curve", default=False)
     root_bone: bpy.props.StringProperty(
         name="Root Bone", description="Root Bone of Rig")
+    enable_ballistics_rotation: bpy.props.BoolProperty(
+        name="Enable Rotation", default=True)
     initial_angular_velocity: bpy.props.FloatProperty(name="Initial Angular Velocity",
                                                       description="The initial angular velocity used as reference for the duration of the baked frames. Measured in degrees per second.")
     gravity: bpy.props.FloatProperty(name="Gravity", default=9.807)

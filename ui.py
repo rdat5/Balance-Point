@@ -341,7 +341,9 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             col.prop(selected_mog, "frame_end")
             col.prop(selected_mog, "frame_rate")
             col.separator()
-            col.prop(selected_mog, "initial_angular_velocity")
+            col.prop(selected_mog, "enable_ballistics_rotation")
+            if selected_mog.enable_ballistics_rotation:
+                col.prop(selected_mog, "initial_angular_velocity")
             col.separator()
             col.prop(selected_mog, "substeps")
 
