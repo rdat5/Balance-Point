@@ -9,16 +9,6 @@ def update_mass_group_com(scene):
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
     for group in bp_mass_groups:
-        if any(mass_collection is not None for mass_collection in group.mass_collections):
-            if not group.is_rig_pinned:
-                group.com_location = get_com(
-                    group)
-                if group.com_object_enabled:
-                    group.com_object.matrix_world.translation = get_com(group)
-            else:
-                if group.pinned_rig is not None and group.root_bone in group.pinned_rig.pose.bones:
-                    group_com = get_com(group)
-                    difference = group_com - Vector(group.com_location)
-                    if difference.length > 0.0001:
-                        world_space_diff = group.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * group.pin_xyz[0], difference.y * group.pin_xyz[1], difference.z * group.pin_xyz[2]))
-                        group.pinned_rig.pose.bones[group.root_bone].location -= world_space_diff
+        if any(mass_collection is not None for mass_collection in group.mass_collections) and group.com_object_enabled:
+            group.com_object.matrix_world.translation = get_com(group)
+

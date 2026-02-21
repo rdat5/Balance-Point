@@ -277,10 +277,6 @@ class BakeBPPhysics(bpy.types.Operator):
         if sel_mog.frame_end <= sel_mog.frame_start:
             return False
 
-        if not (sel_mog.pin_xyz[0] and sel_mog.pin_xyz[1]
-                and sel_mog.pin_xyz[2]):
-            return False
-
         if sel_mog.root_bone not in sel_mog.pinned_rig.pose.bones:
             return False
 
@@ -308,8 +304,6 @@ class BakeBPPhysics(bpy.types.Operator):
 
         p0 = sel_mog.ballistics_starting_point
         p1 = sel_mog.reference_point
-
-        sel_mog.is_rig_pinned = False
 
         fps = float(sel_mog.frame_rate)
         dt_frame = 1.0 / fps
@@ -362,10 +356,9 @@ class BakeBPPhysics(bpy.types.Operator):
 
             difference = get_com(sel_mog) - point_position
             if difference.length > 0.00001:
-                world_space_diff = sel_mog.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x * sel_mog.pin_xyz[0], difference.y * sel_mog.pin_xyz[1], difference.z * sel_mog.pin_xyz[2]))
+                world_space_diff = sel_mog.pinned_rig.matrix_world.inverted().to_3x3() @ Vector((difference.x, difference.y, difference.z))
                 sel_mog.pinned_rig.pose.bones[sel_mog.root_bone].location -= world_space_diff
 
-            sel_mog.com_location = point_position
             root_bone.keyframe_insert(data_path="location", keytype='GENERATED')
 
         # Return to original state
@@ -403,8 +396,6 @@ class BakeBPRootMotion(bpy.types.Operator):
         root_fixed = sel_mog.root_bake_relative_xyz
 
         animation_cache = []
-
-        sel_mog.is_rig_pinned = False
 
         for f in range(sel_mog.root_motion_frame_start, sel_mog.root_motion_frame_end + 1):
             context.scene.frame_set(f)

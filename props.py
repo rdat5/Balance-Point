@@ -23,16 +23,10 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     com_floor_level: bpy.props.FloatProperty(name="Floor Level", default=0.0)
     color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
-    com_location: bpy.props.FloatVectorProperty(name="CoM Location", subtype="XYZ", description="Location of the CoM", default=(
-        0, 0, 0))
-    is_rig_pinned: bpy.props.BoolProperty(
-        name="Pin Center of Mass", default=False)
     com_object_enabled: bpy.props.BoolProperty(
         name="Enable COM Object Tracking", default=False)
     com_object: bpy.props.PointerProperty(
         name="COM Object", type=bpy.types.Object)
-    pin_xyz: bpy.props.BoolVectorProperty(
-        name="Pin Lock", subtype="XYZ", description="Lock/Unlock XYZ Translation of CoM Pin", default=(True, True, True))
     pinned_rig: bpy.props.PointerProperty(
         name="Armature", type=bpy.types.Object)
     show_axis: bpy.props.BoolProperty(name="Show Rotation Axis", default=False)
