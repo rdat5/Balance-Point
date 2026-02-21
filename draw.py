@@ -4,7 +4,7 @@ import numpy
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
 from .utils import (
-    projectile_position,
+    projectile_position_linear,
     get_com,
 )
 from .shapes import SHAPE_FLOOR_MARKER
@@ -159,8 +159,8 @@ def draw_ballistics_ruler(group, com_props):
                 elapsed_time = float(
                     frame) / group.frame_rate
 
-                point_positions.append(projectile_position(
-                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time))
+                point_positions.append(projectile_position_linear(
+                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time, group.damp))
 
             # Draw lines
             for index, point_position in enumerate(

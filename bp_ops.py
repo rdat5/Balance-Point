@@ -4,7 +4,7 @@ from .utils import (
     is_valid_triangle,
     get_triangle_normal,
     get_inertia_tensor,
-    projectile_position,
+    projectile_position_linear,
     get_com
 )
 from mathutils import Vector, Quaternion
@@ -351,8 +351,8 @@ class BakeBPPhysics(bpy.types.Operator):
 
             elapsed_time = float(f - sel_mog.frame_start) / sel_mog.frame_rate
 
-            point_position = projectile_position(
-                start_pos, ref_pos, gravity, time_of_flight, elapsed_time)
+            point_position = projectile_position_linear(
+                start_pos, ref_pos, gravity, time_of_flight, elapsed_time, sel_mog.damp)
 
             difference = get_com(sel_mog) - point_position
             if difference.length > 0.00001:

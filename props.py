@@ -53,6 +53,8 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
     gravity: bpy.props.FloatProperty(name="Gravity", default=9.807)
     time_of_flight: bpy.props.FloatProperty(
         name="Time of Flight", description="Elapsed time in seconds until center of mass reaches the ballistics reference point from the starting point.", default=1, min=0.00001)
+    damp: bpy.props.FloatProperty(
+        name="Damping Factor", description="Damping Factor for Linear Drag.", default=0.0, min=0.0)
     frame_start: bpy.props.IntProperty(
         name="Frame Range Start", description="First frame of the physics baking range.")
     frame_end: bpy.props.IntProperty(

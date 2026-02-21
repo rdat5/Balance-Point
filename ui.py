@@ -302,6 +302,7 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col.separator()
             col.prop(selected_mog, "gravity")
             col.prop(selected_mog, "time_of_flight")
+            col.prop(selected_mog, "damp")
         else:
             row.label(
                 text="Add and select a mass object group to use the ballistics features.")
