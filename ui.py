@@ -225,13 +225,6 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
                 text="Add and select a mass object group to use the reference point features.")
 
 
-def format_matrix(matrix):
-    vec1 = f"{round(matrix[0][0], 1), round(matrix[0][1], 1), round(matrix[0][2], 1)}"
-    vec2 = f"{round(matrix[1][0], 1), round(matrix[1][1], 1), round(matrix[1][2], 1)}"
-    vec3 = f"{round(matrix[2][0], 1), round(matrix[2][1], 1), round(matrix[2][2], 1)}"
-    return f"{vec1} | {vec2} | {vec3}"
-
-
 class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_PhysicsTools"
     bl_label = "Rotation Axis"
@@ -305,16 +298,12 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col.separator()
             col.prop(selected_mog, "damp")
             vt = get_terminal_velocity(selected_mog.gravity, selected_mog.damp)
-            if selected_mog.damp > 0: 
+            if selected_mog.damp > 0:
                 col.label(text=f"Terminal Velocity: {vt:.3f} m/s")
         else:
             row.label(
                 text="Add and select a mass object group to use the ballistics features.")
 
-def get_terminal_velocity(gravity, drag):
-    if drag < 1e-5:
-        return float('inf')
-    return gravity / drag
 
 class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_PhysicsTools"
@@ -520,3 +509,16 @@ class BP_PT_MassSelected(BalancePointPanel, bpy.types.Panel):
                 row = box.row()
                 row.prop(obj, '["density"]')
                 row.prop(obj, '["volume"]')
+
+
+def format_matrix(matrix):
+    vec1 = f"{round(matrix[0][0], 1), round(matrix[0][1], 1), round(matrix[0][2], 1)}"
+    vec2 = f"{round(matrix[1][0], 1), round(matrix[1][1], 1), round(matrix[1][2], 1)}"
+    vec3 = f"{round(matrix[2][0], 1), round(matrix[2][1], 1), round(matrix[2][2], 1)}"
+    return f"{vec1} | {vec2} | {vec3}"
+
+
+def get_terminal_velocity(gravity, drag):
+    if drag < 1e-5:
+        return float('inf')
+    return gravity / drag
