@@ -302,11 +302,19 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col.separator()
             col.prop(selected_mog, "gravity")
             col.prop(selected_mog, "time_of_flight")
+            col.separator()
             col.prop(selected_mog, "damp")
+            vt = get_terminal_velocity(selected_mog.gravity, selected_mog.damp)
+            if selected_mog.damp > 0: 
+                col.label(text=f"Terminal Velocity: {vt:.3f} m/s")
         else:
             row.label(
                 text="Add and select a mass object group to use the ballistics features.")
 
+def get_terminal_velocity(gravity, drag):
+    if drag < 1e-5:
+        return float('inf')
+    return gravity / drag
 
 class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_PhysicsTools"
