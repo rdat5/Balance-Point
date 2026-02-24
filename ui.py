@@ -86,6 +86,8 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
 
             # MOG Info
             row = layout.row()
+            row.prop(selected_mog, "com_location")
+            row = layout.row()
             row.prop(selected_mog, "pinned_rig")
             if selected_mog.pinned_rig is not None and selected_mog.pinned_rig.type == 'ARMATURE':
                 row = layout.row()

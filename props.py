@@ -25,6 +25,8 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
     com_object_enabled: bpy.props.BoolProperty(
         name="Enable COM Object Tracking", default=False)
+    com_location: bpy.props.FloatVectorProperty(name="CoM Location", description="World Location of Center of Mass", default=(
+        0, 0, 0), subtype='TRANSLATION')
     com_object: bpy.props.PointerProperty(
         name="COM Object", type=bpy.types.Object)
     pinned_rig: bpy.props.PointerProperty(
