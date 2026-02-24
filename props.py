@@ -36,13 +36,13 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Initial Rotation Axis", subtype='XYZ', default=(1, 0, 0, ))
     reference_point: bpy.props.FloatVectorProperty(name="Reference Point", description="Reference point for angle alignment and ballistics ruler.", default=(
         0, 0, 0))
-    reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
+    reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Point", default=(
         0, 1, 0), subtype='COLOR', min=0.0, max=1.0)
     show_reference_point: bpy.props.BoolProperty(
         name="Show Reference Points", default=False)
     ballistics_starting_point: bpy.props.FloatVectorProperty(name="Ballistics Starting Point", description="Starting point of ballistics curve.", default=(
         0, 0, 0))
-    ballistics_starting_point_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Marker", default=(
+    ballistics_starting_point_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Start Point Marker", default=(
         1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
     is_ballistics_preview: bpy.props.BoolProperty(
         name="Preview Ballistics Curve", default=False)
