@@ -16,6 +16,8 @@ def draw_bp(self, context):
     com_props = bpy.context.scene.bp_com_properties
     bp_mass_groups = bpy.context.scene.bp_mass_object_groups
 
+    gpu.state.blend_set('ALPHA')
+
     if not com_props.com_drawing_on or len(bp_mass_groups) == 0:
         return
 
@@ -34,6 +36,9 @@ def draw_bp(self, context):
 
         draw_reference_points(group, com_props)
         draw_ballistics_ruler(group, com_props)
+    
+    gpu.state.blend_set('NONE')
+    gpu.state.point_size_set(1.0)
 
 
 def draw_motion_path(group, com_props):
@@ -51,8 +56,8 @@ def draw_motion_path(group, com_props):
         for index, point_position in enumerate(
                 point_positions):
             line_batch = []
-            line_color = (1.0, 0.0, 0.0, 1.0) if index + \
-                group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+            line_color = (1.0, 0.0, 0.0, com_props.opacity) if index + \
+                group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, com_props.opacity)
             shader.uniform_float("color", line_color)
             point_coordinate = (
                 point_position[0], point_position[1], point_position[2])
@@ -71,7 +76,7 @@ def draw_motion_path(group, com_props):
         # Draw Points
         for index, point_position in enumerate(
                 point_positions):
-            shader.uniform_float("color", (0.0, 0.0, 0.0, 1.0))
+            shader.uniform_float("color", (0.0, 0.0, 0.0, com_props.opacity))
             gpu.state.point_size_set(
                 com_props.motion_path_point_size)
             batch = batch_for_shader(
@@ -85,14 +90,14 @@ def draw_reference_points(group, com_props):
         gpu.state.point_size_set(
             com_props.reference_point_size)
         shader.uniform_float(
-            "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, 1.0))
+            "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, group.reference_color[3] * com_props.opacity))
         batch = batch_for_shader(
             shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
         batch.draw(shader)
 
         # Ballistics Starting Point
         shader.uniform_float(
-            "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, 1.0))
+            "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, group.ballistics_starting_point_color[3] * com_props.opacity))
         batch = batch_for_shader(
             shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
         batch.draw(shader)
@@ -120,7 +125,7 @@ def draw_rotation_axis(group, group_com, com_props):
 def draw_com_markers(group, group_com, com_props):
     # Get color
     shader.uniform_float(
-        "color", (group.color.r, group.color.g, group.color.b, 1.0))
+        "color", (group.color[0], group.color[1], group.color[2], group.color[3] * com_props.opacity))
 
     # Draw COM Shape
     gpu.state.point_size_set(com_props.com_point_size)
@@ -166,8 +171,8 @@ def draw_ballistics_ruler(group, com_props):
             for index, point_position in enumerate(
                     point_positions):
                 line_batch = []
-                line_color = (1.0, 0.0, 0.0, 1.0) if index + \
-                    group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, 1.0)
+                line_color = (1.0, 0.0, 0.0, com_props.opacity) if index + \
+                    group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, com_props.opacity)
                 shader.uniform_float("color", line_color)
                 point_coordinate = (
                     point_position[0], point_position[1], point_position[2])
@@ -187,7 +192,7 @@ def draw_ballistics_ruler(group, com_props):
             for index, point_position in enumerate(
                     point_positions):
                 shader.uniform_float(
-                    "color", (0.0, 0.0, 0.0, 1.0))
+                    "color", (0.0, 0.0, 0.0, com_props.opacity))
                 gpu.state.point_size_set(
                     com_props.ballistics_point_size)
                 batch = batch_for_shader(

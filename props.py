@@ -21,8 +21,8 @@ class BP_RootControlBones(bpy.types.PropertyGroup):
 class BPMassObjectGroup(bpy.types.PropertyGroup):
     visible: bpy.props.BoolProperty(name="Visible", default=True)
     com_floor_level: bpy.props.FloatProperty(name="Floor Level", default=0.0)
-    color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", default=(
-        1, 0, 1), subtype='COLOR', min=0.0, max=1.0)
+    color: bpy.props.FloatVectorProperty(name="CoM Marker Color", description="Color of the CoM Marker", size=4, default=(
+        1.0, 0.0, 1.0, 1.0), subtype='COLOR', min=0.0, max=1.0)
     com_object_enabled: bpy.props.BoolProperty(
         name="Enable COM Object Tracking", default=False)
     com_location: bpy.props.FloatVectorProperty(name="CoM Location", description="World Location of Center of Mass", default=(
@@ -36,14 +36,14 @@ class BPMassObjectGroup(bpy.types.PropertyGroup):
         name="Initial Rotation Axis", subtype='XYZ', default=(1, 0, 0, ))
     reference_point: bpy.props.FloatVectorProperty(name="Reference Point", description="Reference point for angle alignment and ballistics ruler.", default=(
         0, 0, 0))
-    reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Point", default=(
-        0, 1, 0), subtype='COLOR', min=0.0, max=1.0)
+    reference_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Reference Point", size=4, default=(
+        0.0, 1.0, 0.0, 1.0), subtype='COLOR', min=0.0, max=1.0)
     show_reference_point: bpy.props.BoolProperty(
         name="Show Reference Points", default=False)
     ballistics_starting_point: bpy.props.FloatVectorProperty(name="Ballistics Starting Point", description="Starting point of ballistics curve.", default=(
         0, 0, 0))
-    ballistics_starting_point_color: bpy.props.FloatVectorProperty(name="Reference Point Color", description="Color of the Start Point Marker", default=(
-        1, 0, 0), subtype='COLOR', min=0.0, max=1.0)
+    ballistics_starting_point_color: bpy.props.FloatVectorProperty(name="Reference Point Color", size=4, description="Color of the Start Point Marker", default=(
+        1.0, 0.0, 0.0, 1.0), subtype='COLOR', min=0.0, max=1.0)
     is_ballistics_preview: bpy.props.BoolProperty(
         name="Preview Ballistics Curve", default=False)
     root_bone: bpy.props.StringProperty(
@@ -103,3 +103,5 @@ class BPComProperties(bpy.types.PropertyGroup):
         name="Motion Path Point Size", default=4, min=1)
     rotation_axis_line_size : bpy.props.FloatProperty(
         name="Rotation Axis Line Size", default=2.0, min=0.0)
+    opacity : bpy.props.FloatProperty(
+        name="Drawing Opacity", default=1.0, min=0.0, max=1.0)

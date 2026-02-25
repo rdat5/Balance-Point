@@ -132,6 +132,7 @@ class BP_PT_DrawSettings(BalancePointPanel, bpy.types.Panel):
         col.prop(com_props, "ballistics_point_size")
         col.prop(com_props, "motion_path_point_size")
         col.prop(com_props, "rotation_axis_line_size")
+        col.prop(com_props, "opacity")
 
 
 class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
