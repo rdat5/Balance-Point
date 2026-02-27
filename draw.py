@@ -90,14 +90,14 @@ def draw_reference_points(group, com_props):
         gpu.state.point_size_set(
             com_props.reference_point_size)
         shader.uniform_float(
-            "color", (group.reference_color.r, group.reference_color.g, group.reference_color.b, group.reference_color[3] * com_props.opacity))
+            "color", (group.reference_color[0], group.reference_color[1], group.reference_color[2], group.reference_color[3] * com_props.opacity))
         batch = batch_for_shader(
             shader, 'POINTS', {"pos": [Vector(group.reference_point)]})
         batch.draw(shader)
 
         # Ballistics Starting Point
         shader.uniform_float(
-            "color", (group.ballistics_starting_point_color.r, group.ballistics_starting_point_color.g, group.ballistics_starting_point_color.b, group.ballistics_starting_point_color[3] * com_props.opacity))
+            "color", (group.ballistics_starting_point_color[0], group.ballistics_starting_point_color[1], group.ballistics_starting_point_color[2], group.ballistics_starting_point_color[3] * com_props.opacity))
         batch = batch_for_shader(
             shader, 'POINTS', {"pos": [Vector(group.ballistics_starting_point)]})
         batch.draw(shader)
