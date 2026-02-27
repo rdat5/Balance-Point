@@ -137,7 +137,7 @@ class BP_PT_DrawSettings(BalancePointPanel, bpy.types.Panel):
 
 class BP_PT_PhysicsTools(BalancePointPanel, bpy.types.Panel):
     bl_idname = "BP_PT_PhysicsTools"
-    bl_label = "Physics Tools (EXPERIMENTAL)"
+    bl_label = "Physics Tools"
 
     def draw(self, context):
         pass
@@ -376,7 +376,7 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
 
 class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_MainMenu"
-    bl_label = "Root Motion Baking (EXPERIMENTAL)"
+    bl_label = "Root Motion Baking"
 
     def draw(self, context):
         layout = self.layout
