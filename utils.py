@@ -100,35 +100,41 @@ def get_com(group):
     return center_of_mass
 
 
-def projectile_position_linear(start_pos, second_pos, gravity, time_of_flight, elapsed_time, drag):
+def projectile_position_linear(start_pos, second_pos, gravity, time_of_flight, elapsed_time, drag_vector):
     x0, y0, z0 = start_pos
     x1, y1, z1 = second_pos
     
-    if drag < 1e-5:
-        v0x = (x1 - x0) / time_of_flight
-        v0y = (y1 - y0) / time_of_flight
-        v0z = (z1 - z0) / time_of_flight + 0.5 * gravity * time_of_flight
-        
-        x = x0 + v0x * elapsed_time
-        y = y0 + v0y * elapsed_time
-        z = z0 + v0z * elapsed_time - 0.5 * gravity * elapsed_time**2
-        return Vector((x, y, z))
-        
-    k = drag
+    kx, ky, kz = drag_vector
+    
     T = time_of_flight
     t = elapsed_time
     g = gravity
     
-    den = 1.0 - math.exp(-k * T)
-    
-    v0x = (k * (x1 - x0)) / den
-    v0y = (k * (y1 - y0)) / den
-    v0z = (k * (z1 - z0) + g * T) / den - (g / k)
-    
-    loss_t = 1.0 - math.exp(-k * t)
-    
-    x = x0 + (v0x / k) * loss_t
-    y = y0 + (v0y / k) * loss_t
-    z = z0 + ((v0z + g / k) / k) * loss_t - (g * t) / k
-    
+    if kx < 1e-5:
+        v0x = (x1 - x0) / T
+        x = x0 + v0x * t
+    else:
+        den_x = 1.0 - math.exp(-kx * T)
+        loss_tx = 1.0 - math.exp(-kx * t)
+        v0x = (kx * (x1 - x0)) / den_x
+        x = x0 + (v0x / kx) * loss_tx
+
+    if ky < 1e-5:
+        v0y = (y1 - y0) / T
+        y = y0 + v0y * t
+    else:
+        den_y = 1.0 - math.exp(-ky * T)
+        loss_ty = 1.0 - math.exp(-ky * t)
+        v0y = (ky * (y1 - y0)) / den_y
+        y = y0 + (v0y / ky) * loss_ty
+
+    if kz < 1e-5:
+        v0z = (z1 - z0) / T + 0.5 * g * T
+        z = z0 + v0z * t - 0.5 * g * t**2
+    else:
+        den_z = 1.0 - math.exp(-kz * T)
+        loss_tz = 1.0 - math.exp(-kz * t)
+        v0z = (kz * (z1 - z0) + g * T) / den_z - (g / kz)
+        z = z0 + ((v0z + g / kz) / kz) * loss_tz - (g * t) / kz
+
     return Vector((x, y, z))

@@ -165,7 +165,7 @@ def draw_ballistics_ruler(group, com_props):
                     frame) / group.frame_rate
 
                 point_positions.append(projectile_position_linear(
-                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time, group.damp))
+                    start_pos, ref_pos, gravity, time_of_flight, elapsed_time, group.damp_vector))
 
             # Draw lines
             for index, point_position in enumerate(

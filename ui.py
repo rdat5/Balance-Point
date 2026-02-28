@@ -299,9 +299,9 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col.prop(selected_mog, "gravity")
             col.prop(selected_mog, "time_of_flight")
             col.separator()
-            col.prop(selected_mog, "damp")
-            vt = get_terminal_velocity(selected_mog.gravity, selected_mog.damp)
-            if selected_mog.damp > 0:
+            col.prop(selected_mog, "damp_vector")
+            vt = get_terminal_velocity(selected_mog.gravity, selected_mog.damp_vector[2])
+            if selected_mog.damp_vector[2] > 0:
                 col.label(text=f"Terminal Velocity: {vt:.3f} m/s")
         else:
             row.label(
