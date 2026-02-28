@@ -301,8 +301,7 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col.separator()
             col.prop(selected_mog, "damp_vector")
             vt = get_terminal_velocity(selected_mog.gravity, selected_mog.damp_vector[2])
-            if selected_mog.damp_vector[2] > 0:
-                col.label(text=f"Terminal Velocity: {vt:.3f} m/s")
+            col.label(text=f"Terminal Velocity: {vt:.3f} m/s" if selected_mog.damp_vector[2] > 0 else "Terminal Velocity: None")
         else:
             row.label(
                 text="Add and select a mass object group to use the ballistics features.")
