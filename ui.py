@@ -432,6 +432,11 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             else:
                 row = box.row()
                 row.label(text="Add a rig to use Root Motion Baking")
+        else:
+            row = layout.row()
+            row.alignment = 'CENTER'
+            row.label(
+                text="Add a Mass Object Collection to use the Root Motion features.")
 
 
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
