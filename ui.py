@@ -101,7 +101,7 @@ class BP_PT_MainMenu(BalancePointPanel, bpy.types.Panel):
                     if selected_mog.pinned_rig.pose.bones[selected_mog.root_bone].rotation_mode != 'QUATERNION':
                         row = layout.row()
                         row.label(
-                            text="Set root bone rotation to Quaternion to use Angular Momentum Features.")
+                            text="Set root bone rotation to Quaternion to use Angular Momentum features.")
                         row = layout.row()
                         row.prop(
                             selected_mog.pinned_rig.pose.bones[selected_mog.root_bone], "rotation_mode")
@@ -225,7 +225,7 @@ class BP_PT_ReferencePoints(BalancePointPanel, bpy.types.Panel):
                              icon='DOT', text="Center of Mass")
         else:
             ref_header_row.label(
-                text="Add and select a mass object group to use the reference point features.")
+                text="Add a Mass Object Collection to begin.")
 
 
 class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
@@ -267,7 +267,7 @@ class BP_PT_RotationAxis(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(
-                text="Add an Armature and Root Bone to use the rotation axis features.")
+                text="Add a Mass Object Collection to begin.")
 
 
 class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
@@ -304,7 +304,7 @@ class BP_PT_BallisticsRuler(BalancePointPanel, bpy.types.Panel):
             col.label(text=f"Terminal Velocity: {vt:.3f} m/s" if selected_mog.damp_vector[2] > 0 else "Terminal Velocity: None")
         else:
             row.label(
-                text="Add and select a mass object group to use the ballistics features.")
+                text="Add a Mass Object Collection to begin.")
 
 
 class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
@@ -334,11 +334,15 @@ class BP_PT_Baking(BalancePointPanel, bpy.types.Panel):
             col.separator()
             col.prop(selected_mog, "substeps")
 
-        if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
+            if selected_mog is not None and selected_mog.pinned_rig is not None and selected_mog.root_bone != '':
+                row = layout.row()
+                row.scale_y = 1.5
+                row.operator("balance_point.bake_physics")
+        else:
             row = layout.row()
-            row.scale_y = 1.5
-            row.operator("balance_point.bake_physics")
-
+            row.alignment = 'CENTER'
+            row.label(
+                text="Add a Mass Object Collection to begin.")
 
 class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
     bl_parent_id = "BP_PT_MainMenu"
@@ -370,7 +374,7 @@ class BP_PT_Motion_Path(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(
-                text="Add a Mass Object Collection to use the motion path features.")
+                text="Add a Mass Object Collection to begin.")
 
 
 class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
@@ -436,7 +440,7 @@ class BP_PT_Root_Motion(BalancePointPanel, bpy.types.Panel):
             row = layout.row()
             row.alignment = 'CENTER'
             row.label(
-                text="Add a Mass Object Collection to use the Root Motion features.")
+                text="Add a Mass Object Collection to begin.")
 
 
 class BP_PT_MassPropertyEditor(BalancePointPanel, bpy.types.Panel):
