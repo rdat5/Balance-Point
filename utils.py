@@ -57,16 +57,18 @@ def get_inertia_tensor(group, com_vector):
         if mass_collection.mass_object_collection is not None:
             for obj in mass_collection.mass_object_collection.all_objects:
                 if obj.get("active"):
-                    m = obj.get("density") * obj.get("volume") * mass_collection.influence
+                    vol = obj.get("volume", 0)
+                    m = obj.get("density", 0) * vol * mass_collection.influence
                     
+                    radius = ((3 * vol) / (4 * math.pi))**(1/3)
+                    i_local = (2/5) * m * (radius**2)
 
                     r = obj.matrix_world.translation - com_vector
-
                     x, y, z = r.x, r.y, r.z
 
-                    I_xx += m * (y**2 + z**2)
-                    I_yy += m * (x**2 + z**2)
-                    I_zz += m * (x**2 + y**2)
+                    I_xx += i_local + m * (y**2 + z**2)
+                    I_yy += i_local + m * (x**2 + z**2)
+                    I_zz += i_local + m * (x**2 + y**2)
 
                     I_xy -= m * (x * y)
                     I_xz -= m * (x * z)
