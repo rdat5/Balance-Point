@@ -1,8 +1,9 @@
 import bpy
 import gpu
 import numpy
+import math
 from gpu_extras.batch import batch_for_shader
-from mathutils import Vector
+from mathutils import Vector, Matrix
 from .utils import (
     projectile_position_linear,
     get_com,
@@ -30,6 +31,8 @@ def draw_bp(self, context):
         if has_mass_objects:
             group_com = get_com(group)
 
+            if com_props.draw_volume:
+                draw_volume_shapes(group, com_props)
             draw_com_markers(group, group_com, com_props)
             draw_rotation_axis(group, group_com, com_props)
             draw_motion_path(group, com_props)
@@ -236,3 +239,41 @@ def transform_indices(vertices, scale, translate_vector,
             (v[2] * scale) + translate_vector.z
         ))
     return new_vertices
+
+
+def draw_volume_shapes(group, com_props):
+    import math
+
+    view_matrix = bpy.context.region_data.view_matrix.inverted()
+    view_rotation = view_matrix.to_quaternion()
+
+    shader.bind()
+
+    segments = 12
+    circle_template = [
+        Vector((math.cos(math.tau * i / segments), math.sin(math.tau * i / segments), 0))
+        for i in range(segments + 1)
+    ]
+
+    for mass_collection in group.mass_collections:
+        if not mass_collection.mass_object_collection:
+            continue
+            
+        for obj in mass_collection.mass_object_collection.all_objects:
+            if not obj.get("active"):
+                continue
+
+            vol = obj.get("volume", 0)
+            if vol <= 0: continue
+            radius = ((3 * vol) / (4 * math.pi))**(1/3)
+            
+            center = obj.matrix_world.translation
+            
+            billboard_matrix = Matrix.Translation(center) @ view_rotation.to_matrix().to_4x4() @ Matrix.Scale(radius / 10, 4)
+            
+            billboard_verts = [billboard_matrix @ v for v in circle_template]
+
+            shader.uniform_float("color", (com_props.volume_color[0], com_props.volume_color[1], com_props.volume_color[2], com_props.opacity * com_props.volume_color[3]))
+            
+            batch = batch_for_shader(shader, 'TRI_FAN', {"pos": billboard_verts})
+            batch.draw(shader)

@@ -104,3 +104,6 @@ class BPComProperties(bpy.types.PropertyGroup):
         name="Rotation Axis Line Size", default=2.0, min=0.0)
     opacity : bpy.props.FloatProperty(
         name="Drawing Opacity", default=1.0, min=0.0, max=1.0)
+    draw_volume: bpy.props.BoolProperty(name="Draw Volume", default=False)
+    volume_color : bpy.props.FloatVectorProperty(name="Volume Color", description="Color of Volume Shapes", size=4, default=(
+        1.0, 1.0, 1.0, 0.2), subtype='COLOR', min=0.0, max=1.0)
