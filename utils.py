@@ -60,7 +60,7 @@ def get_inertia_tensor(group, com_vector):
                     vol = obj.get("volume", 0)
                     m = obj.get("density", 0) * vol * mass_collection.influence
                     
-                    radius = ((3 * vol) / (4 * math.pi))**(1/3)
+                    radius = ((3 * vol) / (4 * math.pi))**(1/3) / 10
                     i_local = (2/5) * m * (radius**2)
 
                     r = obj.matrix_world.translation - com_vector

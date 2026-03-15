@@ -265,11 +265,11 @@ def draw_volume_shapes(group, com_props):
 
             vol = obj.get("volume", 0)
             if vol <= 0: continue
-            radius = ((3 * vol) / (4 * math.pi))**(1/3)
+            radius = ((3 * vol) / (4 * math.pi))**(1/3) / 10
             
             center = obj.matrix_world.translation
             
-            billboard_matrix = Matrix.Translation(center) @ view_rotation.to_matrix().to_4x4() @ Matrix.Scale(radius / 10, 4)
+            billboard_matrix = Matrix.Translation(center) @ view_rotation.to_matrix().to_4x4() @ Matrix.Scale(radius, 4)
             
             billboard_verts = [billboard_matrix @ v for v in circle_template]
 
