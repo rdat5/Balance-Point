@@ -297,10 +297,25 @@ class BakeBPPhysics(bpy.types.Operator):
         starting_inertia = get_inertia_tensor(sel_mog, com_start)
 
         initial_angular_velocity = Vector(sel_mog.initial_axis).normalized() * radians(sel_mog.initial_angular_velocity)
-
         momentum_vector = starting_inertia @ initial_angular_velocity
-
         accumulated_rotation = root_bone.matrix.to_quaternion()
+
+        # Cache initial mass data
+        mass_obj_data = []
+        for mc in sel_mog.mass_collections:
+            if mc.mass_object_collection:
+                for obj in mc.mass_object_collection.objects:
+                    density = obj.get("density", 1.0)
+                    volume = obj.get("volume", 1.0)
+                    mass = density * volume * mc.influence
+                    mass_obj_data.append((obj, mass))
+
+        prev_local_rel_pos = {}
+        R_inv = accumulated_rotation.inverted().to_matrix()
+        for obj, mass in mass_obj_data:
+            r_world = obj.matrix_world.translation - com_start
+            prev_local_rel_pos[obj] = R_inv @ r_world
+
 
         p0 = sel_mog.ballistics_starting_point
         p1 = sel_mog.reference_point
@@ -314,32 +329,47 @@ class BakeBPPhysics(bpy.types.Operator):
             bpy.context.scene.frame_set(f)
 
             if sel_mog.enable_ballistics_rotation:
+                # Internal Angular Momentum
+                L_int_local = Vector((0.0, 0.0, 0.0))
+                R_inv_curr = accumulated_rotation.inverted().to_matrix()
+
+                if f > sel_mog.frame_start:
+                    for obj, mass in mass_obj_data:
+                        r_world = obj.matrix_world.translation - get_com(sel_mog)
+                        r_local = R_inv_curr @ r_world
+                        
+                        v_local = (r_local - prev_local_rel_pos[obj]) / dt_frame
+                        
+                        L_int_local += mass * r_local.cross(v_local)
+                        
+                        prev_local_rel_pos[obj] = r_local
+
                 # Rotation
                 current_inertia_world = get_inertia_tensor(sel_mog, get_com(sel_mog))
 
                 R_start = accumulated_rotation.to_matrix()
                 I_body = R_start.transposed() @ current_inertia_world @ R_start
 
+                L_int_world = R_start @ L_int_local
+
                 # Rotation substeps
                 for _ in range(substeps):
                     R_curr = accumulated_rotation.to_matrix()
                     I_curr_world = R_curr @ I_body @ R_curr.transposed()
 
-                    current_ang_vel = I_curr_world.inverted_safe() @ momentum_vector
+                    # Subtract internal momentum from the total conserved momentum
+                    effective_momentum = momentum_vector - L_int_world
+                    current_ang_vel = I_curr_world.inverted_safe() @ effective_momentum
 
                     rotation_angle = current_ang_vel.length * dt_sub
                     
                     if rotation_angle > 1e-6 and f > sel_mog.frame_start:
                         rotation_axis = current_ang_vel.normalized()
-                        
                         rot_step = Quaternion(rotation_axis, rotation_angle)
-                        
                         accumulated_rotation = rot_step @ accumulated_rotation
-                        
                         accumulated_rotation.normalize()
 
                 root_bone.rotation_quaternion = accumulated_rotation
-
                 root_bone.keyframe_insert(data_path="rotation_quaternion", keytype='GENERATED')
                 context.view_layer.update()
 
