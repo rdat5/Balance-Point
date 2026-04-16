@@ -291,6 +291,11 @@ class BakeBPPhysics(bpy.types.Operator):
         # For returning to original frame after operation
         original_frame = bpy.context.scene.frame_current
 
+        # Delete old keyframes
+        for f in range(sel_mog.frame_start + 1, sel_mog.frame_end + 1):
+            bpy.context.scene.frame_set(f)
+            root_bone.keyframe_delete(data_path="rotation_quaternion", frame = f)
+
         bpy.context.scene.frame_set(sel_mog.frame_start)
         context.view_layer.update()
 
