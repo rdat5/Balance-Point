@@ -268,6 +268,7 @@ class BakeBPPhysics(bpy.types.Operator):
     """Bakes the rotation and ballistics curve for the given range."""
     bl_idname = "balance_point.bake_physics"
     bl_label = "Bake Physics"
+    bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context):
