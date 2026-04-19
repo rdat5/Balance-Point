@@ -60,7 +60,7 @@ def draw_motion_path(group, com_props):
                 point_positions):
             line_batch = []
             line_color = (1.0, 0.0, 0.0, com_props.opacity) if index + \
-                group.frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, com_props.opacity)
+                group.motion_path_frame_start <= bpy.context.scene.frame_current else (0.0, 1.0, 0.0, com_props.opacity)
             shader.uniform_float("color", line_color)
             point_coordinate = (
                 point_position[0], point_position[1], point_position[2])

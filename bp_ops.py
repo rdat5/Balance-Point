@@ -616,7 +616,7 @@ class CalculateBPMotionPath(bpy.types.Operator):
         # Go to start of range
         bpy.context.scene.frame_set(sel_mog.motion_path_frame_start)
 
-        for f in range(sel_mog.frame_start, sel_mog.motion_path_frame_end + 1):
+        for f in range(sel_mog.motion_path_frame_start, sel_mog.motion_path_frame_end + 1):
             # Add motion path point
             motion_path_points.add()
 
