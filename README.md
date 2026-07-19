@@ -8,7 +8,7 @@ Balance Point is a Blender add-on for visualizing and working with [center of ma
 
 ![comviz](/images/center_of_mass.gif)
 
-Once your rigged character is set up, a marker can be drawn in the viewport showing its center of mass as well as a floor marker for the Center of Mass, which can be useful for understanding your character's balance while animating.
+Once your rigged character is [set up](https://github.com/rdat5/Balance-Point/wiki/Character-Setup), a marker can be drawn in the viewport showing its center of mass as well as a floor marker for the Center of Mass, which can be useful for understanding your character's balance while animating.
 
 ### Center of Mass Motion Path
 
